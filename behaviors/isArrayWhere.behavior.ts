@@ -19,7 +19,7 @@ export default behavior("isArrayWhere", [
     return isArrayWhere([equals(1), equals(2), equals(3)])([1, 2])
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The array does not have the expected length."),
+    hasMessage("The array length (2) is unexpected."),
     hasInvalidActual([1, 2]),
     hasExpectedMessage("An array with length 3")
   ]),

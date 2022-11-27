@@ -70,7 +70,7 @@ export function isFalse(): Matcher<boolean> {
 export function isArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
   return (actual) => {
     if (actual.length !== matchers.length) {
-      return new Invalid("The array does not have the expected length.", {
+      return new Invalid(`The array length (${actual.length}) is unexpected.`, {
         actual: invalidActualValue(actual),
         expected: expectedMessage(`An array with length ${matchers.length}`)
       })
