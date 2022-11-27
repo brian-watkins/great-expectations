@@ -5,7 +5,7 @@
   "main": "./build/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build --clean && tsc --build",
     "test": "tsx ./behaviors/runner.ts"
   },
   "author": "Brian Watkins",
