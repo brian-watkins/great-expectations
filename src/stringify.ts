@@ -12,7 +12,7 @@ export function stringify(val: any): string {
       if (val === null) {
         return "<NULL>"
       } else if (Array.isArray(val)) {
-        return `[\n  ${val.map(stringify).join(",\n  ")}\n]`
+        return `[ ${val.map(stringify).join(",\n  ")} ]`
       } else if (isExpectedValue(val)) {
         return stringify(val.value)
       } else if (isExpectedMessage(val)) {
