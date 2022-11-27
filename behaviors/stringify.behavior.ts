@@ -114,11 +114,11 @@ export default behavior("stringify", [
     ]),
 
   exhibit("stringify an expected message", () => {
-    return stringify(expectedMessage("You failed!"))
+    return stringify(expectedMessage("You failed!"), testFormatter)
   })
     .check([
       property("it prints the message", (result) => {
-        assert.deepEqual(result, "<You failed!>")
+        assert.deepEqual(result, "green(<You failed!>)")
       })
     ]),
 

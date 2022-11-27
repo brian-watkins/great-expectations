@@ -21,7 +21,7 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
       } else if (isUnsatisfiedExpectedValue(val)) {
         return formatter.green(stringify(val.value))
       } else if (isExpectedMessage(val)) {
-        return val.message
+        return formatter.green(val.message)
       } else if (isActualValue(val)) {
         return stringify(val.value)
       } else if (isInvalidActualValue(val)) {
