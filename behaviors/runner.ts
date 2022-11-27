@@ -5,6 +5,7 @@ import isTrueBehavior from "./isTrue.behavior";
 import equalsBehavior from "./equals.behavior";
 import isArrayWhereBehavior from "./isArrayWhere.behavior";
 import stringifyBehavior from "./stringify.behavior";
+import isStringContainingBehavior from "./isStringContaining.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -12,7 +13,8 @@ validate([
   isTrueBehavior,
   isFalseBehavior,
   isArrayWhereBehavior,
-  stringifyBehavior
+  isStringContainingBehavior,
+  stringifyBehavior,
 ], {
   failFast: true
 })

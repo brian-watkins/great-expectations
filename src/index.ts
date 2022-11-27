@@ -109,3 +109,16 @@ interface ArrayMatchMessage {
   index: number
   message: string
 }
+
+export function isStringContaining(val: string): Matcher<string> {
+  return (actual) => {
+    if (actual.includes(val)) {
+      return new Valid()
+    } else {
+      return new Invalid("The actual value does not contain the expected string.", {
+        actual: invalidActualValue(actual),
+        expected: expectedMessage(`A string containing '${val}'`)
+      })
+    }
+  }
+}
