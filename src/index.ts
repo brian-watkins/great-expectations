@@ -77,7 +77,7 @@ export function isArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
     }
 
     let expected: Array<Expected> = []
-    let failed = false
+    let errorMessages: Array<ArrayMatchMessage> = []
     for (let i = 0; i < actual.length; i++) {
       const itemResult = matchers[i](actual[i])
       switch (itemResult.type) {
@@ -85,14 +85,14 @@ export function isArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
           expected.push(expectedValue(actual[i]))
           break
         case "invalid":
-          failed = true
+          errorMessages.push({ index: i, message: itemResult.description })
           expected.push(itemResult.values.expected)
           break
       }
     }
 
-    if (failed) {
-      return new Invalid("The array failed to match.", {
+    if (errorMessages.length > 0) {
+      return new Invalid(`The array failed to match:\n\n${errorMessages.map(e => `  at Actual[${e.index}]: ${e.message}`).join("\n\n")}`, {
         actual,
         expected: expectedValue(expected)
       })
@@ -100,4 +100,9 @@ export function isArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
       return new Valid()
     }
   }
+}
+
+interface ArrayMatchMessage {
+  index: number
+  message: string
 }

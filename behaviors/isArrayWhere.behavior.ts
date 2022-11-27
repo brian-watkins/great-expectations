@@ -32,7 +32,7 @@ export default behavior("isArrayWhere", [
     ])([1, 6, 5])
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The array failed to match."),
+    hasMessage("The array failed to match:\n\n  at Actual[1]: The actual value is not equal to the expected value.\n\n  at Actual[2]: The actual value is not equal to the expected value."),
     hasExpectedValue([expectedValue(1), expectedValue(2), expectedValue(3)]),
     hasActual([1, 6, 5]),
   ])
