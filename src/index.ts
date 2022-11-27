@@ -110,15 +110,28 @@ interface ArrayMatchMessage {
   message: string
 }
 
-export function isStringContaining(val: string): Matcher<string> {
+export function isStringContaining(val: string, options: StringContainingOptions = {}): Matcher<string> {
+  const isCaseSensitive = options.caseSensitive ?? true
+
   return (actual) => {
-    if (actual.includes(val)) {
+    let actualValue = actual
+    let expectedValue = val
+    if (!isCaseSensitive) {
+      actualValue = actual.toLowerCase()
+      expectedValue = val.toLowerCase()
+    }
+
+    if (actualValue.includes(expectedValue)) {
       return new Valid()
     } else {
       return new Invalid("The actual value does not contain the expected string.", {
         actual: invalidActualValue(actual),
-        expected: expectedMessage(`A string containing '${val}'`)
+        expected: expectedMessage(`A string containing '${val}'${isCaseSensitive ? '' : ' (case-insensitive)' }`)
       })
     }
   }
+}
+
+interface StringContainingOptions {
+  caseSensitive?: boolean
 }
