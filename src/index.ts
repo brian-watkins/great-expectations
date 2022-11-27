@@ -67,13 +67,25 @@ export function isFalse(): Matcher<boolean> {
   }
 }
 
-export function isArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
+export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
   return (actual) => {
-    if (actual.length !== matchers.length) {
+    if (actual.length === expectedLength) {
+      return new Valid()
+    } else {
       return new Invalid(`The array length (${actual.length}) is unexpected.`, {
         actual: invalidActualValue(actual),
-        expected: expectedMessage(`An array with length ${matchers.length}`)
+        expected: expectedMessage(`An array with length ${expectedLength}`)
       })
+    }
+  }
+}
+
+export function isArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
+  return (actual) => {
+    const lengthResult = isArrayWithLength(matchers.length)(actual)
+
+    if (lengthResult instanceof Invalid) {
+      return lengthResult
     }
 
     let actualValues: Array<Actual> = []
