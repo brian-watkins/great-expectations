@@ -2,7 +2,7 @@ import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify";
 import { exhibit, property } from "./helpers";
 import { strict as assert } from "node:assert"
-import { actualValue, expectedMessage, expectedValue, invalidActualValue } from "../src/matcher";
+import { actualValue, expectedMessage, expectedValue, invalidActualValue, unsatisfiedExpectedValue } from "../src/matcher";
 import { Formatter } from "../src/formatter";
 
 export default behavior("stringify", [
@@ -104,6 +104,15 @@ export default behavior("stringify", [
       })
     ]),
 
+  exhibit("stringify an unsatisfied expected value", () => {
+    return stringify(unsatisfiedExpectedValue("Whoops"), testFormatter)
+  })
+    .check([
+      property("it prints the unsatisfied expected value", (result) => {
+        assert.deepEqual(result, "green(\"Whoops\")")
+      })
+    ]),
+
   exhibit("stringify an expected message", () => {
     return stringify(expectedMessage("You failed!"))
   })
@@ -127,12 +136,13 @@ export default behavior("stringify", [
   })
     .check([
       property("it prints the value", (result) => {
-        assert.deepEqual(result, "\"WRONG\"")
+        assert.deepEqual(result, "red(\"WRONG\")")
       })
     ])
 
 ])
 
 const testFormatter: Formatter = {
-  red: (message) => message
+  red: (message) => `red(${message})`,
+  green: (message) => `green(${message})`
 }

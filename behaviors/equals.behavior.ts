@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior";
 import { equals } from "../src";
-import { exhibit, hasExpectedValue, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasInvalidActual, hasMessage, hasUnsatisfiedExpectedValue, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("equals", [
 
@@ -16,7 +16,7 @@ export default behavior("equals", [
     isInvalidMatchResult(),
     hasMessage("The actual value is not equal to the expected value."),
     hasInvalidActual({ name: "cool dude", count: 5 }),
-    hasExpectedValue({ name: "cool dude", count: 7 }),
+    hasUnsatisfiedExpectedValue({ name: "cool dude", count: 7 }),
   ]),
 
   exhibit("the values are not strictly deeply equal", () => {

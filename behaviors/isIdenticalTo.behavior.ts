@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior"
 import { isIdenticalTo } from "../src"
-import { exhibit, hasExpectedValue, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
+import { exhibit, hasInvalidActual, hasMessage, hasUnsatisfiedExpectedValue, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 export default behavior("isIdenticalTo", [
 
@@ -13,7 +13,7 @@ export default behavior("isIdenticalTo", [
     .check([
       isInvalidMatchResult(),
       hasMessage("The actual value is not identical to the expected value."),
-      hasExpectedValue(7),
+      hasUnsatisfiedExpectedValue(7),
       hasInvalidActual(5)
     ])
 

@@ -1,5 +1,5 @@
 import equal from "deep-equal"
-import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
+import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, unsatisfiedExpectedValue, Valid } from "./matcher"
 import { MatchError } from "./matchError"
 
 
@@ -22,7 +22,7 @@ export function isIdenticalTo<T>(expected: T): Matcher<T> {
     } else {
       return new Invalid("The actual value is not identical to the expected value.", {
         actual: invalidActualValue(actual),
-        expected: expectedValue(expected)
+        expected: unsatisfiedExpectedValue(expected)
       })
     }
   }
@@ -35,7 +35,7 @@ export function equals<T>(expected: T): Matcher<T> {
     } else {
       return new Invalid("The actual value is not equal to the expected value.", {
         actual: invalidActualValue(actual),
-        expected: expectedValue(expected)
+        expected: unsatisfiedExpectedValue(expected)
       })
     }
   }
@@ -48,7 +48,7 @@ export function isTrue(): Matcher<boolean> {
     } else {
       return new Invalid("The actual value should be true, but it is not.", {
         actual: invalidActualValue(actual),
-        expected: expectedValue(true)
+        expected: unsatisfiedExpectedValue(true)
       })
     }
   }
@@ -61,7 +61,7 @@ export function isFalse(): Matcher<boolean> {
     } else {
       return new Invalid("The actual value should be false, but it is not.", {
         actual: invalidActualValue(actual),
-        expected: expectedValue(false)
+        expected: unsatisfiedExpectedValue(false)
       })
     }
   }

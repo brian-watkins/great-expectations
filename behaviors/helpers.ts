@@ -1,6 +1,6 @@
 import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
-import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, MatchResult, Valid } from "../src/matcher";
+import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, MatchResult, unsatisfiedExpectedValue, Valid } from "../src/matcher";
 
 type Property<T> = Observation<T>
 
@@ -74,6 +74,12 @@ export function hasMessage(message: string): Property<MatchResult> {
 export function hasExpectedValue(value: any): Property<MatchResult> {
   return property("the expected value is shown", (result) => {
     assertHasExpected(expectedValue(value), result)
+  })
+}
+
+export function hasUnsatisfiedExpectedValue(value: any): Property<MatchResult> {
+  return property("the expected value is shown as unsatisfied", (result) => {
+    assertHasExpected(unsatisfiedExpectedValue(value), result)
   })
 }
 

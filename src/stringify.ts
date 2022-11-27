@@ -1,5 +1,5 @@
 import { ANSIFormatter, Formatter } from "./formatter"
-import { ActualValue, ExpectedMessage, ExpectedValue, InvalidActualValue } from "./matcher"
+import { ActualValue, ExpectedMessage, ExpectedValue, InvalidActualValue, UnsatisfiedExpectedValue } from "./matcher"
 
 export function stringify(val: any, formatter: Formatter = ANSIFormatter): string {
   const stringifyWithFormatter = (val: any) => stringify(val, formatter)
@@ -18,6 +18,8 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
         return `[ ${val.map(stringifyWithFormatter).join(",\n  ")} ]`
       } else if (isExpectedValue(val)) {
         return stringify(val.value)
+      } else if (isUnsatisfiedExpectedValue(val)) {
+        return formatter.green(stringify(val.value))
       } else if (isExpectedMessage(val)) {
         return val.message
       } else if (isActualValue(val)) {
@@ -40,6 +42,10 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
 
 function isExpectedValue(val: any): val is ExpectedValue {
   return ("type" in val && val.type === "expected-value")
+}
+
+function isUnsatisfiedExpectedValue(val: any): val is UnsatisfiedExpectedValue {
+  return ("type" in val && val.type === "unsatisfied-expected-value")
 }
 
 function isExpectedMessage(val: any): val is ExpectedMessage {

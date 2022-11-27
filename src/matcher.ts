@@ -13,16 +13,28 @@ export interface ExpectedValue {
   value: any
 }
 
+export interface UnsatisfiedExpectedValue {
+  type: "unsatisfied-expected-value"
+  value: any
+}
+
 export interface ExpectedMessage {
   type: "expected-message"
   message: string
 }
 
-export type Expected = ExpectedValue | ExpectedMessage
+export type Expected = ExpectedValue | UnsatisfiedExpectedValue | ExpectedMessage
 
 export function expectedValue(value: any): Expected {
   return {
     type: "expected-value",
+    value
+  }
+}
+
+export function unsatisfiedExpectedValue(value: any): Expected {
+  return {
+    type: "unsatisfied-expected-value",
     value
   }
 }
