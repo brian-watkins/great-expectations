@@ -1,6 +1,6 @@
 import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
-import { Invalid, MatchResult, Valid } from "../src/matcher";
+import { Expected, expectedMessage, expectedValue, Invalid, MatchResult, Valid } from "../src/matcher";
 
 type Property<T> = Observation<T>
 
@@ -37,7 +37,7 @@ export function assertIsInvalidMatch<T>(result: MatchResult<T>): result is Inval
 
 export function assertHasMessage<T>(expectedMessage: string, result: MatchResult<T>) {
   if (assertIsInvalidMatch(result)) {
-    assert.deepEqual(result.message, expectedMessage)
+    assert.deepEqual(result.description, expectedMessage)
   }
 }
 
@@ -47,7 +47,7 @@ export function assertHasActualValue<T>(expectedActualValue: T, result: MatchRes
   }
 }
 
-export function assertHasExpectedValue<T>(expectedValue: T, result: MatchResult<T>) {
+export function assertHasExpected<T>(expectedValue: Expected, result: MatchResult<T>) {
   if (assertIsInvalidMatch(result)) {
     assert.deepEqual(result.values.expected, expectedValue)
   }
@@ -71,21 +71,20 @@ export function hasMessage<T>(message: string): Property<MatchResult<T>> {
   })
 }
 
-export function hasExpected<T>(value: T): Property<MatchResult<T>> {
+export function hasExpectedValue<T>(value: any): Property<MatchResult<T>> {
   return property("the expected value is shown", (result) => {
-    assertHasExpectedValue(value, result)
+    assertHasExpected(expectedValue(value), result)
+  })
+}
+
+export function hasExpectedMessage<T>(message: string): Property<MatchResult<T>> {
+  return property("a message explaining the expectation is shown", (result) => {
+    assertHasExpected(expectedMessage(message), result)
   })
 }
 
 export function hasActual<T>(value: T): Property<MatchResult<T>> {
   return property("the actual value is shown", (result) => {
     assertHasActualValue(value, result)
-  })
-}
-
-export function hasNoValues<T>(): Property<MatchResult<T>> {
-  return property("the expected and actual values are empty", (result) => {
-    assertHasActualValue(undefined, result)
-    assertHasExpectedValue(undefined, result)
   })
 }

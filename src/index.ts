@@ -1,6 +1,6 @@
 import equal from "deep-equal"
-import { Invalid, Matcher, Valid } from "./matcher"
-import { MatchError } from "./MatchError"
+import { Expected, expectedMessage, expectedValue, Invalid, Matcher, Valid } from "./matcher"
+import { MatchError } from "./matchError"
 
 
 export function expect<T>(value: T, matcher: Matcher<T>): void {
@@ -22,7 +22,7 @@ export function isIdenticalTo<T>(expected: T): Matcher<T> {
     } else {
       return new Invalid("The actual value is not identical to the expected value.", {
         actual,
-        expected
+        expected: expectedValue(expected)
       })
     }
   }
@@ -35,7 +35,7 @@ export function equals<T>(expected: T): Matcher<T> {
     } else {
       return new Invalid("The actual value is not equal to the expected value.", {
         actual,
-        expected
+        expected: expectedValue(expected)
       })
     }
   }
@@ -46,7 +46,10 @@ export function isTrue(): Matcher<boolean> {
     if (actual === true) {
       return new Valid()
     } else {
-      return new Invalid("The actual value should be true, but it is not.")
+      return new Invalid("The actual value should be true, but it is not.", {
+        actual,
+        expected: expectedValue(true)
+      })
     }
   }
 }
@@ -56,7 +59,45 @@ export function isFalse(): Matcher<boolean> {
     if (actual === false) {
       return new Valid()
     } else {
-      return new Invalid("The actual value should be false, but it is not.")
+      return new Invalid("The actual value should be false, but it is not.", {
+        actual,
+        expected: expectedValue(false)
+      })
+    }
+  }
+}
+
+export function isArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
+  return (actual) => {
+    if (actual.length !== matchers.length) {
+      return new Invalid("The array does not have the expected length.", {
+        actual,
+        expected: expectedMessage(`An array with length ${matchers.length}`)
+      })
+    }
+
+    let expected: Array<Expected> = []
+    let failed = false
+    for (let i = 0; i < actual.length; i++) {
+      const itemResult = matchers[i](actual[i])
+      switch (itemResult.type) {
+        case "valid":
+          expected.push(expectedValue(actual[i]))
+          break
+        case "invalid":
+          failed = true
+          expected.push(itemResult.values.expected)
+          break
+      }
+    }
+
+    if (failed) {
+      return new Invalid("The array failed to match.", {
+        actual,
+        expected: expectedValue(expected)
+      })
+    } else {
+      return new Valid()
     }
   }
 }
