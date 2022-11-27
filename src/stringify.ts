@@ -1,4 +1,4 @@
-import { ExpectedValue } from "./matcher"
+import { ExpectedMessage, ExpectedValue } from "./matcher"
 
 export function stringify(val: any): string {
   switch (typeof val) {
@@ -15,6 +15,8 @@ export function stringify(val: any): string {
         return `[\n  ${val.map(stringify).join(",\n  ")}\n]`
       } else if (isExpectedValue(val)) {
         return stringify(val.value)
+      } else if (isExpectedMessage(val)) {
+        return val.message
       } else {
         return `{\n  ${Object.keys(val).map(key => `${key}: ${stringify(val[key])}`).join(",\n  ")}\n}`
       }
@@ -31,4 +33,8 @@ export function stringify(val: any): string {
 
 function isExpectedValue(val: any): val is ExpectedValue {
   return ("type" in val && val.type === "expected-value")
+}
+
+function isExpectedMessage(val: any): val is ExpectedMessage {
+  return ("type" in val && val.type === "expected-message")
 }

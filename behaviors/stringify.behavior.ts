@@ -2,7 +2,7 @@ import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify";
 import { exhibit, property } from "./helpers";
 import { strict as assert } from "node:assert"
-import { expectedValue } from "../src/matcher";
+import { expectedMessage, expectedValue } from "../src/matcher";
 
 export default behavior("stringify", [
 
@@ -100,6 +100,15 @@ export default behavior("stringify", [
     .check([
       property("it prints the expected values", (result) => {
         assert.deepEqual(result, "[\n  1,\n  2,\n  3\n]")
+      })
+    ]),
+
+  exhibit("stringify an expected message", () => {
+    return stringify(expectedMessage("You failed!"))
+  })
+    .check([
+      property("it prints the message", (result) => {
+        assert.deepEqual(result, "<You failed!>")
       })
     ])
 
