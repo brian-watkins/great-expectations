@@ -2,10 +2,10 @@ export class Valid {
   public type: "valid" = "valid"
 }
 
-export class Invalid<T> {
+export class Invalid {
   public type: "invalid" = "invalid"
   
-  constructor(public description: string, public values: MatchValues<T>) {}
+  constructor(public description: string, public values: MatchValues) {}
 }
 
 export interface ExpectedValue {
@@ -34,11 +34,37 @@ export function expectedMessage(message: string): Expected {
   }
 }
 
-export interface MatchValues<T> {
-  actual: T
+export interface ActualValue {
+  type: "actual-value"
+  value: any
+}
+
+export interface InvalidActualValue {
+  type: "invalid-actual-value"
+  value: any
+}
+
+export type Actual = ActualValue | InvalidActualValue
+
+export function actualValue(value: any): Actual {
+  return {
+    type: "actual-value",
+    value
+  }
+}
+
+export function invalidActualValue(value: any): Actual {
+  return {
+    type: "invalid-actual-value",
+    value
+  }
+}
+
+export interface MatchValues {
+  actual: Actual
   expected: Expected
 }
 
-export type MatchResult<T> = Valid | Invalid<T>
+export type MatchResult = Valid | Invalid
 
-export type Matcher<T> = (actual: T) => MatchResult<T>
+export type Matcher<T> = (actual: T) => MatchResult

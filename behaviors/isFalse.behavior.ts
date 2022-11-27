@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior";
 import { isFalse } from "../src";
-import { exhibit, isValidMatchResult, isInvalidMatchResult, hasMessage, hasActual, hasExpectedValue } from "./helpers";
+import { exhibit, isValidMatchResult, isInvalidMatchResult, hasMessage, hasExpectedValue, hasInvalidActual } from "./helpers";
 
 export default behavior("isFalse", [
 
@@ -13,7 +13,7 @@ export default behavior("isFalse", [
     .check([
       isInvalidMatchResult(),
       hasMessage("The actual value should be false, but it is not."),
-      hasActual(true),
+      hasInvalidActual(true),
       hasExpectedValue(false)
     ])
 

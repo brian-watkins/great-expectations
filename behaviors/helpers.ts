@@ -1,6 +1,6 @@
 import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
-import { Expected, expectedMessage, expectedValue, Invalid, MatchResult, Valid } from "../src/matcher";
+import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, MatchResult, Valid } from "../src/matcher";
 
 type Property<T> = Observation<T>
 
@@ -16,75 +16,81 @@ export function exhibit<T>(description: string, runner: () => T): UseCaseBuilder
   return {
     check: (properties) => {
       return example({ init: runner })
-      .description(description)
-      .script({
-        observe: properties
-      })  
+        .description(description)
+        .script({
+          observe: properties
+        })
     }
   }
 }
 
 
-export function assertIsValidMatch<T>(result: MatchResult<T>): result is Valid {
+export function assertIsValidMatch(result: MatchResult): result is Valid {
   assert(result instanceof Valid, "The result should be Valid")
   return true
 }
 
-export function assertIsInvalidMatch<T>(result: MatchResult<T>): result is Invalid<T> {
+export function assertIsInvalidMatch(result: MatchResult): result is Invalid {
   assert(result instanceof Invalid, "The result should be Invalid")
   return true
 }
 
-export function assertHasMessage<T>(expectedMessage: string, result: MatchResult<T>) {
+export function assertHasMessage(expectedMessage: string, result: MatchResult) {
   if (assertIsInvalidMatch(result)) {
     assert.deepEqual(result.description, expectedMessage)
   }
 }
 
-export function assertHasActualValue<T>(expectedActualValue: T, result: MatchResult<T>) {
+export function assertHasActual(expectedActual: Actual, result: MatchResult) {
   if (assertIsInvalidMatch(result)) {
-    assert.deepEqual(result.values.actual, expectedActualValue)
+    assert.deepEqual(result.values.actual, expectedActual)
   }
 }
 
-export function assertHasExpected<T>(expectedValue: Expected, result: MatchResult<T>) {
+export function assertHasExpected(expectedValue: Expected, result: MatchResult) {
   if (assertIsInvalidMatch(result)) {
     assert.deepEqual(result.values.expected, expectedValue)
   }
 }
 
-export function isValidMatchResult<T>(): Property<MatchResult<T>> {
+export function isValidMatchResult(): Property<MatchResult> {
   return property("the match result is valid", (result) => {
     assertIsValidMatch(result)
   })
 }
 
-export function isInvalidMatchResult<T>(): Property<MatchResult<T>> {
+export function isInvalidMatchResult(): Property<MatchResult> {
   return property("the match result is invalid", (result) => {
     assertIsInvalidMatch(result)
   })
 }
 
-export function hasMessage<T>(message: string): Property<MatchResult<T>> {
+export function hasMessage(message: string): Property<MatchResult> {
   return property("the message explains what happened", (result) => {
     assertHasMessage(message, result)
   })
 }
 
-export function hasExpectedValue<T>(value: any): Property<MatchResult<T>> {
+export function hasExpectedValue(value: any): Property<MatchResult> {
   return property("the expected value is shown", (result) => {
     assertHasExpected(expectedValue(value), result)
   })
 }
 
-export function hasExpectedMessage<T>(message: string): Property<MatchResult<T>> {
+export function hasExpectedMessage(message: string): Property<MatchResult> {
   return property("a message explaining the expectation is shown", (result) => {
     assertHasExpected(expectedMessage(message), result)
   })
 }
 
-export function hasActual<T>(value: T): Property<MatchResult<T>> {
+export function hasActual<T>(value: T): Property<MatchResult> {
   return property("the actual value is shown", (result) => {
-    assertHasActualValue(value, result)
+    assertHasActual(actualValue(value), result)
+  })
+}
+
+export function hasInvalidActual<T>(value: T): Property<MatchResult> {
+  return property("the actual value is shown as invalid", (result) => {
+    assertHasActual(invalidActualValue(value), result)
   })
 }

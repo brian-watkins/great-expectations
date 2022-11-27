@@ -2,7 +2,7 @@ import { Invalid } from "./matcher"
 import { stringify } from "./stringify"
 
 export class MatchError extends Error {
-  constructor(private invalid: Invalid<any>, ...args: any) {
+  constructor(private invalid: Invalid, ...args: any) {
     super(invalid.description, ...args)
   }
 

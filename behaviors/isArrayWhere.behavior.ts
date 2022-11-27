@@ -1,7 +1,7 @@
 import { behavior } from "esbehavior";
 import { equals, isArrayWhere } from "../src";
-import { expectedValue } from "../src/matcher";
-import { exhibit, hasActual, hasExpectedMessage, hasExpectedValue, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { actualValue, expectedValue, invalidActualValue } from "../src/matcher";
+import { exhibit, hasActual, hasExpectedMessage, hasExpectedValue, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("isArrayWhere", [
 
@@ -20,7 +20,7 @@ export default behavior("isArrayWhere", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array does not have the expected length."),
-    hasActual([1, 2]),
+    hasInvalidActual([1, 2]),
     hasExpectedMessage("An array with length 3")
   ]),
 
@@ -34,7 +34,7 @@ export default behavior("isArrayWhere", [
     isInvalidMatchResult(),
     hasMessage("The array failed to match:\n\n  at Actual[1]: The actual value is not equal to the expected value.\n\n  at Actual[2]: The actual value is not equal to the expected value."),
     hasExpectedValue([expectedValue(1), expectedValue(2), expectedValue(3)]),
-    hasActual([1, 6, 5]),
+    hasActual([actualValue(1), invalidActualValue(6), invalidActualValue(5)]),
   ])
 
 ])

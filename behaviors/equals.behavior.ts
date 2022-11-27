@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior";
 import { equals } from "../src";
-import { exhibit, hasActual, hasExpectedValue, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasExpectedValue, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("equals", [
 
@@ -15,7 +15,7 @@ export default behavior("equals", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("The actual value is not equal to the expected value."),
-    hasActual({ name: "cool dude", count: 5 }),
+    hasInvalidActual({ name: "cool dude", count: 5 }),
     hasExpectedValue({ name: "cool dude", count: 7 }),
   ]),
 

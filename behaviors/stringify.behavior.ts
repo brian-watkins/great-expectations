@@ -2,7 +2,8 @@ import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify";
 import { exhibit, property } from "./helpers";
 import { strict as assert } from "node:assert"
-import { expectedMessage, expectedValue } from "../src/matcher";
+import { actualValue, expectedMessage, expectedValue, invalidActualValue } from "../src/matcher";
+import { Formatter } from "../src/formatter";
 
 export default behavior("stringify", [
 
@@ -110,6 +111,28 @@ export default behavior("stringify", [
       property("it prints the message", (result) => {
         assert.deepEqual(result, "<You failed!>")
       })
+    ]),
+
+  exhibit("stringify an actual value", () => {
+      return stringify(actualValue("OK"))
+    })
+      .check([
+        property("it prints the value", (result) => {
+          assert.deepEqual(result, "\"OK\"")
+        })
+      ]),
+
+  exhibit("stringify an invalid actual value", () => {
+    return stringify(invalidActualValue("WRONG"), testFormatter)
+  })
+    .check([
+      property("it prints the value", (result) => {
+        assert.deepEqual(result, "\"WRONG\"")
+      })
     ])
 
 ])
+
+const testFormatter: Formatter = {
+  red: (message) => message
+}
