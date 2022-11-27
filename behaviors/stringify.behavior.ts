@@ -80,7 +80,7 @@ export default behavior("stringify", [
   exhibit("stringify an array", () => stringify([1, 2, 3]))
     .check([
       property("it prints the stringified elements", (result) => {
-        assert.deepEqual(result, "[ 1,\n  2,\n  3 ]")
+        assert.deepEqual(result, "[ 1\n, 2\n, 3\n]")
       })
     ]),
 
@@ -100,7 +100,7 @@ export default behavior("stringify", [
   })
     .check([
       property("it prints the expected values", (result) => {
-        assert.deepEqual(result, "[ 1,\n  2,\n  3 ]")
+        assert.deepEqual(result, "[ 1\n, 2\n, 3\n]")
       })
     ]),
 

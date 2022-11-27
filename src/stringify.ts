@@ -15,7 +15,7 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
       if (val === null) {
         return "<NULL>"
       } else if (Array.isArray(val)) {
-        return `[ ${val.map(stringifyWithFormatter).join(",\n  ")} ]`
+        return `[ ${val.map(stringifyWithFormatter).join("\n, ")}\n]`
       } else if (isExpectedValue(val)) {
         return stringify(val.value)
       } else if (isUnsatisfiedExpectedValue(val)) {
