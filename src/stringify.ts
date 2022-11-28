@@ -1,4 +1,4 @@
-import { ANSIFormatter, Formatter } from "./formatter"
+import { ANSIFormatter, Formatter, IdentityFormatter } from "./formatter"
 import { ActualValue, ExpectedMessage, ExpectedValue, InvalidActualValue, UnsatisfiedExpectedValue } from "./matcher"
 
 export function stringify(val: any, formatter: Formatter = ANSIFormatter): string {
@@ -21,7 +21,11 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
       } else if (isUnsatisfiedExpectedValue(val)) {
         return formatter.green(stringify(val.value))
       } else if (isExpectedMessage(val)) {
-        return formatter.green(val.message)
+        if (val.next) {
+          return formatter.green(formatter.info(`${val.message} ${stringify(val.next, IdentityFormatter)}`))
+        } else {
+          return formatter.green(formatter.info(val.message))
+        }
       } else if (isActualValue(val)) {
         return stringify(val.value)
       } else if (isInvalidActualValue(val)) {

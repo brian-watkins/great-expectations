@@ -122,6 +122,14 @@ export default behavior("stringify", [
       })
     ]),
 
+  exhibit("string an expected message chain", () => {
+    return stringify(expectedMessage("First I did this,", expectedMessage("Then I did this:", unsatisfiedExpectedValue(14))), testFormatter)
+  }).check([
+    property("it prints the message", (result) => {
+      assert.deepEqual(result, "green(<First I did this, Then I did this: 14>)")
+    })
+  ]),
+
   exhibit("stringify an actual value", () => {
       return stringify(actualValue("OK"))
     })
@@ -143,6 +151,7 @@ export default behavior("stringify", [
 ])
 
 const testFormatter: Formatter = {
+  info: (message) => `<${message}>`,
   red: (message) => `red(${message})`,
   green: (message) => `green(${message})`
 }

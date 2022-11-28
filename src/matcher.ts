@@ -21,6 +21,7 @@ export interface UnsatisfiedExpectedValue {
 export interface ExpectedMessage {
   type: "expected-message"
   message: string
+  next: Expected | undefined
 }
 
 export type Expected = ExpectedValue | UnsatisfiedExpectedValue | ExpectedMessage
@@ -39,10 +40,11 @@ export function unsatisfiedExpectedValue(value: any): Expected {
   }
 }
 
-export function expectedMessage(message: string): Expected {
+export function expectedMessage(message: string, next?: Expected): Expected {
   return {
     type: "expected-message",
-    message: `<${message}>`
+    message: `${message}`,
+    next
   }
 }
 

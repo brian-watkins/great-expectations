@@ -83,9 +83,9 @@ export function hasUnsatisfiedExpectedValue(value: any): Property<MatchResult> {
   })
 }
 
-export function hasExpectedMessage(message: string): Property<MatchResult> {
+export function hasExpectedMessage(message: string, next?: Expected): Property<MatchResult> {
   return property("a message explaining the expectation is shown", (result) => {
-    assertHasExpected(expectedMessage(message), result)
+    assertHasExpected(expectedMessage(message, next), result)
   })
 }
 

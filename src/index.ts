@@ -122,6 +122,24 @@ interface ArrayMatchMessage {
   message: string
 }
 
+export function isArrayContaining<T>(matcher: Matcher<T>): Matcher<Array<T>> {
+  return (actual) => {
+    let invalidMatch: Invalid | undefined
+    for (const item of actual) {
+      const matchResult = matcher(item)
+      if (matchResult instanceof Valid) {
+        return new Valid()
+      } else {
+        invalidMatch = matchResult
+      }
+    }
+    return new Invalid("The array does not contain any item that matches.", {
+      actual: invalidActualValue(actual),
+      expected: expectedMessage('An array containing:', invalidMatch?.values.expected)
+    })
+  }
+}
+
 export function isStringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
   const isCaseSensitive = options.caseSensitive ?? true
   const matchCount = options.times ?? -1

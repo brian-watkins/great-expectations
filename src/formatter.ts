@@ -1,4 +1,5 @@
 export interface Formatter {
+  info(message: string): string
   red(message: string): string
   green(message: string): string
 }
@@ -15,7 +16,22 @@ function green(message: string): string {
   return wrapColor("32", message)
 }
 
+function info(message: string): string {
+  return `<${message}>`
+}
+
 export const ANSIFormatter: Formatter = {
+  info,
   red,
   green
+}
+
+function identity(message: string): string {
+  return message
+}
+
+export const IdentityFormatter: Formatter = {
+  info: identity,
+  red: identity,
+  green: identity
 }

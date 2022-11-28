@@ -7,6 +7,7 @@ import isArrayWhereBehavior from "./isArrayWhere.behavior";
 import stringifyBehavior from "./stringify.behavior";
 import isStringContainingBehavior from "./isStringContaining.behavior";
 import isArrayWithLengthBehavior from "./isArrayWithLength.behavior";
+import isArrayContainingBehavior from "./isArrayContaining.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -15,6 +16,7 @@ validate([
   isFalseBehavior,
   isArrayWithLengthBehavior,
   isArrayWhereBehavior,
+  isArrayContainingBehavior,
   isStringContainingBehavior,
   stringifyBehavior,
 ], {
