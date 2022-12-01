@@ -122,20 +122,37 @@ interface ArrayMatchMessage {
   message: string
 }
 
-export function isArrayContaining<T>(matcher: Matcher<T>): Matcher<Array<T>> {
+interface ArrayContainingOptions {
+  times?: number
+}
+
+export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
+  const expectedMatchCount = options.times ?? -1
+  
   return (actual) => {
     let invalidMatch: Invalid | undefined
+    let matchedCount = 0
     for (const item of actual) {
       const matchResult = matcher(item)
       if (matchResult instanceof Valid) {
-        return new Valid()
+        // return new Valid()
+        matchedCount++
       } else {
         invalidMatch = matchResult
       }
     }
+
+    if (expectedMatchCount < 0 && matchedCount > 0) {
+      return new Valid()
+    }
+
+    if (expectedMatchCount > 0 && matchedCount == expectedMatchCount) {
+      return new Valid()
+    }
+
     return new Invalid("The array does not contain any item that matches.", {
       actual: invalidActualValue(actual),
-      expected: expectedMessage('An array containing:', invalidMatch?.values.expected)
+      expected: expectedMessage('An array containing exactly 2 times:', invalidMatch?.values.expected)
     })
   }
 }
