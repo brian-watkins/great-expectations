@@ -122,20 +122,41 @@ interface ArrayMatchMessage {
   message: string
 }
 
-export function isArrayContaining<T>(matcher: Matcher<T>): Matcher<Array<T>> {
+interface ArrayContainingOptions {
+  times?: number
+}
+
+export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
+  const expectedMatchCount = options.times ?? -1
+
   return (actual) => {
     let invalidMatch: Invalid | undefined
+    let matchedCount = 0
     for (const item of actual) {
       const matchResult = matcher(item)
       if (matchResult instanceof Valid) {
-        return new Valid()
+        matchedCount++
       } else {
         invalidMatch = matchResult
       }
     }
-    return new Invalid("The array does not contain any item that matches.", {
+
+    if (expectedMatchCount < 0 && matchedCount > 0) {
+      return new Valid()
+    }
+
+    if (expectedMatchCount >= 0 && matchedCount == expectedMatchCount) {
+      return new Valid()
+    }
+
+    let message = `An array containing`
+    if (expectedMatchCount >= 0) {
+      message += ` ${matchCountMessage(expectedMatchCount)}`
+    }
+
+    return new Invalid("The array does not contain what was expected.", {
       actual: invalidActualValue(actual),
-      expected: expectedMessage('An array containing:', invalidMatch?.values.expected)
+      expected: expectedMessage(message, invalidMatch?.values.expected)
     })
   }
 }
@@ -172,15 +193,19 @@ function stringInvalidMessage(expected: string, isCaseSensitive: boolean, matchC
     message += " (case-insensitive)"
   }
 
-  if (matchCount == 1) {
-    message += " exactly 1 time"
-  }
-
-  if (matchCount == 0 || matchCount > 1) {
-    message += ` exactly ${matchCount} times`
+  if (matchCount >= 0) {
+    message += ` ${matchCountMessage(matchCount)}`
   }
 
   return message
+}
+
+function matchCountMessage(expectedTimes: number): string {
+  if (expectedTimes == 1) {
+    return "exactly 1 time"
+  }
+
+  return `exactly ${expectedTimes} times`
 }
 
 function getStringMatchCount(message: string, term: string): number {
