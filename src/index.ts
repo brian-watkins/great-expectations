@@ -188,7 +188,7 @@ function getStringMatchCount(message: string, term: string): number {
   let count = 0
   while (true) {
     const index = message.indexOf(term, searchIndex)
-    if (index > 0) {
+    if (index >= 0) {
       count++
       searchIndex = index + 1
     } else {

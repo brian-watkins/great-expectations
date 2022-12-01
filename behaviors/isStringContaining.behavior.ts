@@ -70,6 +70,12 @@ export default behavior("isStringContaining", [
     outcome("it works just like if the times value were not set", [
       isValidMatchResult()
     ])
+  ]),
+
+  exhibit("when the actual contains the expected at the beginning of the string", () => {
+    return isStringContaining("hello")("hello how are you")
+  }).check([
+    isValidMatchResult()
   ])
 
 ])
