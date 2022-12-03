@@ -16,7 +16,7 @@ export default behavior("isStringContaining", [
     isInvalidMatchResult(),
     hasMessage("The actual value does not contain the expected string."),
     hasInvalidActual("What??"),
-    hasExpectedMessage("A string containing 'oops'")
+    hasExpectedMessage("a string containing 'oops'")
   ]),
 
   exhibit("when not case-sensitive and the value contains the string with a different case", () => {
@@ -29,7 +29,7 @@ export default behavior("isStringContaining", [
     return isStringContaining("oops", { caseSensitive: false })("They said what?!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("A string containing 'oops' (case-insensitive)")
+    hasExpectedMessage("a string containing 'oops' (case-insensitive)")
   ]),
 
   exhibit("when case-sensitive and the value does not contains the string with the proper case", () => {
@@ -48,14 +48,14 @@ export default behavior("isStringContaining", [
     return isStringContaining("is", { times: 3 })("This is a bat!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("A string containing 'is' exactly 3 times")
+    hasExpectedMessage("a string containing 'is' exactly 3 times")
   ]),
 
   exhibit("when the value does not contain the string only once", () => {
     return isStringContaining("is", { times: 1 })("This is a bat!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("A string containing 'is' exactly 1 time")
+    hasExpectedMessage("a string containing 'is' exactly 1 time")
   ]),
 
   exhibit("when the expected has regexp special characters in it", () => {

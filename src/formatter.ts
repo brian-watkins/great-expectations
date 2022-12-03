@@ -17,7 +17,7 @@ function green(message: string): string {
 }
 
 function info(message: string): string {
-  return `<${message}>`
+  return `~ ${message} ~`
 }
 
 export const ANSIFormatter: Formatter = {

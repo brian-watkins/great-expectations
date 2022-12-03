@@ -17,7 +17,7 @@ export default behavior("isArrayContaining", [
     isInvalidMatchResult(),
     hasMessage("The array does not contain what was expected."),
     hasInvalidActual(["goodbye", "bye", "later"]),
-    hasExpectedMessage("An array containing", expectedMessage("A string containing 'hello'"))
+    hasExpectedMessage("an array containing", expectedMessage("a string containing 'hello'"))
   ]),
 
   exhibit("the array contains the item the expected number of times", () => {
@@ -30,21 +30,21 @@ export default behavior("isArrayContaining", [
     return isArrayContaining(equals("fun"), { times: 0 })(["fun", "funny", "sunny"])
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("An array containing exactly 0 times", unsatisfiedExpectedValue("fun"))
+    hasExpectedMessage("an array containing exactly 0 times", unsatisfiedExpectedValue("fun"))
   ]),
 
   exhibit("the message shows the array was expected to contain the item one time", () => {
     return isArrayContaining(equals("fun"), { times: 1 })(["fun", "fun", "sunny"])
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("An array containing exactly 1 time", unsatisfiedExpectedValue("fun"))
+    hasExpectedMessage("an array containing exactly 1 time", unsatisfiedExpectedValue("fun"))
   ]),
 
   exhibit("the message shows the array was expected to contain the item multiple times", () => {
     return isArrayContaining(equals("fun"), { times: 2 })(["fun", "funny", "sunny"])
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("An array containing exactly 2 times", unsatisfiedExpectedValue("fun"))
+    hasExpectedMessage("an array containing exactly 2 times", unsatisfiedExpectedValue("fun"))
   ])
 
   

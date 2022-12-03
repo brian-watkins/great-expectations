@@ -96,7 +96,7 @@ export function isStringContaining(expected: string, options: StringContainingOp
 }
 
 function stringInvalidMessage(expected: string, isCaseSensitive: boolean, matchCount: number): string {
-  let message = `A string containing '${expected}'`
+  let message = `a string containing '${expected}'`
 
   if (!isCaseSensitive) {
     message += " (case-insensitive)"

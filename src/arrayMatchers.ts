@@ -8,7 +8,7 @@ export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> 
     } else {
       return new Invalid(`The array length (${actual.length}) is unexpected.`, {
         actual: invalidActualValue(actual),
-        expected: expectedMessage(`An array with length ${expectedLength}`)
+        expected: expectedMessage(`an array with length ${expectedLength}`)
       })
     }
   }
@@ -148,7 +148,7 @@ export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContaini
       return new Valid()
     }
 
-    let message = `An array containing`
+    let message = `an array containing`
     if (expectedMatchCount >= 0) {
       message += ` ${matchCountMessage(expectedMatchCount)}`
     }

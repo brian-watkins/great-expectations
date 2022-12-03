@@ -16,7 +16,7 @@ export default behavior("isArrayWithLength", [
     isInvalidMatchResult(),
     hasMessage("The array length (4) is unexpected."),
     hasInvalidActual([1, 2, 3, 4]),
-    hasExpectedMessage("An array with length 3")
+    hasExpectedMessage("an array with length 3")
   ])
 
 ])
