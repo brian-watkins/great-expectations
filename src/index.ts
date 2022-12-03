@@ -43,33 +43,6 @@ export function equals<T>(expected: T): Matcher<T> {
   }
 }
 
-export function isTrue(): Matcher<boolean> {
-  return (actual) => {
-    if (actual === true) {
-      return new Valid()
-    } else {
-      return new Invalid("The actual value should be true, but it is not.", {
-        actual: invalidActualValue(actual),
-        expected: unsatisfiedExpectedValue(true)
-      })
-    }
-  }
-}
-
-export function isFalse(): Matcher<boolean> {
-  return (actual) => {
-    if (actual === false) {
-      return new Valid()
-    } else {
-      return new Invalid("The actual value should be false, but it is not.", {
-        actual: invalidActualValue(actual),
-        expected: unsatisfiedExpectedValue(false)
-      })
-    }
-  }
-}
-
-
 export function isStringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
   const isCaseSensitive = options.caseSensitive ?? true
   const matchCount = options.times ?? -1
