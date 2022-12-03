@@ -6,6 +6,7 @@ import stringifyBehavior from "./stringify.behavior";
 import isStringContainingBehavior from "./isStringContaining.behavior";
 import isArrayWithLengthBehavior from "./isArrayWithLength.behavior";
 import isArrayContainingBehavior from "./isArrayContaining.behavior";
+import numberLessThanBehavior from "./numberLessThan.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -15,6 +16,7 @@ validate([
   isArrayContainingBehavior,
   isStringContainingBehavior,
   stringifyBehavior,
+  numberLessThanBehavior
 ], {
   failFast: true
 })
