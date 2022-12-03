@@ -7,12 +7,17 @@ interface NumberComparator {
 
 const LessThan: NumberComparator = {
   name: "less than",
-  matches: (expected, actual) => actual < expected,
+  matches: (expected, actual) => actual < expected
 }
 
 const LessThanOrEqualTo: NumberComparator = {
   name: "less than or equal to",
-  matches: (expected, actual) => actual <= expected,
+  matches: (expected, actual) => actual <= expected
+}
+
+const GreaterThan: NumberComparator = {
+  name: "greater than",
+  matches: (expected, actual) => actual > expected
 }
 
 export function isNumberLessThan(expected: number): Matcher<number> {
@@ -21,6 +26,10 @@ export function isNumberLessThan(expected: number): Matcher<number> {
 
 export function isNumberLessThanOrEqualTo(expected: number): Matcher<number> {
   return numberMatcher(LessThanOrEqualTo, expected)
+}
+
+export function isNumberGreaterThan(expected: number): Matcher<number> {
+  return numberMatcher(GreaterThan, expected)
 }
 
 function numberMatcher(comparator: NumberComparator, expected: number): Matcher<number> {
