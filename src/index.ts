@@ -1,7 +1,9 @@
 import equal from "deep-equal"
-import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, unsatisfiedExpectedValue, Valid } from "./matcher"
+import { expectedMessage, Invalid, invalidActualValue, Matcher, unsatisfiedExpectedValue, Valid } from "./matcher"
 import { MatchError } from "./matchError"
-
+import { matchCountMessage } from "./message"
+export { isArrayContaining, isArrayWithLength, isArrayWhere } from "./arrayMatchers"
+export type { ArrayContainingOptions } from "./arrayMatchers"
 
 export function expect<T>(value: T, matcher: Matcher<T>): void {
   const matchResult = matcher(value)
@@ -67,99 +69,6 @@ export function isFalse(): Matcher<boolean> {
   }
 }
 
-export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
-  return (actual) => {
-    if (actual.length === expectedLength) {
-      return new Valid()
-    } else {
-      return new Invalid(`The array length (${actual.length}) is unexpected.`, {
-        actual: invalidActualValue(actual),
-        expected: expectedMessage(`An array with length ${expectedLength}`)
-      })
-    }
-  }
-}
-
-export function isArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
-  return (actual) => {
-    const lengthResult = isArrayWithLength(matchers.length)(actual)
-
-    if (lengthResult instanceof Invalid) {
-      return lengthResult
-    }
-
-    let actualValues: Array<Actual> = []
-    let expected: Array<Expected> = []
-    let errorMessages: Array<ArrayMatchMessage> = []
-    for (let i = 0; i < actual.length; i++) {
-      const itemResult = matchers[i](actual[i])
-      switch (itemResult.type) {
-        case "valid":
-          actualValues.push(actualValue(actual[i]))
-          expected.push(expectedValue(actual[i]))
-          break
-        case "invalid":
-          errorMessages.push({ index: i, message: itemResult.description })
-          actualValues.push(itemResult.values.actual)
-          expected.push(itemResult.values.expected)
-          break
-      }
-    }
-
-    if (errorMessages.length > 0) {
-      return new Invalid(`The array failed to match:\n\n${errorMessages.map(e => `  at Actual[${e.index}]: ${e.message}`).join("\n\n")}`, {
-        actual: actualValue(actualValues),
-        expected: expectedValue(expected)
-      })
-    } else {
-      return new Valid()
-    }
-  }
-}
-
-interface ArrayMatchMessage {
-  index: number
-  message: string
-}
-
-interface ArrayContainingOptions {
-  times?: number
-}
-
-export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
-  const expectedMatchCount = options.times ?? -1
-
-  return (actual) => {
-    let invalidMatch: Invalid | undefined
-    let matchedCount = 0
-    for (const item of actual) {
-      const matchResult = matcher(item)
-      if (matchResult instanceof Valid) {
-        matchedCount++
-      } else {
-        invalidMatch = matchResult
-      }
-    }
-
-    if (expectedMatchCount < 0 && matchedCount > 0) {
-      return new Valid()
-    }
-
-    if (expectedMatchCount >= 0 && matchedCount == expectedMatchCount) {
-      return new Valid()
-    }
-
-    let message = `An array containing`
-    if (expectedMatchCount >= 0) {
-      message += ` ${matchCountMessage(expectedMatchCount)}`
-    }
-
-    return new Invalid("The array does not contain what was expected.", {
-      actual: invalidActualValue(actual),
-      expected: expectedMessage(message, invalidMatch?.values.expected)
-    })
-  }
-}
 
 export function isStringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
   const isCaseSensitive = options.caseSensitive ?? true
@@ -198,14 +107,6 @@ function stringInvalidMessage(expected: string, isCaseSensitive: boolean, matchC
   }
 
   return message
-}
-
-function matchCountMessage(expectedTimes: number): string {
-  if (expectedTimes == 1) {
-    return "exactly 1 time"
-  }
-
-  return `exactly ${expectedTimes} times`
 }
 
 function getStringMatchCount(message: string, term: string): number {
