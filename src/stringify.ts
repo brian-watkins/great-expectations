@@ -22,7 +22,8 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
         return formatter.green(stringify(val.value))
       } else if (isExpectedMessage(val)) {
         if (val.next) {
-          return formatter.green(formatter.info(`${val.message} ${stringify(val.next, IdentityFormatter)}`))
+          const message = val.message.replace("%expected%", stringify(val.next, IdentityFormatter))
+          return formatter.green(formatter.info(message))
         } else {
           return formatter.green(formatter.info(val.message))
         }

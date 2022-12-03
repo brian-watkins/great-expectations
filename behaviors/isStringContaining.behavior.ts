@@ -1,6 +1,6 @@
-import { behavior, outcome } from "esbehavior";
-import { isStringContaining } from "../src";
-import { exhibit, hasExpectedMessage, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { behavior } from "esbehavior";
+import { isNumberGreaterThan, isNumberLessThan, isStringContaining } from "../src";
+import { exhibit, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("isStringContaining", [
 
@@ -16,7 +16,7 @@ export default behavior("isStringContaining", [
     isInvalidMatchResult(),
     hasMessage("The actual value does not contain the expected string."),
     hasInvalidActual("What??"),
-    hasExpectedMessage("a string containing 'oops'")
+    hasExpectedMessageText("a string containing 'oops'")
   ]),
 
   exhibit("when not case-sensitive and the value contains the string with a different case", () => {
@@ -29,7 +29,7 @@ export default behavior("isStringContaining", [
     return isStringContaining("oops", { caseSensitive: false })("They said what?!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("a string containing 'oops' (case-insensitive)")
+    hasExpectedMessageText("a string containing 'oops' (case-insensitive)")
   ]),
 
   exhibit("when case-sensitive and the value does not contains the string with the proper case", () => {
@@ -48,14 +48,14 @@ export default behavior("isStringContaining", [
     return isStringContaining("is", { times: 3 })("This is a bat!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("a string containing 'is' exactly 3 times")
+    hasExpectedMessageText("a string containing 'is' exactly 3 times")
   ]),
 
   exhibit("when the value does not contain the string only once", () => {
     return isStringContaining("is", { times: 1 })("This is a bat!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("a string containing 'is' exactly 1 time")
+    hasExpectedMessageText("a string containing 'is' exactly 1 time")
   ]),
 
   exhibit("when the expected has regexp special characters in it", () => {
@@ -67,9 +67,22 @@ export default behavior("isStringContaining", [
   exhibit("when the expectation tries to match a negative number of times", () => {
     return isStringContaining("f.sh", { times: -11 })("fish, f.sh, f.sh")
   }).check([
-    outcome("it works just like if the times value were not set", [
-      isValidMatchResult()
-    ])
+    isInvalidMatchResult()
+  ]),
+
+  exhibit("the match count satsifies the given matcher", () => {
+    return isStringContaining("is", { times: isNumberGreaterThan(1) })("This is not a fish!")
+  }).check([
+    isValidMatchResult()
+  ]),
+
+  exhibit("the match count fails to satisfy the given matcher", () => {
+    return isStringContaining("is", { times: isNumberLessThan(2) })("This is not a fish!")
+  }).check([
+    isInvalidMatchResult(),
+    hasMessage("The actual value does not contain the expected string."),
+    hasInvalidActual("This is not a fish!"),
+    hasExpectedMessageText("a string containing 'is' less than 2 times")
   ]),
 
   exhibit("when the actual contains the expected at the beginning of the string", () => {

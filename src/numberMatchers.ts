@@ -40,7 +40,7 @@ function numberMatcher(comparator: NumberComparator, expected: number): Matcher<
     }
     return new Invalid(`The actual value is not ${comparator.name} the expected value.`, {
       actual: invalidActualValue(actual),
-      expected: expectedMessage(`a number ${comparator.name} ${expected}`)
+      expected: expectedMessage(`${comparator.name} ${expected}`)
     })
   }
 }

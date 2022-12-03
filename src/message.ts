@@ -1,7 +1,13 @@
-export function matchCountMessage(expectedTimes: number): string {
-  if (expectedTimes == 1) {
+import { Matcher } from "./matcher"
+
+export function expectedCountMessage(expectedTimes: number | Matcher<number>): string {
+  if (typeof expectedTimes === "number" && expectedTimes == 1) {
     return "exactly 1 time"
   }
 
-  return `exactly ${expectedTimes} times`
+  if (typeof expectedTimes === "number") {
+    return `exactly ${expectedTimes} times`
+  }
+
+  return `%expected% times`
 }

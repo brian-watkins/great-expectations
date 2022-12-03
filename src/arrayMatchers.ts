@@ -1,5 +1,5 @@
 import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
-import { matchCountMessage } from "./message"
+import { expectedCountMessage } from "./message"
 
 export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
   return (actual) => {
@@ -150,8 +150,9 @@ export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContaini
 
     let message = `an array containing`
     if (expectedMatchCount >= 0) {
-      message += ` ${matchCountMessage(expectedMatchCount)}`
+      message += ` ${expectedCountMessage(expectedMatchCount)}`
     }
+    message += " %expected%"
 
     return new Invalid("The array does not contain what was expected.", {
       actual: invalidActualValue(actual),

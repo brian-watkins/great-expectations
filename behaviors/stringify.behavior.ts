@@ -123,7 +123,7 @@ export default behavior("stringify", [
     ]),
 
   exhibit("string an expected message chain", () => {
-    return stringify(expectedMessage("First I did this,", expectedMessage("Then I did this:", unsatisfiedExpectedValue(14))), testFormatter)
+    return stringify(expectedMessage("First I did this, %expected%", expectedMessage("Then I did this: %expected%", unsatisfiedExpectedValue(14))), testFormatter)
   }).check([
     property("it prints the message", (result) => {
       assert.deepEqual(result, "green(<First I did this, Then I did this: 14>)")

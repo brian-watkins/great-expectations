@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior";
 import { isNumberGreaterThanOrEqualTo } from "../src";
-import { exhibit, hasExpectedMessage, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("greaterThanOrEqualTo", [
   
@@ -16,7 +16,7 @@ export default behavior("greaterThanOrEqualTo", [
     isInvalidMatchResult(),
     hasMessage("The actual value is not greater than or equal to the expected value."),
     hasInvalidActual(4),
-    hasExpectedMessage("a number greater than or equal to 10")
+    hasExpectedMessageText("greater than or equal to 10")
   ])
 
 ])

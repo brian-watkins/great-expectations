@@ -1,7 +1,6 @@
 import { behavior } from "esbehavior"
-import { exhibit, hasExpectedMessage, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
+import { exhibit, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 import { isNumberGreaterThan, isNumberLessThanOrEqualTo, isStringWithLength } from "../src/index"
-import { expectedMessage, unsatisfiedExpectedValue } from "../src/matcher"
 
 export default behavior("isStringWithLength", [
 
@@ -35,14 +34,14 @@ export default behavior("isStringWithLength", [
     isInvalidMatchResult(),
     hasMessage("The actual value does not have the expected length."),
     hasInvalidActual("yo yo"),
-    hasExpectedMessage("a string where the length is", unsatisfiedExpectedValue(14))
+    hasExpectedMessageText("a string with length 14")
   ]),
 
   exhibit("a string with a length that fails to match the length matcher", () => {
     return isStringWithLength(isNumberLessThanOrEqualTo(4))("longer")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessage("a string where the length is", expectedMessage("a number less than or equal to 4"))
+    hasExpectedMessageText("a string with length less than or equal to 4")
   ])
 
 ])

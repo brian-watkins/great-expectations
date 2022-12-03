@@ -1,6 +1,6 @@
 import { equals } from "./basicMatchers"
 import { expectedMessage, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
-import { matchCountMessage } from "./message"
+import { expectedCountMessage } from "./message"
 
 
 export function isStringWithLength(expectedOrMatcher: number | Matcher<number>): Matcher<string> {
@@ -14,19 +14,19 @@ export function isStringWithLength(expectedOrMatcher: number | Matcher<number>):
 
     return new Invalid("The actual value does not have the expected length.", {
       actual: invalidActualValue(actual),
-      expected: expectedMessage("a string where the length is", result.values.expected)
+      expected: expectedMessage("a string with length %expected%", result.values.expected)
     })
   }
 }
 
 export interface StringContainingOptions {
   caseSensitive?: boolean
-  times?: number
+  times?: number | Matcher<number>
 }
 
 export function isStringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
   const isCaseSensitive = options.caseSensitive ?? true
-  const matchCount = options.times ?? -1
+  const expectedCount = options.times
 
   return (actual) => {
     let actualValue = actual
@@ -38,26 +38,40 @@ export function isStringContaining(expected: string, options: StringContainingOp
 
     const count = getStringMatchCount(actualValue, expectedValue)
 
-    if ((matchCount < 0 && count > 0) || (matchCount >= 0 && count == matchCount)) {
+    if (!expectedCount) {
+      if (count > 0) {
+        return new Valid()
+      } else {
+        return new Invalid("The actual value does not contain the expected string.", {
+          actual: invalidActualValue(actual),
+          expected: expectedMessage(stringInvalidMessage(expected, { isCaseSensitive }))
+        })
+      }
+    }
+
+    const matcher = typeof expectedCount === "number" ? equals(expectedCount) : expectedCount
+
+    const result = matcher(count)
+    if (result.type === "valid") {
       return new Valid()
     } else {
       return new Invalid("The actual value does not contain the expected string.", {
         actual: invalidActualValue(actual),
-        expected: expectedMessage(stringInvalidMessage(expected, isCaseSensitive, matchCount))
+        expected: expectedMessage(stringInvalidMessage(expected, { isCaseSensitive, expectedCount }), result.values.expected)
       })
     }
   }
 }
 
-function stringInvalidMessage(expected: string, isCaseSensitive: boolean, matchCount: number): string {
+function stringInvalidMessage(expected: string, options: { isCaseSensitive: boolean, expectedCount?: number | Matcher<number> }): string {
   let message = `a string containing '${expected}'`
 
-  if (!isCaseSensitive) {
+  if (!options.isCaseSensitive) {
     message += " (case-insensitive)"
   }
 
-  if (matchCount >= 0) {
-    message += ` ${matchCountMessage(matchCount)}`
+  if (options.expectedCount) {
+    message += ` ${expectedCountMessage(options.expectedCount)}`
   }
 
   return message
