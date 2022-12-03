@@ -5,7 +5,7 @@ export { isArrayContaining, isArrayWithLength, isArrayWhere } from "./arrayMatch
 export type { ArrayContainingOptions, ArrayWhereOptions } from "./arrayMatchers"
 export { isStringContaining } from "./stringMatchers"
 export type { StringContainingOptions } from "./stringMatchers"
-export { isNumberLessThan } from "./numberMatchers"
+export { isNumberLessThan, isNumberLessThanOrEqualTo } from "./numberMatchers"
 
 export function expect<T>(value: T, matcher: Matcher<T>): void {
   const matchResult = matcher(value)
