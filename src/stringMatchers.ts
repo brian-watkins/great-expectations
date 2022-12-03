@@ -1,5 +1,23 @@
+import { equals } from "./basicMatchers"
 import { expectedMessage, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
 import { matchCountMessage } from "./message"
+
+
+export function isStringWithLength(expectedOrMatcher: number | Matcher<number>): Matcher<string> {
+  const matcher = typeof expectedOrMatcher === "number" ? equals(expectedOrMatcher) : expectedOrMatcher
+
+  return (actual) => {
+    const result = matcher(actual.length)
+    if (result.type === "valid") {
+      return new Valid()
+    }
+
+    return new Invalid("The actual value does not have the expected length.", {
+      actual: invalidActualValue(actual),
+      expected: expectedMessage("a string where the length is", result.values.expected)
+    })
+  }
+}
 
 export interface StringContainingOptions {
   caseSensitive?: boolean

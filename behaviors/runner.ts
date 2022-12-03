@@ -10,6 +10,7 @@ import numberLessThanBehavior from "./numberLessThan.behavior";
 import numberLessThanOrEqualToBehavior from "./numberLessThanOrEqualTo.behavior";
 import numberGreaterThanBehavior from "./numberGreaterThan.behavior";
 import numberGreaterThanOrEqualToBehavior from "./numberGreaterThanOrEqualTo.behavior";
+import isStringWithLengthBehavior from "./isStringWithLength.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -18,6 +19,7 @@ validate([
   isArrayWhereBehavior,
   isArrayContainingBehavior,
   isStringContainingBehavior,
+  isStringWithLengthBehavior,
   stringifyBehavior,
   numberLessThanBehavior,
   numberLessThanOrEqualToBehavior,
