@@ -9,6 +9,7 @@ import isArrayContainingBehavior from "./isArrayContaining.behavior";
 import numberLessThanBehavior from "./numberLessThan.behavior";
 import numberLessThanOrEqualToBehavior from "./numberLessThanOrEqualTo.behavior";
 import numberGreaterThanBehavior from "./numberGreaterThan.behavior";
+import numberGreaterThanOrEqualToBehavior from "./numberGreaterThanOrEqualTo.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -20,7 +21,8 @@ validate([
   stringifyBehavior,
   numberLessThanBehavior,
   numberLessThanOrEqualToBehavior,
-  numberGreaterThanBehavior
+  numberGreaterThanBehavior,
+  numberGreaterThanOrEqualToBehavior
 ], {
   failFast: true
 })
