@@ -16,7 +16,7 @@ export default behavior("greaterThan", [
     isInvalidMatchResult(),
     hasMessage("The actual value is not greater than the expected value."),
     hasInvalidActual(4),
-    hasExpectedMessageText("greater than 10")
+    hasExpectedMessageText("a number greater than 10")
   ])
 
 ])

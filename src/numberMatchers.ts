@@ -1,4 +1,4 @@
-import { expectedMessage, Invalid, invalidActualValue, Matcher, Valid } from "./matcher";
+import { expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher";
 
 interface NumberComparator {
   name: string
@@ -40,7 +40,9 @@ function numberMatcher(comparator: NumberComparator, expected: number): Matcher<
     }
     return new Invalid(`The actual value is not ${comparator.name} the expected value.`, {
       actual: invalidActualValue(actual),
-      expected: expectedMessage(`${comparator.name} ${expected}`)
+      operator: comparator.name,
+      argument: expected,
+      expected: expectedMessage(`a number ${comparator.name} %expected%`, expectedValue(expected)),
     })
   }
 }

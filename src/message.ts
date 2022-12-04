@@ -1,13 +1,25 @@
-import { Matcher } from "./matcher"
+import { Expected, expectedMessage, expectedValue, MatchValues } from "./matcher"
 
-export function expectedCountMessage(expectedTimes: number | Matcher<number>): string {
-  if (typeof expectedTimes === "number" && expectedTimes == 1) {
-    return "exactly 1 time"
+export function expectedCountMessage(values: MatchValues): Expected {
+  if (isEqualityOperator(values) && values.argument == 1) {
+    return expectedMessage("exactly %expected% time", expectedValue(1))
   }
 
-  if (typeof expectedTimes === "number") {
-    return `exactly ${expectedTimes} times`
+  if (isEqualityOperator(values)) {
+    return expectedMessage("exactly %expected% times", expectedValue(values.argument))
   }
 
-  return `%expected% times`
+  return expectedMessage(`${values.operator} %expected% times`, expectedValue(values.argument))
+}
+
+export function expectedLengthMessage(values: MatchValues): Expected {
+  if (isEqualityOperator(values)) {
+    return expectedValue(values.argument)
+  }
+
+  return expectedMessage(`${values.operator} %expected%`, expectedValue(values.argument))
+}
+
+function isEqualityOperator(values: MatchValues): boolean {
+  return values.operator === "equals" || values.operator === "identical to"
 }

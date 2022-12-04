@@ -1,5 +1,7 @@
+import { equals } from "./basicMatchers"
 import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
 import { expectedCountMessage } from "./message"
+import { isNumberGreaterThan } from "./numberMatchers"
 
 export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
   return (actual) => {
@@ -8,6 +10,8 @@ export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> 
     } else {
       return new Invalid(`The array length (${actual.length}) is unexpected.`, {
         actual: invalidActualValue(actual),
+        operator: "array length",
+        argument: expectedLength,
         expected: expectedMessage(`an array with length ${expectedLength}`)
       })
     }
@@ -59,6 +63,8 @@ function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
     if (errorMessages.length > 0) {
       return new Invalid(`The array failed to match:\n\n${errorMessages.map(e => `  at Actual[${e.index}]: ${e.message}`).join("\n\n")}`, {
         actual: actualValue(actualValues),
+        operator: "array where ordered",
+        argument: matchers,
         expected: expectedValue(expected)
       })
     } else {
@@ -105,6 +111,8 @@ function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>
       })
       return new Invalid("The array failed to match.", {
         actual: actualValue(actualValues),
+        operator: "array where unordered",
+        argument: matchers,
         expected: expectedValue(accumulatedResult.expected)
       })
     }
@@ -119,11 +127,11 @@ interface ArrayMatchMessage {
 }
 
 export interface ArrayContainingOptions {
-  times?: number
+  times?: number | Matcher<number>
 }
 
 export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
-  const expectedMatchCount = options.times ?? -1
+  const expectedMatchCount = options.times
 
   return (actual) => {
     let invalidMatch: Invalid | undefined
@@ -140,23 +148,29 @@ export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContaini
       }
     }
 
-    if (expectedMatchCount < 0 && matchedCount > 0) {
-      return new Valid()
+    let countMatcher: Matcher<number>
+    if (expectedMatchCount === undefined) {
+      countMatcher = isNumberGreaterThan(0)
+    } else if (typeof expectedMatchCount === "number") {
+      countMatcher = equals(expectedMatchCount)
+    } else {
+      countMatcher = expectedMatchCount
     }
 
-    if (expectedMatchCount >= 0 && matchedCount == expectedMatchCount) {
-      return new Valid()
+    const countResult = countMatcher(matchedCount)
+    if (countResult.type === "valid") {
+      return countResult
     }
 
-    let message = `an array containing`
-    if (expectedMatchCount >= 0) {
-      message += ` ${expectedCountMessage(expectedMatchCount)}`
-    }
-    message += " %expected%"
+    const message = (expectedMatchCount === undefined)
+      ? expectedMessage("an array containing %expected%", invalidMatch?.values.expected)
+      : expectedMessage("an array containing, %expected%, %expected%", expectedCountMessage(countResult.values), invalidMatch?.values.expected)
 
     return new Invalid("The array does not contain what was expected.", {
       actual: invalidActualValue(actual),
-      expected: expectedMessage(message, invalidMatch?.values.expected)
+      operator: "array contains",
+      argument: matcher,
+      expected: message
     })
   }
 }

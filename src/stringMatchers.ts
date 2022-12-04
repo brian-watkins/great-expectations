@@ -1,6 +1,7 @@
 import { equals } from "./basicMatchers"
-import { expectedMessage, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
-import { expectedCountMessage } from "./message"
+import { Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
+import { expectedCountMessage, expectedLengthMessage } from "./message"
+import { isNumberGreaterThan } from "./numberMatchers"
 
 
 export function isStringWithLength(expectedOrMatcher: number | Matcher<number>): Matcher<string> {
@@ -14,7 +15,9 @@ export function isStringWithLength(expectedOrMatcher: number | Matcher<number>):
 
     return new Invalid("The actual value does not have the expected length.", {
       actual: invalidActualValue(actual),
-      expected: expectedMessage("a string with length %expected%", result.values.expected)
+      operator: "string length",
+      argument: expectedOrMatcher,
+      expected: expectedMessage(`a string with length %expected%`, expectedLengthMessage(result.values))
     })
   }
 }
@@ -29,49 +32,54 @@ export function isStringContaining(expected: string, options: StringContainingOp
   const expectedCount = options.times
 
   return (actual) => {
-    let actualValue = actual
-    let expectedValue = expected
+    let actualString = actual
+    let expectedString = expected
     if (!isCaseSensitive) {
-      actualValue = actual.toLowerCase()
-      expectedValue = expected.toLowerCase()
+      actualString = actual.toLowerCase()
+      expectedString = expected.toLowerCase()
     }
 
-    const count = getStringMatchCount(actualValue, expectedValue)
+    const count = getStringMatchCount(actualString, expectedString)
 
-    if (!expectedCount) {
-      if (count > 0) {
-        return new Valid()
-      } else {
-        return new Invalid("The actual value does not contain the expected string.", {
-          actual: invalidActualValue(actual),
-          expected: expectedMessage(stringInvalidMessage(expected, { isCaseSensitive }))
-        })
-      }
-    }
-
-    const matcher = typeof expectedCount === "number" ? equals(expectedCount) : expectedCount
-
-    const result = matcher(count)
-    if (result.type === "valid") {
-      return new Valid()
+    let countMatcher: Matcher<number>
+    if (expectedCount === undefined) {
+      countMatcher = isNumberGreaterThan(0)
+    } else if (typeof expectedCount === "number") {
+      countMatcher = equals(expectedCount)
     } else {
-      return new Invalid("The actual value does not contain the expected string.", {
-        actual: invalidActualValue(actual),
-        expected: expectedMessage(stringInvalidMessage(expected, { isCaseSensitive, expectedCount }), result.values.expected)
-      })
+      countMatcher = expectedCount
     }
+
+    const countResult = countMatcher(count)
+    if (countResult.type === "valid") {
+      return new Valid()
+    }
+
+    let message: Expected
+    if (expectedCount === undefined) {
+      message = expectedMessage(stringInvalidMessage(isCaseSensitive), expectedValue(expected))
+    } else {
+      message = expectedMessage(`${stringInvalidMessage(isCaseSensitive)} %expected%`, expectedValue(expected), expectedCountMessage(countResult.values))
+    }
+
+    return new Invalid("The actual value does not contain the expected string.", {
+      actual: invalidActualValue(actual),
+      operator: containsOperatorName(isCaseSensitive),
+      argument: expected,
+      expected: message
+    })
   }
 }
 
-function stringInvalidMessage(expected: string, options: { isCaseSensitive: boolean, expectedCount?: number | Matcher<number> }): string {
-  let message = `a string containing '${expected}'`
+function containsOperatorName(isCaseSensitive: boolean): string {
+  return `${isCaseSensitive ? "case-sensitive" : "case-insensitive"} contains`
+}
 
-  if (!options.isCaseSensitive) {
+function stringInvalidMessage(isCaseSensitive: boolean): string {
+  let message = `a string containing %expected%`
+
+  if (!isCaseSensitive) {
     message += " (case-insensitive)"
-  }
-
-  if (options.expectedCount) {
-    message += ` ${expectedCountMessage(options.expectedCount)}`
   }
 
   return message

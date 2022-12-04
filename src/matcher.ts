@@ -21,7 +21,7 @@ export interface UnsatisfiedExpectedValue {
 export interface ExpectedMessage {
   type: "expected-message"
   message: string
-  next: Expected | undefined
+  next: Array<Expected>
 }
 
 export type Expected = ExpectedValue | UnsatisfiedExpectedValue | ExpectedMessage
@@ -40,11 +40,11 @@ export function unsatisfiedExpectedValue(value: any): Expected {
   }
 }
 
-export function expectedMessage(message: string, next?: Expected): Expected {
+export function expectedMessage(message: string, ...next: Array<Expected | undefined>): Expected {
   return {
     type: "expected-message",
     message: `${message}`,
-    next
+    next: next.filter(val => val !== undefined) as Array<Expected>
   }
 }
 
@@ -76,6 +76,8 @@ export function invalidActualValue(value: any): Actual {
 
 export interface MatchValues {
   actual: Actual
+  operator: string
+  argument: any
   expected: Expected
 }
 
