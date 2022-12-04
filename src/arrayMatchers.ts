@@ -1,18 +1,22 @@
 import { equals } from "./basicMatchers"
 import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, MatchValues, Valid } from "./matcher"
-import { expectedCountMessage } from "./message"
+import { expectedCountMessage, expectedLengthMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
-export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
+export function isArrayWithLength<T>(expectedLengthOrMatcher: number | Matcher<number>): Matcher<Array<T>> {
+  const matcher = typeof expectedLengthOrMatcher === "number" ? equals(expectedLengthOrMatcher) : expectedLengthOrMatcher
+
   return (actual) => {
+    const result = matcher(actual.length)
+
     const values = {
       actual: actualValue(actual),
       operator: "array length",
-      argument: expectedLength,
-      expected: expectedMessage(`an array with length ${expectedLength}`)
+      argument: expectedLengthOrMatcher,
+      expected: expectedMessage("an array with length %expected%", expectedLengthMessage(result.values))
     }
 
-    if (actual.length === expectedLength) {
+    if (result.type === "valid") {
       return new Valid(values)
     } else {
       values.actual = invalidActualValue(actual)
