@@ -1,5 +1,14 @@
+export interface MatchValues {
+  actual: Actual
+  operator: string
+  argument: any
+  expected: Expected
+}
+
 export class Valid {
   public type: "valid" = "valid"
+
+  constructor(public values: MatchValues) {}
 }
 
 export class Invalid {
@@ -7,6 +16,11 @@ export class Invalid {
   
   constructor(public description: string, public values: MatchValues) {}
 }
+
+export type MatchResult = Valid | Invalid
+
+export type Matcher<T> = (actual: T) => MatchResult
+
 
 export interface ExpectedValue {
   type: "expected-value"
@@ -73,14 +87,3 @@ export function invalidActualValue(value: any): Actual {
     value
   }
 }
-
-export interface MatchValues {
-  actual: Actual
-  operator: string
-  argument: any
-  expected: Expected
-}
-
-export type MatchResult = Valid | Invalid
-
-export type Matcher<T> = (actual: T) => MatchResult

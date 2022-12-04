@@ -1,5 +1,5 @@
 import { equals } from "./basicMatchers"
-import { Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
+import { actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
 import { expectedCountMessage, expectedLengthMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
@@ -9,16 +9,20 @@ export function isStringWithLength(expectedOrMatcher: number | Matcher<number>):
 
   return (actual) => {
     const result = matcher(actual.length)
-    if (result.type === "valid") {
-      return new Valid()
-    }
 
-    return new Invalid("The actual value does not have the expected length.", {
-      actual: invalidActualValue(actual),
+    const values = {
+      actual: actualValue(actual),
       operator: "string length",
       argument: expectedOrMatcher,
       expected: expectedMessage(`a string with length %expected%`, expectedLengthMessage(result.values))
-    })
+    }
+
+    if (result.type === "valid") {
+      return new Valid(values)
+    } else {
+      values.actual = invalidActualValue(actual)
+      return new Invalid("The actual value does not have the expected length.", values)
+    }
   }
 }
 
@@ -51,10 +55,7 @@ export function isStringContaining(expected: string, options: StringContainingOp
     }
 
     const countResult = countMatcher(count)
-    if (countResult.type === "valid") {
-      return new Valid()
-    }
-
+    
     let message: Expected
     if (expectedCount === undefined) {
       message = expectedMessage(stringInvalidMessage(isCaseSensitive), expectedValue(expected))
@@ -62,12 +63,19 @@ export function isStringContaining(expected: string, options: StringContainingOp
       message = expectedMessage(`${stringInvalidMessage(isCaseSensitive)} %expected%`, expectedValue(expected), expectedCountMessage(countResult.values))
     }
 
-    return new Invalid("The actual value does not contain the expected string.", {
-      actual: invalidActualValue(actual),
+    const values = {
+      actual: actualValue(actual),
       operator: containsOperatorName(isCaseSensitive),
       argument: expected,
       expected: message
-    })
+    }
+
+    if (countResult.type === "valid") {
+      return new Valid(values)
+    } else {
+      values.actual = invalidActualValue(actual)
+      return new Invalid("The actual value does not contain the expected string.", values)
+    }
   }
 }
 

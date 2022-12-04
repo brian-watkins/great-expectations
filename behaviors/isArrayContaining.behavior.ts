@@ -65,6 +65,15 @@ export default behavior("isArrayContaining", [
     hasMessage("The array does not contain what was expected."),
     hasInvalidActual([4, 4, 4, 4, 16]),
     hasExpectedMessageText("an array containing, less than 3 times, a number less than or equal to 4")
+  ]),
+
+  exhibit("the array matches on all elements but fails to satisfy the times matcher", () => {
+    return isArrayContaining(isNumberLessThanOrEqualTo(4), { times: 3 })([4, 4, 4, 4, 1])
+  }).check([
+    isInvalidMatchResult(),
+    hasMessage("The array does not contain what was expected."),
+    hasInvalidActual([4, 4, 4, 4, 1]),
+    hasExpectedMessageText("an array containing, exactly 3 times, a number less than or equal to 4")
   ])
-  
+
 ])

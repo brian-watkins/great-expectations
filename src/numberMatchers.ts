@@ -1,4 +1,4 @@
-import { expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher";
+import { actualValue, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher";
 
 interface NumberComparator {
   name: string
@@ -35,14 +35,18 @@ export function isNumberGreaterThanOrEqualTo(expected: number): Matcher<number> 
 
 function numberMatcher(comparator: NumberComparator, expected: number): Matcher<number> {
   return (actual) => {
-    if (comparator.matches(expected, actual)) {
-      return new Valid()
-    }
-    return new Invalid(`The actual value is not ${comparator.name} the expected value.`, {
-      actual: invalidActualValue(actual),
+    const values = {
+      actual: actualValue(actual),
       operator: comparator.name,
       argument: expected,
-      expected: expectedMessage(`a number ${comparator.name} %expected%`, expectedValue(expected)),
-    })
+      expected: expectedMessage(`a number ${comparator.name} %expected%`, expectedValue(expected))
+    }
+
+    if (comparator.matches(expected, actual)) {
+      return new Valid(values)
+    } else {
+      values.actual = invalidActualValue(actual)
+      return new Invalid(`The actual value is not ${comparator.name} the expected value.`, values)
+    }
   }
 }
