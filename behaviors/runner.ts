@@ -11,6 +11,7 @@ import numberLessThanOrEqualToBehavior from "./numberLessThanOrEqualTo.behavior"
 import numberGreaterThanBehavior from "./numberGreaterThan.behavior";
 import numberGreaterThanOrEqualToBehavior from "./numberGreaterThanOrEqualTo.behavior";
 import isStringWithLengthBehavior from "./isStringWithLength.behavior";
+import satisfyingAllBehavior from "./satisfyingAll.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -24,7 +25,8 @@ validate([
   numberLessThanBehavior,
   numberLessThanOrEqualToBehavior,
   numberGreaterThanBehavior,
-  numberGreaterThanOrEqualToBehavior
+  numberGreaterThanOrEqualToBehavior,
+  satisfyingAllBehavior
 ], {
   failFast: true
 })
