@@ -1,5 +1,5 @@
 import { ANSIFormatter, Formatter } from "./formatter"
-import { ActualValue, Expected, ExpectedMessage, ExpectedValue, InvalidActualValue, UnsatisfiedExpectedValue } from "./matcher"
+import { ActualValue, Expected, Description, ExpectedValue, InvalidActualValue, UnsatisfiedExpectedValue } from "./matcher"
 
 export function stringify(val: any, formatter: Formatter = ANSIFormatter): string {
   const stringifyWithFormatter = (val: any) => stringify(val, formatter)
@@ -20,7 +20,7 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
         return stringify(val.value, formatter)
       } else if (isUnsatisfiedExpectedValue(val)) {
         return formatter.green(stringify(val.value, formatter))
-      } else if (isExpectedMessage(val)) {
+      } else if (isDescription(val)) {
         if (val.next.length > 0) {
           const message = replaceMessage(formatter, val.message, val.next)
           return formatter.info(message)
@@ -45,7 +45,7 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
   }
 }
 
-function replaceMessage(formatter: Formatter, text: string, expecteds: Array<Expected | ExpectedMessage>): string {
+function replaceMessage(formatter: Formatter, text: string, expecteds: Array<Expected | Description>): string {
   if (expecteds.length == 0) {
     return text
   }
@@ -71,8 +71,8 @@ function isUnsatisfiedExpectedValue(val: any): val is UnsatisfiedExpectedValue {
   return ("type" in val && val.type === "unsatisfied-expected-value")
 }
 
-function isExpectedMessage(val: any): val is ExpectedMessage {
-  return ("type" in val && val.type === "expected-message")
+function isDescription(val: any): val is Description {
+  return ("type" in val && val.type === "description")
 }
 
 function isActualValue(val: any): val is ActualValue {

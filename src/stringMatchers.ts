@@ -1,5 +1,5 @@
 import { equals } from "./basicMatchers"
-import { actualValue, ExpectedMessage, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, unsatisfiedExpectedValue, Valid } from "./matcher"
+import { actualValue, Description, description, expectedValue, Invalid, invalidActualValue, Matcher, unsatisfiedExpectedValue, Valid } from "./matcher"
 import { expectedCountMessage, expectedLengthMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
@@ -10,7 +10,7 @@ export function isStringWithLength(expectedOrMatcher: number | Matcher<number>):
   return (actual) => {
     const result = matcher(actual.length)
 
-    const message = expectedMessage(`a string with length %expected%`, expectedLengthMessage(result.values))
+    const message = description(`a string with length %expected%`, expectedLengthMessage(result.values))
 
     const values = {
       actual: actualValue(actual),
@@ -58,11 +58,11 @@ export function isStringContaining(expected: string, options: StringContainingOp
 
     const countResult = countMatcher(count)
     
-    let message: ExpectedMessage
+    let message: Description
     if (expectedCount === undefined) {
-      message = expectedMessage(stringInvalidMessage(isCaseSensitive), unsatisfiedExpectedValue(expected))
+      message = description(stringInvalidMessage(isCaseSensitive), unsatisfiedExpectedValue(expected))
     } else {
-      message = expectedMessage(`${stringInvalidMessage(isCaseSensitive)} %expected%`, unsatisfiedExpectedValue(expected), expectedCountMessage(countResult.values))
+      message = description(`${stringInvalidMessage(isCaseSensitive)} %expected%`, unsatisfiedExpectedValue(expected), expectedCountMessage(countResult.values))
     }
 
     const values = {

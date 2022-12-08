@@ -1,5 +1,5 @@
 import { equals } from "./basicMatchers"
-import { Actual, actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, MatchValues, Valid } from "./matcher"
+import { Actual, actualValue, Expected, description, expectedValue, Invalid, invalidActualValue, Matcher, MatchValues, Valid } from "./matcher"
 import { expectedCountMessage, expectedLengthMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
@@ -9,7 +9,7 @@ export function isArrayWithLength<T>(expectedLengthOrMatcher: number | Matcher<n
   return (actual) => {
     const result = matcher(actual.length)
 
-    const message = expectedMessage("an array with length %expected%", expectedLengthMessage(result.values))
+    const message = description("an array with length %expected%", expectedLengthMessage(result.values))
 
     const values = {
       actual: actualValue(actual),
@@ -170,8 +170,8 @@ export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContaini
     const countResult = countMatcher(matchedCount)
 
     const message = (expectedMatchCount === undefined)
-      ? expectedMessage("an array containing %expected%", matchValues?.expected)
-      : expectedMessage("an array containing, %expected%, %expected%", expectedCountMessage(countResult.values), matchValues?.expected)
+      ? description("an array containing %expected%", matchValues?.expected)
+      : description("an array containing, %expected%, %expected%", expectedCountMessage(countResult.values), matchValues?.expected)
 
     const values = {
       actual: actualValue(actual),
