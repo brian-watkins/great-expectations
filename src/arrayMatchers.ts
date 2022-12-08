@@ -1,5 +1,5 @@
 import { equals } from "./basicMatchers"
-import { Actual, actualValue, Expected, description, expectedValue, Invalid, invalidActualValue, Matcher, MatchValues, Valid } from "./matcher"
+import { Actual, actualValue, Expected, description, expectedValue, Invalid, invalidActualValue, Matcher, MatchValues, Valid, unsatisfiedExpectedValue } from "./matcher"
 import { expectedCountMessage, expectedLengthMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
@@ -22,6 +22,7 @@ export function isArrayWithLength<T>(expectedLengthOrMatcher: number | Matcher<n
       return new Valid(values)
     } else {
       values.actual = invalidActualValue(actual)
+      values.expected = unsatisfiedExpectedValue(message)
       return new Invalid(`The array length (${actual.length}) is unexpected.`, values)
     }
   }
@@ -184,6 +185,7 @@ export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContaini
       return new Valid(values)
     } else {
       values.actual = invalidActualValue(actual)
+      values.expected = unsatisfiedExpectedValue(message)
       return new Invalid("The array does not contain what was expected.", values)
     }
   }

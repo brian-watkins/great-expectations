@@ -23,6 +23,7 @@ export function isStringWithLength(expectedOrMatcher: number | Matcher<number>):
       return new Valid(values)
     } else {
       values.actual = invalidActualValue(actual)
+      values.expected = unsatisfiedExpectedValue(message)
       return new Invalid("The actual value does not have the expected length.", values)
     }
   }
@@ -60,9 +61,9 @@ export function isStringContaining(expected: string, options: StringContainingOp
     
     let message: Description
     if (expectedCount === undefined) {
-      message = description(stringInvalidMessage(isCaseSensitive), unsatisfiedExpectedValue(expected))
+      message = description(stringInvalidMessage(isCaseSensitive), expectedValue(expected))
     } else {
-      message = description(`${stringInvalidMessage(isCaseSensitive)} %expected%`, unsatisfiedExpectedValue(expected), expectedCountMessage(countResult.values))
+      message = description(`${stringInvalidMessage(isCaseSensitive)} %expected%`, expectedValue(expected), expectedCountMessage(countResult.values))
     }
 
     const values = {
@@ -76,6 +77,7 @@ export function isStringContaining(expected: string, options: StringContainingOp
       return new Valid(values)
     } else {
       values.actual = invalidActualValue(actual)
+      values.expected = unsatisfiedExpectedValue(message)
       return new Invalid("The actual value does not contain the expected string.", values)
     }
   }

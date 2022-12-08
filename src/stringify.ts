@@ -1,4 +1,4 @@
-import { ANSIFormatter, Formatter } from "./formatter"
+import { ANSIFormatter, Formatter, noColorFormatter, noInfoFormatter } from "./formatter"
 import { ActualValue, Expected, Description, ExpectedValue, InvalidActualValue, UnsatisfiedExpectedValue } from "./matcher"
 
 export function stringify(val: any, formatter: Formatter = ANSIFormatter): string {
@@ -19,7 +19,7 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
       } else if (isExpectedValue(val)) {
         return stringify(val.value, formatter)
       } else if (isUnsatisfiedExpectedValue(val)) {
-        return formatter.green(stringify(val.value, formatter))
+        return formatter.green(stringify(val.value, noColorFormatter(formatter)))
       } else if (isDescription(val)) {
         if (val.next.length > 0) {
           const message = replaceMessage(formatter, val.message, val.next)
@@ -54,13 +54,6 @@ function replaceMessage(formatter: Formatter, text: string, expecteds: Array<Exp
   const replaced = text.replace("%expected%", stringify(first, noInfoFormatter(formatter)))
 
   return replaceMessage(formatter, replaced, rest)
-}
-
-function noInfoFormatter(formatter: Formatter): Formatter {
-  return {
-    ...formatter,
-    info: (message) => message,
-  }
 }
 
 function isExpectedValue(val: any): val is ExpectedValue {

@@ -35,18 +35,19 @@ export function isNumberGreaterThanOrEqualTo(expected: number): Matcher<number> 
 
 function numberMatcher(comparator: NumberComparator, expected: number): Matcher<number> {
   return (actual) => {
+    const message = description(`a number ${comparator.name} %expected%`, expectedValue(expected))
     const values = {
       actual: actualValue(actual),
       operator: comparator.name,
       argument: expected,
-      expected: expectedValue(description(`a number %expected%`, expectedValue(description(`${comparator.name} %expected%`, expectedValue(expected)))))
+      expected: expectedValue(message)
     }
 
     if (comparator.matches(expected, actual)) {
       return new Valid(values)
     } else {
       values.actual = invalidActualValue(actual)
-      values.expected = expectedValue(description(`a number %expected%`, unsatisfiedExpectedValue(description(`${comparator.name} %expected%`, expectedValue(expected)))))
+      values.expected = unsatisfiedExpectedValue(message)
       return new Invalid(`The actual value is not ${comparator.name} the expected value.`, values)
     }
   }

@@ -14,7 +14,7 @@ export function satisfyingAll<T>(matchers: Array<Matcher<T>>): Matcher<T> {
 
     let message = "a value that satisfies all of:"
     for (let i = 0; i < matchers.length; i++) {
-      message += "\n  ~ %expected%"
+      message += "\n  • %expected%"
     }
 
     const values = {
