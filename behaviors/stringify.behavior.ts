@@ -1,9 +1,8 @@
 import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify";
-import { exhibit, property } from "./helpers";
+import { exhibit, property, testFormatter } from "./helpers";
 import { strict as assert } from "node:assert"
 import { actualValue, expectedMessage, expectedValue, invalidActualValue, unsatisfiedExpectedValue } from "../src/matcher";
-import { Formatter } from "../src/formatter";
 
 export default behavior("stringify", [
 
@@ -91,6 +90,14 @@ export default behavior("stringify", [
       })
     ]),
 
+  exhibit("stringify an object with an expected message", () => {
+    return stringify({ name: "something", message: expectedMessage("some message") }, testFormatter)
+  }).check([
+    property("it recursively prints the message with the given formatter", (result) => {
+      assert.deepEqual(result, "{\n  name: \"something\",\n  message: <some message>\n}")
+    })
+  ]),
+
   exhibit("stringify a nested expected value", () => {
     return stringify(expectedValue([
       expectedValue(1),
@@ -113,45 +120,61 @@ export default behavior("stringify", [
       })
     ]),
 
-  exhibit("stringify an expected message", () => {
-    return stringify(expectedMessage("You failed!"), testFormatter)
+  exhibit("stringify an expected message value", () => {
+    return stringify(expectedValue(expectedMessage("You failed!")), testFormatter)
   })
     .check([
       property("it prints the message", (result) => {
-        assert.deepEqual(result, "green(<You failed!>)")
+        assert.deepEqual(result, "<You failed!>")
       })
     ]),
 
-  exhibit("string an expected message chain", () => {
-    return stringify(expectedMessage("First I did this, %expected%", expectedMessage("Then I did this: %expected%", unsatisfiedExpectedValue(14))), testFormatter)
+  exhibit("stringify an unsatisfied expected message chain", () => {
+    return stringify(unsatisfiedExpectedValue(expectedMessage("First I did this, %expected%", expectedMessage("Then I did this: %expected%", expectedValue(14)))), testFormatter)
   }).check([
     property("it prints the message", (result) => {
       assert.deepEqual(result, "green(<First I did this, Then I did this: 14>)")
     })
   ]),
 
-  exhibit("stringify an actual value", () => {
-      return stringify(actualValue("OK"))
+  exhibit("stringify expected value with message that contains unsatisfied expected messages", () => {
+    return stringify(expectedValue(expectedMessage("Two things: (1) %expected% and (2) %expected%", expectedValue(expectedMessage("a thing")), unsatisfiedExpectedValue(expectedMessage("another thing")))), testFormatter)
+  }).check([
+    property("it prints the message with the proper formatting", (result) => {
+      assert.deepEqual(result, "<Two things: (1) a thing and (2) green(another thing)>")
     })
-      .check([
-        property("it prints the value", (result) => {
-          assert.deepEqual(result, "\"OK\"")
-        })
-      ]),
+  ]),
+
+  exhibit("stringify an actual value", () => {
+    return stringify(actualValue("OK"))
+  }).check([
+    property("it prints the value", (result) => {
+      assert.deepEqual(result, "\"OK\"")
+    })
+  ]),
+
+  exhibit("stringify actual value message", () => {
+    return stringify(actualValue(expectedMessage("Message")), testFormatter)
+  }).check([
+    property("it recursively prints the value with the given formatter", (result) => {
+      assert.deepEqual(result, "<Message>")
+    })
+  ]),
 
   exhibit("stringify an invalid actual value", () => {
     return stringify(invalidActualValue("WRONG"), testFormatter)
-  })
-    .check([
-      property("it prints the value", (result) => {
-        assert.deepEqual(result, "red(\"WRONG\")")
-      })
-    ])
+  }).check([
+    property("it prints the value", (result) => {
+      assert.deepEqual(result, "red(\"WRONG\")")
+    })
+  ]),
+
+  exhibit("stringify an invalid actual value message", () => {
+    return stringify(invalidActualValue(expectedMessage("some message")), testFormatter)
+  }).check([
+    property("it prints the value", (result) => {
+      assert.deepEqual(result, "red(<some message>)")
+    })
+  ])
 
 ])
-
-const testFormatter: Formatter = {
-  info: (message) => `<${message}>`,
-  red: (message) => `red(${message})`,
-  green: (message) => `green(${message})`
-}

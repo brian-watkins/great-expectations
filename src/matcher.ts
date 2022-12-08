@@ -35,10 +35,10 @@ export interface UnsatisfiedExpectedValue {
 export interface ExpectedMessage {
   type: "expected-message"
   message: string
-  next: Array<Expected>
+  next: Array<Expected | ExpectedMessage>
 }
 
-export type Expected = ExpectedValue | UnsatisfiedExpectedValue | ExpectedMessage
+export type Expected = ExpectedValue | UnsatisfiedExpectedValue
 
 export function expectedValue(value: any): Expected {
   return {
@@ -54,11 +54,11 @@ export function unsatisfiedExpectedValue(value: any): Expected {
   }
 }
 
-export function expectedMessage(message: string, ...next: Array<Expected | undefined>): Expected {
+export function expectedMessage(message: string, ...next: Array<Expected | ExpectedMessage | undefined>): ExpectedMessage {
   return {
     type: "expected-message",
     message: `${message}`,
-    next: next.filter(val => val !== undefined) as Array<Expected>
+    next: next.filter(val => val !== undefined) as Array<Expected | ExpectedMessage>
   }
 }
 

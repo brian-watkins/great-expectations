@@ -21,7 +21,7 @@ export default behavior("isArrayWhere", [
     isInvalidMatchResult(),
     hasMessage("The array length (2) is unexpected."),
     hasInvalidActual([1, 2]),
-    hasExpectedMessageText("an array with length 3")
+    hasExpectedMessageText("<an array with length green(3)>")
   ]),
 
   exhibit("the array fails to match at an item", () => {

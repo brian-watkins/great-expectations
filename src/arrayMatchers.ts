@@ -9,11 +9,13 @@ export function isArrayWithLength<T>(expectedLengthOrMatcher: number | Matcher<n
   return (actual) => {
     const result = matcher(actual.length)
 
+    const message = expectedMessage("an array with length %expected%", expectedLengthMessage(result.values))
+
     const values = {
       actual: actualValue(actual),
       operator: "array length",
       argument: expectedLengthOrMatcher,
-      expected: expectedMessage("an array with length %expected%", expectedLengthMessage(result.values))
+      expected: expectedValue(message)
     }
 
     if (result.type === "valid") {
@@ -175,7 +177,7 @@ export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContaini
       actual: actualValue(actual),
       operator: "array contains",
       argument: matcher,
-      expected: message
+      expected: expectedValue(message)
     }
 
     if (countResult.type === "valid") {

@@ -25,13 +25,3 @@ export const ANSIFormatter: Formatter = {
   red,
   green
 }
-
-function identity(message: string): string {
-  return message
-}
-
-export const IdentityFormatter: Formatter = {
-  info: identity,
-  red: identity,
-  green: identity
-}

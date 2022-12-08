@@ -16,7 +16,7 @@ export default behavior("lessThan", [
     isInvalidMatchResult(),
     hasMessage("The actual value is not less than the expected value."),
     hasInvalidActual(20),
-    hasExpectedMessageText("a number less than 10")
+    hasExpectedMessageText("<a number green(less than 10)>")
   ])
 
 ])

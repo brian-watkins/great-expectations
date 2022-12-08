@@ -1,6 +1,6 @@
 import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
-import { IdentityFormatter } from "../src/formatter";
+import { Formatter } from "../src/formatter";
 import { Actual, actualValue, Expected, expectedValue, Invalid, invalidActualValue, MatchResult, unsatisfiedExpectedValue, Valid } from "../src/matcher";
 import { stringify } from "../src/stringify";
 
@@ -88,7 +88,7 @@ export function hasUnsatisfiedExpectedValue(value: any): Property<MatchResult> {
 export function hasExpectedMessageText(message: string): Property<MatchResult> {
   return property("a message explaining the expectation is shown", (result) => {
     if (assertIsInvalidMatch(result)) {
-      assert.deepEqual(stringify(result.values.expected, IdentityFormatter), message)      
+      assert.deepEqual(stringify(result.values.expected, testFormatter), message)      
     }
   })
 }
@@ -103,4 +103,11 @@ export function hasInvalidActual<T>(value: T): Property<MatchResult> {
   return property("the actual value is shown as invalid", (result) => {
     assertHasActual(invalidActualValue(value), result)
   })
+}
+
+
+export const testFormatter: Formatter = {
+  info: (message) => `<${message}>`,
+  red: (message) => `red(${message})`,
+  green: (message) => `green(${message})`
 }

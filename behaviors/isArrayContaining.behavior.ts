@@ -16,7 +16,7 @@ export default behavior("isArrayContaining", [
     isInvalidMatchResult(),
     hasMessage("The array does not contain what was expected."),
     hasInvalidActual(["goodbye", "bye", "later"]),
-    hasExpectedMessageText("an array containing a string containing \"hello\"")
+    hasExpectedMessageText("<an array containing a string containing green(\"hello\")>")
   ]),
 
   exhibit("the array contains the item the expected number of times", () => {
@@ -41,21 +41,21 @@ export default behavior("isArrayContaining", [
     return isArrayContaining(equals("fun"), { times: 0 })(["fun", "funny", "sunny"])
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("an array containing, exactly 0 times, \"fun\"")
+    hasExpectedMessageText("<an array containing, green(exactly 0 times), green(\"fun\")>")
   ]),
 
   exhibit("the message shows the array was expected to contain the item one time", () => {
     return isArrayContaining(equals("fun"), { times: 1 })(["fun", "fun", "sunny"])
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("an array containing, exactly 1 time, \"fun\"")
+    hasExpectedMessageText("<an array containing, green(exactly 1 time), green(\"fun\")>")
   ]),
 
   exhibit("the message shows the array was expected to contain the item multiple times", () => {
     return isArrayContaining(equals("fun"), { times: 2 })(["fun", "funny", "sunny"])
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("an array containing, exactly 2 times, \"fun\"")
+    hasExpectedMessageText("<an array containing, green(exactly 2 times), green(\"fun\")>")
   ]),
 
   exhibit("when a matcher is supplied for times and the array does not satisfy it", () => {
@@ -64,7 +64,7 @@ export default behavior("isArrayContaining", [
     isInvalidMatchResult(),
     hasMessage("The array does not contain what was expected."),
     hasInvalidActual([4, 4, 4, 4, 16]),
-    hasExpectedMessageText("an array containing, less than 3 times, a number less than or equal to 4")
+    hasExpectedMessageText("<an array containing, green(less than 3 times), a number green(less than or equal to 4)>")
   ]),
 
   exhibit("the array matches on all elements but fails to satisfy the times matcher", () => {
@@ -73,7 +73,7 @@ export default behavior("isArrayContaining", [
     isInvalidMatchResult(),
     hasMessage("The array does not contain what was expected."),
     hasInvalidActual([4, 4, 4, 4, 1]),
-    hasExpectedMessageText("an array containing, exactly 3 times, a number less than or equal to 4")
+    hasExpectedMessageText("<an array containing, green(exactly 3 times), a number less than or equal to 4>")
   ])
 
 ])

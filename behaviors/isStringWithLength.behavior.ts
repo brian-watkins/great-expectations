@@ -34,21 +34,21 @@ export default behavior("isStringWithLength", [
     isInvalidMatchResult(),
     hasMessage("The actual value does not have the expected length."),
     hasInvalidActual("yo yo"),
-    hasExpectedMessageText("a string with length 14")
+    hasExpectedMessageText("<a string with length green(14)>")
   ]),
 
   exhibit("a string with a length that fails to match the length matcher", () => {
     return isStringWithLength(isNumberLessThanOrEqualTo(4))("longer")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("a string with length less than or equal to 4")
+    hasExpectedMessageText("<a string with length green(less than or equal to 4)>")
   ]),
 
   exhibit("the identical to matcher is used to specify the length", () => {
     return isStringWithLength(isIdenticalTo(4))("longer")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("a string with length 4")
+    hasExpectedMessageText("<a string with length green(4)>")
   ])
 
 ])

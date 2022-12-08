@@ -17,13 +17,13 @@ export default behavior("satisfyingAll", [
   exhibit("one of the matchers is not satisfied", () => {
     return satisfyingAll([
       isNumberGreaterThan(5),
-      isNumberLessThan(8)
+      isNumberLessThan(8),
+      isNumberLessThan(7),
     ])(20)
   }).check([
     isInvalidMatchResult(),
     hasMessage("The actual value did not satisfy all of the provided matchers."),
     hasInvalidActual(20),
-    hasExpectedMessageText("a value that satisfies all of:\n  a number greater than 5\n  a number less than 8")
+    hasExpectedMessageText("<a value that satisfies all of:\n  ~ a number greater than 5\n  ~ a number green(less than 8)\n  ~ a number green(less than 7)>")
   ])
-
 ])

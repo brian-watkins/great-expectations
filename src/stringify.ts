@@ -1,4 +1,4 @@
-import { ANSIFormatter, Formatter, IdentityFormatter } from "./formatter"
+import { ANSIFormatter, Formatter } from "./formatter"
 import { ActualValue, Expected, ExpectedMessage, ExpectedValue, InvalidActualValue, UnsatisfiedExpectedValue } from "./matcher"
 
 export function stringify(val: any, formatter: Formatter = ANSIFormatter): string {
@@ -17,22 +17,22 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
       } else if (Array.isArray(val)) {
         return `[ ${val.map(stringifyWithFormatter).join("\n, ")}\n]`
       } else if (isExpectedValue(val)) {
-        return stringify(val.value)
+        return stringify(val.value, formatter)
       } else if (isUnsatisfiedExpectedValue(val)) {
-        return formatter.green(stringify(val.value))
+        return formatter.green(stringify(val.value, formatter))
       } else if (isExpectedMessage(val)) {
         if (val.next.length > 0) {
-          const message = replaceMessage(val.message, val.next)
-          return formatter.green(formatter.info(message))
+          const message = replaceMessage(formatter, val.message, val.next)
+          return formatter.info(message)
         } else {
-          return formatter.green(formatter.info(val.message))
+          return formatter.info(val.message)
         }
       } else if (isActualValue(val)) {
-        return stringify(val.value)
+        return stringify(val.value, formatter)
       } else if (isInvalidActualValue(val)) {
-        return formatter.red(stringify(val.value))
+        return formatter.red(stringify(val.value, formatter))
       } else {
-        return `{\n  ${Object.keys(val).map(key => `${key}: ${stringify(val[key])}`).join(",\n  ")}\n}`
+        return `{\n  ${Object.keys(val).map(key => `${key}: ${stringify(val[key], formatter)}`).join(",\n  ")}\n}`
       }
     case "function":
       return "<FUNCTION>"
@@ -45,15 +45,22 @@ export function stringify(val: any, formatter: Formatter = ANSIFormatter): strin
   }
 }
 
-function replaceMessage(text: string, expecteds: Array<Expected>): string {
+function replaceMessage(formatter: Formatter, text: string, expecteds: Array<Expected | ExpectedMessage>): string {
   if (expecteds.length == 0) {
     return text
   }
 
-  const [ first, ...rest ] = expecteds
-  const replaced = text.replace("%expected%", stringify(first, IdentityFormatter))
+  const [first, ...rest] = expecteds
+  const replaced = text.replace("%expected%", stringify(first, noInfoFormatter(formatter)))
 
-  return replaceMessage(replaced, rest)
+  return replaceMessage(formatter, replaced, rest)
+}
+
+function noInfoFormatter(formatter: Formatter): Formatter {
+  return {
+    ...formatter,
+    info: (message) => message,
+  }
 }
 
 function isExpectedValue(val: any): val is ExpectedValue {

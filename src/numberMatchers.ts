@@ -1,4 +1,4 @@
-import { actualValue, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher";
+import { actualValue, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, unsatisfiedExpectedValue, Valid } from "./matcher";
 
 interface NumberComparator {
   name: string
@@ -39,13 +39,14 @@ function numberMatcher(comparator: NumberComparator, expected: number): Matcher<
       actual: actualValue(actual),
       operator: comparator.name,
       argument: expected,
-      expected: expectedMessage(`a number ${comparator.name} %expected%`, expectedValue(expected))
+      expected: expectedValue(expectedMessage(`a number %expected%`, expectedValue(expectedMessage(`${comparator.name} %expected%`, expectedValue(expected)))))
     }
 
     if (comparator.matches(expected, actual)) {
       return new Valid(values)
     } else {
       values.actual = invalidActualValue(actual)
+      values.expected = expectedValue(expectedMessage(`a number %expected%`, unsatisfiedExpectedValue(expectedMessage(`${comparator.name} %expected%`, expectedValue(expected)))))
       return new Invalid(`The actual value is not ${comparator.name} the expected value.`, values)
     }
   }

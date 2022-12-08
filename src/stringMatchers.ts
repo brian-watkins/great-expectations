@@ -1,5 +1,5 @@
 import { equals } from "./basicMatchers"
-import { actualValue, Expected, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, Valid } from "./matcher"
+import { actualValue, ExpectedMessage, expectedMessage, expectedValue, Invalid, invalidActualValue, Matcher, unsatisfiedExpectedValue, Valid } from "./matcher"
 import { expectedCountMessage, expectedLengthMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
@@ -10,11 +10,13 @@ export function isStringWithLength(expectedOrMatcher: number | Matcher<number>):
   return (actual) => {
     const result = matcher(actual.length)
 
+    const message = expectedMessage(`a string with length %expected%`, expectedLengthMessage(result.values))
+
     const values = {
       actual: actualValue(actual),
       operator: "string length",
       argument: expectedOrMatcher,
-      expected: expectedMessage(`a string with length %expected%`, expectedLengthMessage(result.values))
+      expected: expectedValue(message)
     }
 
     if (result.type === "valid") {
@@ -56,18 +58,18 @@ export function isStringContaining(expected: string, options: StringContainingOp
 
     const countResult = countMatcher(count)
     
-    let message: Expected
+    let message: ExpectedMessage
     if (expectedCount === undefined) {
-      message = expectedMessage(stringInvalidMessage(isCaseSensitive), expectedValue(expected))
+      message = expectedMessage(stringInvalidMessage(isCaseSensitive), unsatisfiedExpectedValue(expected))
     } else {
-      message = expectedMessage(`${stringInvalidMessage(isCaseSensitive)} %expected%`, expectedValue(expected), expectedCountMessage(countResult.values))
+      message = expectedMessage(`${stringInvalidMessage(isCaseSensitive)} %expected%`, unsatisfiedExpectedValue(expected), expectedCountMessage(countResult.values))
     }
 
     const values = {
       actual: actualValue(actual),
       operator: containsOperatorName(isCaseSensitive),
       argument: expected,
-      expected: message
+      expected: expectedValue(message)
     }
 
     if (countResult.type === "valid") {
