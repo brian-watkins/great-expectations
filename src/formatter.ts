@@ -1,7 +1,6 @@
 export interface Formatter {
   info(message: string): string
-  red(message: string): string
-  green(message: string): string
+  error(message: string): string
 }
 
 function wrapColor(code: string, message: string): string {
@@ -12,19 +11,24 @@ function red(message: string): string {
   return wrapColor("31", message)
 }
 
-function green(message: string): string {
-  return wrapColor("32", message)
+function yellow(message: string): string {
+  return wrapColor("33", message)
 }
 
 function info(message: string): string {
-  return `~ ${message} ~`
+  return `${message}`
 }
 
-export const ANSIFormatter: Formatter = {
+export const ActualFormatter: Formatter = {
   info,
-  red,
-  green
+  error: red,
 }
+
+export const ExpectedFormatter: Formatter = {
+  info,
+  error: yellow,
+}
+
 
 function identity(message: string): string {
   return message
@@ -37,10 +41,9 @@ export function noInfoFormatter(formatter: Formatter): Formatter {
   }
 }
 
-export function noColorFormatter(formatter: Formatter): Formatter {
+export function noErrorFormatter(formatter: Formatter): Formatter {
   return {
     ...formatter,
-    green: identity,
-    red: identity
+    error: identity,
   }
 }

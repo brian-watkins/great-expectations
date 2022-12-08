@@ -16,7 +16,7 @@ export default behavior("isStringContaining", [
     isInvalidMatchResult(),
     hasMessage("The actual value does not contain the expected string."),
     hasInvalidActual("What??"),
-    hasExpectedMessageText("green(<a string containing \"oops\">)")
+    hasExpectedMessageText("error(info(a string containing \"oops\"))")
   ]),
 
   exhibit("when not case-sensitive and the value contains the string with a different case", () => {
@@ -29,7 +29,7 @@ export default behavior("isStringContaining", [
     return isStringContaining("oops", { caseSensitive: false })("They said what?!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("green(<a string containing \"oops\" (case-insensitive)>)")
+    hasExpectedMessageText("error(info(a string containing \"oops\" (case-insensitive)))")
   ]),
 
   exhibit("when case-sensitive and the value does not contains the string with the proper case", () => {
@@ -48,14 +48,14 @@ export default behavior("isStringContaining", [
     return isStringContaining("is", { times: 3 })("This is a bat!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("green(<a string containing \"is\" exactly 3 times>)")
+    hasExpectedMessageText("error(info(a string containing \"is\" exactly 3 times))")
   ]),
 
   exhibit("when the value does not contain the string only once", () => {
     return isStringContaining("is", { times: 1 })("This is a bat!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("green(<a string containing \"is\" exactly 1 time>)")
+    hasExpectedMessageText("error(info(a string containing \"is\" exactly 1 time))")
   ]),
 
   exhibit("when the expected has regexp special characters in it", () => {
@@ -82,7 +82,7 @@ export default behavior("isStringContaining", [
     isInvalidMatchResult(),
     hasMessage("The actual value does not contain the expected string."),
     hasInvalidActual("This is not a fish!"),
-    hasExpectedMessageText("green(<a string containing \"is\" less than 2 times>)")
+    hasExpectedMessageText("error(info(a string containing \"is\" less than 2 times))")
   ]),
 
   exhibit("when the actual contains the expected at the beginning of the string", () => {
@@ -95,14 +95,14 @@ export default behavior("isStringContaining", [
     return isStringContaining("is", { times: isIdenticalTo(1) })("This is not a fish!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("green(<a string containing \"is\" exactly 1 time>)")
+    hasExpectedMessageText("error(info(a string containing \"is\" exactly 1 time))")
   ]),
 
   exhibit("the actual is expected to contain the expected zero times", () => {
     return isStringContaining("is", { times: 0 })("This is not a fish!")
   }).check([
     isInvalidMatchResult(),
-    hasExpectedMessageText("green(<a string containing \"is\" exactly 0 times>)")
+    hasExpectedMessageText("error(info(a string containing \"is\" exactly 0 times))")
   ])
 
 ])

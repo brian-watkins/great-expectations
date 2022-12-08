@@ -1,3 +1,4 @@
+import { ActualFormatter, ExpectedFormatter } from "./formatter"
 import { Invalid } from "./matcher"
 import { stringify } from "./stringify"
 
@@ -13,10 +14,10 @@ export class MatchError extends Error {
   }
 
   get actual(): string {
-    return stringify(this.invalid.values.actual)
+    return stringify(this.invalid.values.actual, ActualFormatter)
   }
 
   get expected(): string {
-    return stringify(this.invalid.values.expected)
+    return stringify(this.invalid.values.expected, ExpectedFormatter)
   }
 }

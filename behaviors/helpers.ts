@@ -1,7 +1,7 @@
 import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
 import { Formatter } from "../src/formatter";
-import { Actual, actualValue, Expected, expectedValue, Invalid, invalidActualValue, MatchResult, unsatisfiedExpectedValue, Valid } from "../src/matcher";
+import { Invalid, MatchResult, problem, Valid } from "../src/matcher";
 import { stringify } from "../src/stringify";
 
 type Property<T> = Observation<T>
@@ -43,13 +43,13 @@ export function assertHasMessage(expectedMessage: string, result: MatchResult) {
   }
 }
 
-export function assertHasActual(expectedActual: Actual, result: MatchResult) {
+export function assertHasActual(expectedActual: any, result: MatchResult) {
   if (assertIsInvalidMatch(result)) {
     assert.deepEqual(result.values.actual, expectedActual)
   }
 }
 
-export function assertHasExpected(expectedValue: Expected, result: MatchResult) {
+export function assertHasExpected(expectedValue: any, result: MatchResult) {
   if (assertIsInvalidMatch(result)) {
     assert.deepEqual(result.values.expected, expectedValue)
   }
@@ -75,13 +75,13 @@ export function hasMessage(message: string): Property<MatchResult> {
 
 export function hasExpectedValue(value: any): Property<MatchResult> {
   return property("the expected value is shown", (result) => {
-    assertHasExpected(expectedValue(value), result)
+    assertHasExpected(value, result)
   })
 }
 
 export function hasUnsatisfiedExpectedValue(value: any): Property<MatchResult> {
   return property("the expected value is shown as unsatisfied", (result) => {
-    assertHasExpected(unsatisfiedExpectedValue(value), result)
+    assertHasExpected(problem(value), result)
   })
 }
 
@@ -95,19 +95,18 @@ export function hasExpectedMessageText(message: string): Property<MatchResult> {
 
 export function hasActual<T>(value: T): Property<MatchResult> {
   return property("the actual value is shown", (result) => {
-    assertHasActual(actualValue(value), result)
+    assertHasActual(value, result)
   })
 }
 
 export function hasInvalidActual<T>(value: T): Property<MatchResult> {
   return property("the actual value is shown as invalid", (result) => {
-    assertHasActual(invalidActualValue(value), result)
+    assertHasActual(problem(value), result)
   })
 }
 
 
 export const testFormatter: Formatter = {
-  info: (message) => `<${message}>`,
-  red: (message) => `red(${message})`,
-  green: (message) => `green(${message})`
+  info: (message) => `info(${message})`,
+  error: (message) => `error(${message})`,
 }

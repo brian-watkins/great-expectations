@@ -1,5 +1,5 @@
 import { equals } from "./basicMatchers"
-import { Actual, actualValue, Expected, description, expectedValue, Invalid, invalidActualValue, Matcher, MatchValues, Valid, unsatisfiedExpectedValue } from "./matcher"
+import { description, Invalid, Matcher, MatchValues, problem, Valid } from "./matcher"
 import { expectedCountMessage, expectedLengthMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
@@ -11,18 +11,18 @@ export function isArrayWithLength<T>(expectedLengthOrMatcher: number | Matcher<n
 
     const message = description("an array with length %expected%", expectedLengthMessage(result.values))
 
-    const values = {
-      actual: actualValue(actual),
+    const values: MatchValues = {
+      actual: actual,
       operator: "array length",
       argument: expectedLengthOrMatcher,
-      expected: expectedValue(message)
+      expected: message
     }
 
     if (result.type === "valid") {
       return new Valid(values)
     } else {
-      values.actual = invalidActualValue(actual)
-      values.expected = unsatisfiedExpectedValue(message)
+      values.actual = problem(actual)
+      values.expected = problem(message)
       return new Invalid(`The array length (${actual.length}) is unexpected.`, values)
     }
   }
@@ -52,15 +52,15 @@ export function isArrayWhere<T>(matchers: Array<Matcher<T>>, options: ArrayWhere
 
 function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
   return (actual) => {
-    let actualValues: Array<Actual> = []
-    let expected: Array<Expected> = []
+    let actualValues: Array<any> = []
+    let expected: Array<any> = []
     let errorMessages: Array<ArrayMatchMessage> = []
     for (let i = 0; i < actual.length; i++) {
       const itemResult = matchers[i](actual[i])
       switch (itemResult.type) {
         case "valid":
-          actualValues.push(actualValue(actual[i]))
-          expected.push(expectedValue(actual[i]))
+          actualValues.push(actual[i])
+          expected.push(actual[i])
           break
         case "invalid":
           errorMessages.push({ index: i, message: itemResult.description })
@@ -71,10 +71,10 @@ function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
     }
 
     const values = {
-      actual: actualValue(actualValues),
+      actual: actualValues,
       operator: "array where ordered",
       argument: matchers,
-      expected: expectedValue(expected)
+      expected: expected
     }
 
     if (errorMessages.length > 0) {
@@ -87,7 +87,7 @@ function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
 
 interface UnorderedAccumulator<T> {
   items: Array<T>
-  expected: Array<Expected>
+  expected: Array<any>
   failed: boolean
 }
 
@@ -100,7 +100,7 @@ function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>
         if (result.type === "valid") {
           return {
             items: acc.items.filter((_: T, index: number) => index !== x),
-            expected: acc.expected.concat([expectedValue(acc.items[x])]),
+            expected: acc.expected.concat([acc.items[x]]),
             failed: acc.failed
           }
         }
@@ -115,17 +115,17 @@ function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>
 
     const actualValues = actual.map((item) => {
       if (accumulatedResult.items.includes(item)) {
-        return invalidActualValue(item)
+        return problem(item)
       } else {
-        return actualValue(item)
+        return item
       }
     })
 
     const values = {
-      actual: actualValue(actualValues),
+      actual: actualValues,
       operator: "array where unordered",
       argument: matchers,
-      expected: expectedValue(accumulatedResult.expected)
+      expected: accumulatedResult.expected
     }
 
     if (accumulatedResult.failed) {
@@ -174,18 +174,18 @@ export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContaini
       ? description("an array containing %expected%", matchValues?.expected)
       : description("an array containing, %expected%, %expected%", expectedCountMessage(countResult.values), matchValues?.expected)
 
-    const values = {
-      actual: actualValue(actual),
+    const values: MatchValues = {
+      actual: actual,
       operator: "array contains",
       argument: matcher,
-      expected: expectedValue(message)
+      expected: message
     }
 
     if (countResult.type === "valid") {
       return new Valid(values)
     } else {
-      values.actual = invalidActualValue(actual)
-      values.expected = unsatisfiedExpectedValue(message)
+      values.actual = problem(actual)
+      values.expected = problem(message)
       return new Invalid("The array does not contain what was expected.", values)
     }
   }

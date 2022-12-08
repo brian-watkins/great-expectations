@@ -1,8 +1,8 @@
 export interface MatchValues {
-  actual: Actual
+  actual: any
   operator: string
   argument: any
-  expected: Expected
+  expected: any
 }
 
 export class Valid {
@@ -21,69 +21,28 @@ export type MatchResult = Valid | Invalid
 
 export type Matcher<T> = (actual: T) => MatchResult
 
-
-export interface ExpectedValue {
-  type: "expected-value"
+export interface Problem {
+  type: "problem"
   value: any
 }
 
-export interface UnsatisfiedExpectedValue {
-  type: "unsatisfied-expected-value"
-  value: any
+export function problem(value: any): Problem {
+  return {
+    type: "problem",
+    value
+  }
 }
 
 export interface Description {
   type: "description"
   message: string
-  next: Array<Expected | Description>
+  next: Array<any>
 }
 
-export type Expected = ExpectedValue | UnsatisfiedExpectedValue
-
-export function expectedValue(value: any): Expected {
-  return {
-    type: "expected-value",
-    value
-  }
-}
-
-export function unsatisfiedExpectedValue(value: any): Expected {
-  return {
-    type: "unsatisfied-expected-value",
-    value
-  }
-}
-
-export function description(message: string, ...next: Array<Expected | Description | undefined>): Description {
+export function description(message: string, ...next: Array<any | undefined>): Description {
   return {
     type: "description",
     message: `${message}`,
-    next: next.filter(val => val !== undefined) as Array<Expected | Description>
-  }
-}
-
-export interface ActualValue {
-  type: "actual-value"
-  value: any
-}
-
-export interface InvalidActualValue {
-  type: "invalid-actual-value"
-  value: any
-}
-
-export type Actual = ActualValue | InvalidActualValue
-
-export function actualValue(value: any): Actual {
-  return {
-    type: "actual-value",
-    value
-  }
-}
-
-export function invalidActualValue(value: any): Actual {
-  return {
-    type: "invalid-actual-value",
-    value
+    next: next.filter(val => val !== undefined) as Array<any>
   }
 }

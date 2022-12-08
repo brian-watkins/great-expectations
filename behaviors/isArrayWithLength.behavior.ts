@@ -22,7 +22,7 @@ export default behavior("isArrayWithLength", [
     isInvalidMatchResult(),
     hasMessage("The array length (4) is unexpected."),
     hasInvalidActual([1, 2, 3, 4]),
-    hasExpectedMessageText("green(<an array with length 3>)")
+    hasExpectedMessageText("error(info(an array with length 3))")
   ]),
 
   exhibit("the array length does not match the provided matcher", () => {
@@ -31,7 +31,7 @@ export default behavior("isArrayWithLength", [
     isInvalidMatchResult(),
     hasMessage("The array length (5) is unexpected."),
     hasInvalidActual([1, 2, 3, 4, 5]),
-    hasExpectedMessageText("green(<an array with length less than or equal to 4>)")
+    hasExpectedMessageText("error(info(an array with length less than or equal to 4))")
   ])
 
 ])

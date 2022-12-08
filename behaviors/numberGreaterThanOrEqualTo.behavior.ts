@@ -16,7 +16,7 @@ export default behavior("greaterThanOrEqualTo", [
     isInvalidMatchResult(),
     hasMessage("The actual value is not greater than or equal to the expected value."),
     hasInvalidActual(4),
-    hasExpectedMessageText("green(<a number greater than or equal to 10>)")
+    hasExpectedMessageText("error(info(a number greater than or equal to 10))")
   ])
 
 ])

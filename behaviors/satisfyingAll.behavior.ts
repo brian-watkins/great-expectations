@@ -24,6 +24,6 @@ export default behavior("satisfyingAll", [
     isInvalidMatchResult(),
     hasMessage("The actual value did not satisfy all of the provided matchers."),
     hasInvalidActual(20),
-    hasExpectedMessageText("<a value that satisfies all of:\n  • a number greater than 5\n  • green(a number less than 8)\n  • green(a number less than 7)>")
+    hasExpectedMessageText("info(a value that satisfies all of:\n  • a number greater than 5\n  • error(a number less than 8)\n  • error(a number less than 7))")
   ])
 ])

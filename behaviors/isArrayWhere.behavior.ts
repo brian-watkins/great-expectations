@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior";
 import { equals, isArrayWhere } from "../src";
-import { actualValue, expectedValue, invalidActualValue, unsatisfiedExpectedValue } from "../src/matcher";
+import { problem } from "../src/matcher";
 import { exhibit, hasActual, hasExpectedMessageText, hasExpectedValue, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("isArrayWhere", [
@@ -21,7 +21,7 @@ export default behavior("isArrayWhere", [
     isInvalidMatchResult(),
     hasMessage("The array length (2) is unexpected."),
     hasInvalidActual([1, 2]),
-    hasExpectedMessageText("green(<an array with length 3>)")
+    hasExpectedMessageText("error(info(an array with length 3))")
   ]),
 
   exhibit("the array fails to match at an item", () => {
@@ -33,8 +33,8 @@ export default behavior("isArrayWhere", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array failed to match:\n\n  at Actual[1]: The actual value is not equal to the expected value.\n\n  at Actual[2]: The actual value is not equal to the expected value."),
-    hasExpectedValue([expectedValue(1), unsatisfiedExpectedValue(2), unsatisfiedExpectedValue(3)]),
-    hasActual([actualValue(1), invalidActualValue(6), invalidActualValue(5)]),
+    hasExpectedValue([1, problem(2), problem(3)]),
+    hasActual([1, problem(6), problem(5)]),
   ]),
 
   exhibit("the array is fails to match when not ordered as expected", () => {
@@ -66,8 +66,8 @@ export default behavior("isArrayWhere", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array failed to match."),
-    hasExpectedValue([unsatisfiedExpectedValue(1), expectedValue(2), expectedValue(3)]),
-    hasActual([actualValue(3), invalidActualValue(6), actualValue(2)])
+    hasExpectedValue([problem(1), 2, 3]),
+    hasActual([3, problem(6), 2])
   ]),
 
   exhibit("the correct unexpected value is displayed for identical matchers within the array", () => {
@@ -79,8 +79,8 @@ export default behavior("isArrayWhere", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array failed to match."),
-    hasExpectedValue([expectedValue(2), unsatisfiedExpectedValue(2), expectedValue(3)]),
-    hasActual([actualValue(3), invalidActualValue(6), actualValue(2)])
+    hasExpectedValue([2, problem(2), 3]),
+    hasActual([3, problem(6), 2])
   ])
 
 ])

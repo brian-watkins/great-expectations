@@ -1,23 +1,23 @@
-import { Expected, description, expectedValue, MatchValues } from "./matcher"
+import { Description, description, MatchValues } from "./matcher"
 
-export function expectedCountMessage(values: MatchValues): Expected {
+export function expectedCountMessage(values: MatchValues): Description {
   if (isEqualityOperator(values) && values.argument == 1) {
-    return expectedValue(description("exactly %expected% time", expectedValue(1)))
+    return description("exactly %expected% time", 1)
   }
 
   if (isEqualityOperator(values)) {
-    return expectedValue(description("exactly %expected% times", expectedValue(values.argument)))
+    return description("exactly %expected% times", values.argument)
   }
 
-  return expectedValue(description(`${values.operator} %expected% times`, expectedValue(values.argument)))
+  return description(`${values.operator} %expected% times`, values.argument)
 }
 
-export function expectedLengthMessage(values: MatchValues): Expected {
+export function expectedLengthMessage(values: MatchValues): Description {
   if (isEqualityOperator(values)) {
-    return expectedValue(values.argument)
+    return description("%expected%", values.argument)
   }
 
-  return expectedValue(description(`${values.operator} %expected%`, expectedValue(values.argument)))
+  return description(`${values.operator} %expected%`, values.argument)
 }
 
 function isEqualityOperator(values: MatchValues): boolean {

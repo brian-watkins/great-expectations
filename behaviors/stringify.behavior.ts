@@ -2,7 +2,7 @@ import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify";
 import { exhibit, property, testFormatter } from "./helpers";
 import { strict as assert } from "node:assert"
-import { actualValue, description, expectedValue, invalidActualValue, unsatisfiedExpectedValue } from "../src/matcher";
+import { description, problem } from "../src/matcher";
 
 export default behavior("stringify", [
 
@@ -90,90 +90,45 @@ export default behavior("stringify", [
       })
     ]),
 
-  exhibit("stringify an object with an expected message", () => {
+  exhibit("stringify an object with a description", () => {
     return stringify({ name: "something", message: description("some message") }, testFormatter)
   }).check([
     property("it recursively prints the message with the given formatter", (result) => {
-      assert.deepEqual(result, "{\n  name: \"something\",\n  message: <some message>\n}")
+      assert.deepEqual(result, "{\n  name: \"something\",\n  message: info(some message)\n}")
     })
   ]),
 
-  exhibit("stringify a nested expected value", () => {
-    return stringify(expectedValue([
-      expectedValue(1),
-      expectedValue(2),
-      expectedValue(3)
-    ]))
+  exhibit("stringify a problem value", () => {
+    return stringify(problem("Whoops"), testFormatter)
   })
     .check([
-      property("it prints the expected values", (result) => {
-        assert.deepEqual(result, "[ 1\n, 2\n, 3\n]")
+      property("it prints the problematic value", (result) => {
+        assert.deepEqual(result, "error(\"Whoops\")")
       })
     ]),
 
-  exhibit("stringify an unsatisfied expected value", () => {
-    return stringify(unsatisfiedExpectedValue("Whoops"), testFormatter)
-  })
-    .check([
-      property("it prints the unsatisfied expected value", (result) => {
-        assert.deepEqual(result, "green(\"Whoops\")")
-      })
-    ]),
-
-  exhibit("stringify an expected message value", () => {
-    return stringify(expectedValue(description("You failed!")), testFormatter)
+  exhibit("stringify a description", () => {
+    return stringify(description("You failed!"), testFormatter)
   })
     .check([
       property("it prints the message", (result) => {
-        assert.deepEqual(result, "<You failed!>")
+        assert.deepEqual(result, "info(You failed!)")
       })
     ]),
 
-  exhibit("stringify an unsatisfied expected message chain", () => {
-    return stringify(unsatisfiedExpectedValue(description("First I did this, %expected%", description("Then I did this: %expected%", expectedValue(14)))), testFormatter)
+  exhibit("stringify an problematic description chain", () => {
+    return stringify(problem(description("First I did this, %expected%", description("Then I did this: %expected%", problem(14)))), testFormatter)
   }).check([
     property("it prints the message", (result) => {
-      assert.deepEqual(result, "green(<First I did this, Then I did this: 14>)")
+      assert.deepEqual(result, "error(info(First I did this, Then I did this: 14))")
     })
   ]),
 
-  exhibit("stringify expected value with message that contains unsatisfied expected messages", () => {
-    return stringify(expectedValue(description("Two things: (1) %expected% and (2) %expected%", expectedValue(description("a thing")), unsatisfiedExpectedValue(description("another thing")))), testFormatter)
+  exhibit("stringify description with message that contains problematic descriptions", () => {
+    return stringify(description("Two things: (1) %expected% and (2) %expected%", description("a thing"), problem(description("another thing"))), testFormatter)
   }).check([
     property("it prints the message with the proper formatting", (result) => {
-      assert.deepEqual(result, "<Two things: (1) a thing and (2) green(another thing)>")
-    })
-  ]),
-
-  exhibit("stringify an actual value", () => {
-    return stringify(actualValue("OK"))
-  }).check([
-    property("it prints the value", (result) => {
-      assert.deepEqual(result, "\"OK\"")
-    })
-  ]),
-
-  exhibit("stringify actual value message", () => {
-    return stringify(actualValue(description("Message")), testFormatter)
-  }).check([
-    property("it recursively prints the value with the given formatter", (result) => {
-      assert.deepEqual(result, "<Message>")
-    })
-  ]),
-
-  exhibit("stringify an invalid actual value", () => {
-    return stringify(invalidActualValue("WRONG"), testFormatter)
-  }).check([
-    property("it prints the value", (result) => {
-      assert.deepEqual(result, "red(\"WRONG\")")
-    })
-  ]),
-
-  exhibit("stringify an invalid actual value message", () => {
-    return stringify(invalidActualValue(description("some message")), testFormatter)
-  }).check([
-    property("it prints the value", (result) => {
-      assert.deepEqual(result, "red(<some message>)")
+      assert.deepEqual(result, "info(Two things: (1) a thing and (2) error(another thing))")
     })
   ])
 
