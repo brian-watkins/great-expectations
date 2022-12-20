@@ -1,5 +1,5 @@
 import { Formatter, noErrorFormatter, noInfoFormatter } from "./formatter"
-import { Description, Problem } from "./matcher"
+import { Description, ExpectedValue, Problem } from "./matcher"
 
 export function stringify(val: any, formatter: Formatter): string {
   const stringifyWithFormatter = (val: any) => stringify(val, formatter)
@@ -16,6 +16,10 @@ export function stringify(val: any, formatter: Formatter): string {
         return "<NULL>"
       } else if (Array.isArray(val)) {
         return `[ ${val.map(stringifyWithFormatter).join("\n, ")}\n]`
+      } else if (isExpectedValue(val)) {
+        return stringify(val.representation, formatter)
+      } else if (isExpectedDescription(val)) {
+        return stringify(val.representation, formatter)
       } else if (isProblem(val)) {
         return formatter.error(stringify(val.value, noErrorFormatter(formatter)))
       } else if (isDescription(val)) {
@@ -26,7 +30,7 @@ export function stringify(val: any, formatter: Formatter): string {
           return formatter.info(val.message)
         }
       } else {
-        return `{\n  ${Object.keys(val).map(key => `${key}: ${stringify(val[key], formatter)}`).join(",\n  ")}\n}`
+        return `{ ${Object.keys(val).map(key => `${key}: ${stringify(val[key], formatter)}`).join(", ")} }`
       }
     case "function":
       return "<FUNCTION>"
@@ -54,6 +58,14 @@ function isDescription(val: any): val is Description {
   return ("type" in val && val.type === "description")
 }
 
-function isProblem(val: any): val is Problem {
+function isProblem<T>(val: any): val is Problem<T> {
   return ("type" in val && val.type === "problem")
+}
+
+function isExpectedValue<T>(val: any): val is ExpectedValue<T> {
+  return ("type" in val && val.type === "expected-value")
+}
+
+function isExpectedDescription<T>(val: any): val is ExpectedValue<T> {
+  return ("type" in val && val.type === "expected-description")
 }

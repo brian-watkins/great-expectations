@@ -1,5 +1,5 @@
 import { equals } from "./basicMatchers"
-import { Description, description, Invalid, Matcher, MatchValues, problem, Valid } from "./matcher"
+import { Description, description, expectedDescription, Invalid, Matcher, MatchValues, problem, unsatisfiedExpectedDescription, Valid } from "./matcher"
 import { expectedCountMessage, expectedLengthMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
@@ -34,6 +34,9 @@ export interface StringContainingOptions {
   times?: number | Matcher<number>
 }
 
+// we could actually wrap the times matcher in a TimesMatcher
+// and then we could maybe wrap the whole thing in a caseInsensitiveMatcher of Matcher<string>
+
 export function isStringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
   const isCaseSensitive = options.caseSensitive ?? true
   const expectedCount = options.times
@@ -63,22 +66,28 @@ export function isStringContaining(expected: string, options: StringContainingOp
     if (expectedCount === undefined) {
       message = description(stringInvalidMessage(isCaseSensitive), expected)
     } else {
-      message = description(`${stringInvalidMessage(isCaseSensitive)} %expected%`, expected, expectedCountMessage(countResult.values))
+      message = description(`${stringInvalidMessage(isCaseSensitive)} %expected%`, expected, expectedCountMessage(countResult.values.expected))
     }
 
-    const values: MatchValues = {
-      actual: actual,
-      operator: containsOperatorName(isCaseSensitive),
-      argument: expected,
-      expected: message
-    }
+    // const values: MatchValues = {
+      // actual: actual,
+      // operator: containsOperatorName(isCaseSensitive),
+      // argument: expected,
+      // expected: message
+    // }
 
     if (countResult.type === "valid") {
-      return new Valid(values)
+      return new Valid({
+        actual,
+        expected: expectedDescription("a string", "contains", message)
+      })
     } else {
-      values.actual = problem(actual)
-      values.expected = problem(message)
-      return new Invalid("The actual value does not contain the expected string.", values)
+      // values.actual = problem(actual)
+      // values.expected = problem(message)
+      return new Invalid("The actual value does not contain the expected string.", {
+        actual: problem(actual),
+        expected: unsatisfiedExpectedDescription("a string", "contains", message)
+      })
     }
   }
 }
@@ -88,7 +97,8 @@ function containsOperatorName(isCaseSensitive: boolean): string {
 }
 
 function stringInvalidMessage(isCaseSensitive: boolean): string {
-  let message = `a string containing %expected%`
+  // let message = `a string containing %expected%`
+  let message = "%expected%"
 
   if (!isCaseSensitive) {
     message += " (case-insensitive)"

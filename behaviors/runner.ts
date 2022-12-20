@@ -16,17 +16,17 @@ import satisfyingAllBehavior from "./satisfyingAll.behavior";
 validate([
   isIdenticalToBehavior,
   equalsBehavior,
-  isArrayWithLengthBehavior,
-  isArrayWhereBehavior,
-  isArrayContainingBehavior,
+  // isArrayWithLengthBehavior,
+  // isArrayWhereBehavior,
+  // isArrayContainingBehavior,
   isStringContainingBehavior,
-  isStringWithLengthBehavior,
+  // isStringWithLengthBehavior,
   stringifyBehavior,
   numberLessThanBehavior,
   numberLessThanOrEqualToBehavior,
   numberGreaterThanBehavior,
   numberGreaterThanOrEqualToBehavior,
-  satisfyingAllBehavior
+  // satisfyingAllBehavior
 ], {
   failFast: true
 })
