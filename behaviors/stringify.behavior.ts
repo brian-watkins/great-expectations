@@ -6,84 +6,84 @@ import { description, problem } from "../src/matcher";
 
 export default behavior("stringify", [
 
-  exhibit("stringify a string", () => stringify("hello"))
+  exhibit("stringify a string", () => stringify("hello", testFormatter))
     .check([
       property("it surrounds the string with quotes", (result) => {
         assert.deepEqual(result, "\"hello\"")
       })
     ]),
 
-  exhibit("stringify a number", () => stringify(32))
+  exhibit("stringify a number", () => stringify(32, testFormatter))
     .check([
       property("it simply prints the number", (result) => {
         assert.deepEqual(result, "32")
       })
     ]),
 
-  exhibit("stringify a bigint", () => stringify(BigInt("234452")))
+  exhibit("stringify a bigint", () => stringify(BigInt("234452"), testFormatter))
     .check([
       property("it simply prints the number", (result) => {
         assert.deepEqual(result, "234452")
       })
     ]),
 
-  exhibit("stringify a true value", () => stringify(true))
+  exhibit("stringify a true value", () => stringify(true, testFormatter))
     .check([
       property("it prints the boolean value", (result) => {
         assert.deepEqual(result, "<TRUE>")
       })
     ]),
 
-  exhibit("stringify a false value", () => stringify(false))
+  exhibit("stringify a false value", () => stringify(false, testFormatter))
     .check([
       property("it prints the boolean value", (result) => {
         assert.deepEqual(result, "<FALSE>")
       })
     ]),
 
-  exhibit("stringify an undefined value", () => stringify(undefined))
+  exhibit("stringify an undefined value", () => stringify(undefined, testFormatter))
     .check([
       property("it prints undefined", (result) => {
         assert.deepEqual(result, "<UNDEFINED>")
       })
     ]),
 
-  exhibit("stringify a null value", () => stringify(null))
+  exhibit("stringify a null value", () => stringify(null, testFormatter))
     .check([
       property("it prints null", (result) => {
         assert.deepEqual(result, "<NULL>")
       })
     ]),
 
-  exhibit("stringify a function", () => stringify(function () { console.log("HEY!"); }))
+  exhibit("stringify a function", () => stringify(function () { console.log("HEY!"); }, testFormatter))
     .check([
       property("it prints the function word", (result) => {
         assert.deepEqual(result, "<FUNCTION>")
       })
     ]),
 
-  exhibit("stringify a symbol", () => stringify(Symbol("my-symbol")))
+  exhibit("stringify a symbol", () => stringify(Symbol("my-symbol"), testFormatter))
     .check([
       property("it prints the symbol", (result) => {
         assert.deepEqual(result, "<SYMBOL(my-symbol)>")
       })
     ]),
 
-  exhibit("stringify a symbol with no description", () => stringify(Symbol()))
+  exhibit("stringify a symbol with no description", () => stringify(Symbol(), testFormatter))
     .check([
       property("it prints the symbol", (result) => {
         assert.deepEqual(result, "<SYMBOL()>")
       })
     ]),
 
-  exhibit("stringify an array", () => stringify([1, 2, 3]))
+  exhibit("stringify an array", () => stringify([1, 2, 3], testFormatter))
     .check([
       property("it prints the stringified elements", (result) => {
         assert.deepEqual(result, "[ 1\n, 2\n, 3\n]")
       })
     ]),
 
-  exhibit("stringify an object", () => stringify({ name: "Cool Dude", count: 47 }))
+  exhibit("stringify an object", () => stringify({ name: "Cool Dude", count: 47 }, testFormatter))
     .check([
       property("it prints the stringified properties", (result) => {
         assert.deepEqual(result, "{\n  name: \"Cool Dude\",\n  count: 47\n}")
