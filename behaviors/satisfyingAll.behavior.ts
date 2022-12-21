@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior"
-import { isNumberGreaterThan, isNumberLessThan, isStringContaining } from "../src"
-import { exhibit, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
+import { isStringContaining } from "../src"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 import { satisfyingAll } from "../src"
 
 export default behavior("satisfyingAll", [
@@ -11,19 +11,21 @@ export default behavior("satisfyingAll", [
       isStringContaining("not")
     ])("This is not a fish!")
   }).check([
-    isValidMatchResult()
+    isValidMatchResult(),
+    hasActual("This is not a fish!"),
+    hasExpectedMessageText("info(a value that satisfies all of:\n  • a string that contains \"is\"\n  • a string that contains \"not\")")
   ]),
 
   exhibit("one of the matchers is not satisfied", () => {
     return satisfyingAll([
-      isNumberGreaterThan(5),
-      isNumberLessThan(8),
-      isNumberLessThan(7),
-    ])(20)
+      isStringContaining("is"),
+      isStringContaining("grapes"),
+      isStringContaining("apple")
+    ])("This is not a fish!")
   }).check([
     isInvalidMatchResult(),
     hasMessage("The actual value did not satisfy all of the provided matchers."),
-    hasInvalidActual(20),
-    hasExpectedMessageText("info(a value that satisfies all of:\n  • a number greater than 5\n  • error(a number less than 8)\n  • error(a number less than 7))")
+    hasInvalidActual("This is not a fish!"),
+    hasExpectedMessageText("info(a value that satisfies all of:\n  • a string that contains \"is\"\n  • error(a string that contains \"grapes\")\n  • error(a string that contains \"apple\"))")
   ])
 ])

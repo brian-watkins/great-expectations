@@ -1,37 +1,30 @@
 import { equals } from "./basicMatchers"
-import { Description, description, Invalid, Matcher, MatchValues, problem, Valid } from "./matcher"
-import { expectedCountMessage, expectedLengthMessage } from "./message"
+import { Description, description, Invalid, Matcher, problem, Valid } from "./matcher"
+import { timesMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
 
-export function isStringWithLength(expectedOrMatcher: number | Matcher<number>): Matcher<string> {
-  const matcher = typeof expectedOrMatcher === "number" ? equals(expectedOrMatcher) : expectedOrMatcher
-
+export function isStringWithLength(expectedLength: number): Matcher<string> {
   return (actual) => {
-    const result = matcher(actual.length)
+    const message = description(`a string with length %expected%`, expectedLength)
 
-    const message = description(`a string with length %expected%`, expectedLengthMessage(result.values))
-
-    const values: MatchValues = {
-      actual: actual,
-      operator: "string length",
-      argument: expectedOrMatcher,
-      expected: message
-    }
-
-    if (result.type === "valid") {
-      return new Valid(values)
+    if (expectedLength === actual.length) {
+      return new Valid({
+        actual,
+        expected: message
+      })
     } else {
-      values.actual = problem(actual)
-      values.expected = problem(message)
-      return new Invalid("The actual value does not have the expected length.", values)
+      return new Invalid("The actual value does not have the expected length.", {
+        actual: problem(actual),
+        expected: problem(message)
+      })
     }
   }
 }
 
 export interface StringContainingOptions {
   caseSensitive?: boolean
-  times?: number | Matcher<number>
+  times?: number
 }
 
 export function isStringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
@@ -49,50 +42,39 @@ export function isStringContaining(expected: string, options: StringContainingOp
     const count = getStringMatchCount(actualString, expectedString)
 
     let countMatcher: Matcher<number>
+    let message: Description
     if (expectedCount === undefined) {
       countMatcher = isNumberGreaterThan(0)
-    } else if (typeof expectedCount === "number") {
-      countMatcher = equals(expectedCount)
+      message = description(stringInvalidMessage(isCaseSensitive), expected)
     } else {
-      countMatcher = expectedCount
+      countMatcher = equals(expectedCount)
+      message = description(`${stringInvalidMessage(isCaseSensitive)} ${timesMessage(expectedCount)}`, expected)
     }
 
     const countResult = countMatcher(count)
     
-    let message: Description
-    if (expectedCount === undefined) {
-      message = description(stringInvalidMessage(isCaseSensitive), expected)
-    } else {
-      message = description(`${stringInvalidMessage(isCaseSensitive)} %expected%`, expected, expectedCountMessage(countResult.values))
-    }
-
-    const values: MatchValues = {
-      actual: actual,
-      operator: containsOperatorName(isCaseSensitive),
-      argument: expected,
-      expected: message
-    }
-
     if (countResult.type === "valid") {
-      return new Valid(values)
+      return new Valid({
+        actual,
+        expected: message
+      })
     } else {
-      values.actual = problem(actual)
-      values.expected = problem(message)
-      return new Invalid("The actual value does not contain the expected string.", values)
+      return new Invalid("The actual value does not contain the expected string.", {
+        actual: problem(actual),
+        expected: problem(message)
+      })
     }
   }
 }
 
-function containsOperatorName(isCaseSensitive: boolean): string {
-  return `${isCaseSensitive ? "case-sensitive" : "case-insensitive"} contains`
-}
-
 function stringInvalidMessage(isCaseSensitive: boolean): string {
-  let message = `a string containing %expected%`
+  let message = `a string that contains`
 
   if (!isCaseSensitive) {
     message += " (case-insensitive)"
   }
+
+  message += " %expected%"
 
   return message
 }

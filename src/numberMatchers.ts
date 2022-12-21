@@ -1,54 +1,19 @@
-import { description, Invalid, Matcher, MatchValues, problem, Valid } from "./matcher";
-
-interface NumberComparator {
-  name: string
-  matches(expected: number, actual: number): boolean
-}
-
-export function isNumberLessThan(expected: number): Matcher<number> {
-  return numberMatcher({
-    name: "less than",
-    matches: (expected, actual) => actual < expected
-  }, expected)
-}
-
-export function isNumberLessThanOrEqualTo(expected: number): Matcher<number> {
-  return numberMatcher({
-    name: "less than or equal to",
-    matches: (expected, actual) => actual <= expected
-  }, expected)
-}
+import { description, Invalid, Matcher, problem, Valid } from "./matcher";
 
 export function isNumberGreaterThan(expected: number): Matcher<number> {
-  return numberMatcher({
-    name: "greater than",
-    matches: (expected, actual) => actual > expected
-  }, expected)
-}
-
-export function isNumberGreaterThanOrEqualTo(expected: number): Matcher<number> {
-  return numberMatcher({
-    name: "greater than or equal to",
-    matches: (expected, actual) => actual >= expected
-  }, expected)
-}
-
-function numberMatcher(comparator: NumberComparator, expected: number): Matcher<number> {
   return (actual) => {
-    const message = description(`a number ${comparator.name} %expected%`, expected)
-    const values: MatchValues = {
-      actual: actual,
-      operator: comparator.name,
-      argument: expected,
-      expected: message
-    }
+    const message = description("a number greater than %expected%", expected)
 
-    if (comparator.matches(expected, actual)) {
-      return new Valid(values)
+    if (actual > expected) {
+      return new Valid({
+        actual,
+        expected: message
+      })
     } else {
-      values.actual = problem(actual)
-      values.expected = problem(message)
-      return new Invalid(`The actual value is not ${comparator.name} the expected value.`, values)
+      return new Invalid("The actual value is not greater than the expected value.", {
+        actual: problem(actual),
+        expected: problem(message)
+      })
     }
   }
 }

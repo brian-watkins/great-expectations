@@ -86,7 +86,7 @@ export default behavior("stringify", [
   exhibit("stringify an object", () => stringify({ name: "Cool Dude", count: 47 }, testFormatter))
     .check([
       property("it prints the stringified properties", (result) => {
-        assert.deepEqual(result, "{\n  name: \"Cool Dude\",\n  count: 47\n}")
+        assert.deepEqual(result, "{ name: \"Cool Dude\", count: 47 }")
       })
     ]),
 
@@ -94,7 +94,7 @@ export default behavior("stringify", [
     return stringify({ name: "something", message: description("some message") }, testFormatter)
   }).check([
     property("it recursively prints the message with the given formatter", (result) => {
-      assert.deepEqual(result, "{\n  name: \"something\",\n  message: info(some message)\n}")
+      assert.deepEqual(result, "{ name: \"something\", message: info(some message) }")
     })
   ]),
 

@@ -1,25 +1,20 @@
-import { Description, description, MatchValues } from "./matcher"
-
-export function expectedCountMessage(values: MatchValues): Description {
-  if (isEqualityOperator(values) && values.argument == 1) {
-    return description("exactly %expected% time", 1)
+export function typeName(value: any): string {
+  switch (typeof(value)) {
+    case "object":
+      return "an object"
+    case "number":
+      return "a number"
+    case "string":
+      return "a string"
+    default:
+      return "not done yet"
   }
-
-  if (isEqualityOperator(values)) {
-    return description("exactly %expected% times", values.argument)
-  }
-
-  return description(`${values.operator} %expected% times`, values.argument)
 }
 
-export function expectedLengthMessage(values: MatchValues): Description {
-  if (isEqualityOperator(values)) {
-    return description("%expected%", values.argument)
+export function timesMessage(count: number): string {
+  if (count === 1) {
+    return "exactly 1 time"
+  } else {
+    return `exactly ${count} times`
   }
-
-  return description(`${values.operator} %expected%`, values.argument)
-}
-
-function isEqualityOperator(values: MatchValues): boolean {
-  return values.operator === "equals" || values.operator === "identical to"
 }

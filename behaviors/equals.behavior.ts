@@ -1,13 +1,15 @@
 import { behavior } from "esbehavior";
 import { equals } from "../src";
-import { exhibit, hasInvalidActual, hasMessage, hasUnsatisfiedExpectedValue, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("equals", [
 
   exhibit("the values are deeply equal", () => {
     return equals({ name: "cool dude" })({ name: "cool dude" })
   }).check([
-    isValidMatchResult()
+    isValidMatchResult(),
+    hasActual({name: "cool dude"}),
+    hasExpectedMessageText("info(an object that equals { name: \"cool dude\" })")
   ]),
 
   exhibit("the values are not deeply equal", () => {
@@ -16,7 +18,7 @@ export default behavior("equals", [
     isInvalidMatchResult(),
     hasMessage("The actual value is not equal to the expected value."),
     hasInvalidActual({ name: "cool dude", count: 5 }),
-    hasUnsatisfiedExpectedValue({ name: "cool dude", count: 7 }),
+    hasExpectedMessageText("error(info(an object that equals { name: \"cool dude\", count: 7 }))")
   ]),
 
   exhibit("the values are not strictly deeply equal", () => {

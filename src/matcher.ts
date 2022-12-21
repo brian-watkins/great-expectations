@@ -1,7 +1,5 @@
 export interface MatchValues {
   actual: any
-  operator: string
-  argument: any
   expected: any
 }
 
@@ -21,12 +19,12 @@ export type MatchResult = Valid | Invalid
 
 export type Matcher<T> = (actual: T) => MatchResult
 
-export interface Problem {
+export interface Problem<T> {
   type: "problem"
-  value: any
+  value: T
 }
 
-export function problem(value: any): Problem {
+export function problem<T>(value: T): Problem<T> {
   return {
     type: "problem",
     value

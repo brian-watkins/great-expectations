@@ -1,7 +1,7 @@
 import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
 import { Formatter } from "../src/formatter";
-import { Invalid, MatchResult, problem, Valid } from "../src/matcher";
+import { Invalid, MatchResult, Problem, problem, Valid } from "../src/matcher";
 import { stringify } from "../src/stringify";
 
 type Property<T> = Observation<T>
@@ -43,16 +43,8 @@ export function assertHasMessage(expectedMessage: string, result: MatchResult) {
   }
 }
 
-export function assertHasActual(expectedActual: any, result: MatchResult) {
-  if (assertIsInvalidMatch(result)) {
-    assert.deepEqual(result.values.actual, expectedActual)
-  }
-}
-
-export function assertHasExpected(expectedValue: any, result: MatchResult) {
-  if (assertIsInvalidMatch(result)) {
-    assert.deepEqual(result.values.expected, expectedValue)
-  }
+export function assertHasActual<T>(expectedActual: T | Problem<T>, result: MatchResult) {
+  assert.deepEqual(result.values.actual, expectedActual)
 }
 
 export function isValidMatchResult(): Property<MatchResult> {
@@ -73,23 +65,15 @@ export function hasMessage(message: string): Property<MatchResult> {
   })
 }
 
-export function hasExpectedValue(value: any): Property<MatchResult> {
-  return property("the expected value is shown", (result) => {
-    assertHasExpected(value, result)
-  })
-}
-
-export function hasUnsatisfiedExpectedValue(value: any): Property<MatchResult> {
-  return property("the expected value is shown as unsatisfied", (result) => {
-    assertHasExpected(problem(value), result)
-  })
-}
-
 export function hasExpectedMessageText(message: string): Property<MatchResult> {
   return property("a message explaining the expectation is shown", (result) => {
-    if (assertIsInvalidMatch(result)) {
-      assert.deepEqual(stringify(result.values.expected, testFormatter), message)      
-    }
+    assert.deepEqual(stringify(result.values.expected, testFormatter), message)      
+  })
+}
+
+export function hasExpected(value: any): Property<MatchResult> {
+  return property("a message explaining the expectation is shown", (result) => {
+    assert.deepEqual(stringify(result.values.expected, testFormatter), stringify(value, testFormatter))
   })
 }
 

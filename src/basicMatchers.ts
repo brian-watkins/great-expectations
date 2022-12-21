@@ -1,39 +1,36 @@
 import equal from "deep-equal"
-import { Invalid, Matcher, MatchValues, problem, Valid } from "./matcher"
+import { description, Invalid, Matcher, problem, Valid } from "./matcher"
+import { typeName } from "./message"
 
 
 export function isIdenticalTo<T>(expected: T): Matcher<T> {
   return (actual) => {
-    const values: MatchValues = {
-      actual,
-      operator: "identical to",
-      argument: expected,
-      expected: problem(expected)
-    }
-
     if (actual === expected) {
-      return new Valid(values)
+      return new Valid({
+        actual,
+        expected: description(`${typeName(expected)} that is identical to %expected%`, expected)
+      })
     } else {
-      values.actual = problem(actual)
-      return new Invalid("The actual value is not identical to the expected value.", values)
+      return new Invalid("The actual value is not identical to the expected value.", {
+        actual: problem(actual),
+        expected: problem(description(`${typeName(expected)} that is identical to %expected%`, expected))
+      })
     }
   }
 }
 
 export function equals<T>(expected: T): Matcher<T> {
   return (actual) => {
-    const values: MatchValues = {
-      actual: actual,
-      operator: "equals",
-      argument: expected,
-      expected: problem(expected)
-    }
-
     if (equal(actual, expected, { strict: true })) {
-      return new Valid(values)
+      return new Valid({
+        actual,
+        expected: description(`${typeName(expected)} that equals %expected%`, expected)
+      })
     } else {
-      values.actual = problem(actual)
-      return new Invalid("The actual value is not equal to the expected value.", values)
+      return new Invalid("The actual value is not equal to the expected value.", {
+        actual: problem(actual),
+        expected: problem(description(`${typeName(expected)} that equals %expected%`, expected))
+      })
     }
   }
 }

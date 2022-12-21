@@ -26,7 +26,7 @@ export function stringify(val: any, formatter: Formatter): string {
           return formatter.info(val.message)
         }
       } else {
-        return `{\n  ${Object.keys(val).map(key => `${key}: ${stringify(val[key], formatter)}`).join(",\n  ")}\n}`
+        return `{ ${Object.keys(val).map(key => `${key}: ${stringify(val[key], formatter)}`).join(", ")} }`
       }
     case "function":
       return "<FUNCTION>"
@@ -54,6 +54,6 @@ function isDescription(val: any): val is Description {
   return ("type" in val && val.type === "description")
 }
 
-function isProblem(val: any): val is Problem {
+function isProblem<T>(val: any): val is Problem<T> {
   return ("type" in val && val.type === "problem")
 }
