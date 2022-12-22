@@ -13,12 +13,12 @@ export default behavior("isStringMatching", [
   ]),
 
   exhibit("the regex fails to match the given string", () => {
-    return isStringMatching(/^fun/)("nothing good")
+    return isStringMatching(/^thing/)("nothing good")
   }).check([
     isInvalidMatchResult(),
     hasMessage("The actual value does not match the regular expression."),
     hasInvalidActual("nothing good"),
-    hasExpectedMessageText("error(info(a string matching /^fun/))")
+    hasExpectedMessageText("error(info(a string matching /^thing/))")
   ])
 
 ])
