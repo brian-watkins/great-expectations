@@ -4,6 +4,24 @@ import { timesMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
 
+export function isStringMatching(regex: RegExp): Matcher<string> {
+  return (actual) => {
+    const message = description(`a string matching ${regex.toString()}`)
+
+    if (regex.test(actual)) {
+      return new Valid({
+        actual,
+        expected: message
+      })
+    } else {
+      return new Invalid("The actual value does not match the regular expression.", {
+        actual: problem(actual),
+        expected: problem(message)
+      })
+    }
+  }
+}
+
 export function isStringWithLength(expectedLength: number): Matcher<string> {
   return (actual) => {
     const message = description(`a string with length %expected%`, expectedLength)

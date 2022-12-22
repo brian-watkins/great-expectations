@@ -8,6 +8,7 @@ import isArrayWithLengthBehavior from "./isArrayWithLength.behavior";
 import isArrayContainingBehavior from "./isArrayContaining.behavior";
 import isStringWithLengthBehavior from "./isStringWithLength.behavior";
 import satisfyingAllBehavior from "./satisfyingAll.behavior";
+import isStringMatchingBehavior from "./isStringMatching.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -17,6 +18,7 @@ validate([
   isArrayContainingBehavior,
   isStringContainingBehavior,
   isStringWithLengthBehavior,
+  isStringMatchingBehavior,
   stringifyBehavior,
   satisfyingAllBehavior
 ], {

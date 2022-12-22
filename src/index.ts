@@ -3,7 +3,7 @@ import { MatchError } from "./matchError"
 export { equals, isIdenticalTo } from "./basicMatchers"
 export { isArrayContaining, isArrayWithLength, isArrayWhere } from "./arrayMatchers"
 export type { ArrayContainingOptions, ArrayWhereOptions } from "./arrayMatchers"
-export { isStringWithLength, isStringContaining } from "./stringMatchers"
+export { isStringMatching, isStringWithLength, isStringContaining } from "./stringMatchers"
 export type { StringContainingOptions } from "./stringMatchers"
 export { satisfyingAll } from "./satisfyingMatchers"
 
