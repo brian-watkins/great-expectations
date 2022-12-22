@@ -21,6 +21,34 @@ export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> 
   }
 }
 
+export function isArrayWhereItemAt<T>(index: number, matcher: Matcher<T>): Matcher<Array<T>> {
+  return (actual) => {
+    if (actual.length <= index) {
+      return new Invalid(`The array has no item at index ${index}.`, {
+        actual: problem(actual),
+        expected: problem(description(`an array with some item to check at index ${index}`))
+      })
+    }
+
+    const result = matcher(actual[index])
+
+    const message = description(`an array where the item at index ${index} is %expected%`, result.values.expected)
+
+    switch (result.type) {
+      case "valid":
+        return new Valid({
+          actual,
+          expected: message
+        })
+      case "invalid":
+        return new Invalid(`The item at index ${index} did not match.`, {
+          actual: actual.map((val, i) => i === index ? problem(val) : val),
+          expected: problem(message)
+        })
+    }
+  }
+}
+
 export interface ArrayWhereOptions {
   withAnyOrder?: boolean
 }

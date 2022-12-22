@@ -9,12 +9,14 @@ import isArrayContainingBehavior from "./isArrayContaining.behavior";
 import isStringWithLengthBehavior from "./isStringWithLength.behavior";
 import satisfyingAllBehavior from "./satisfyingAll.behavior";
 import isStringMatchingBehavior from "./isStringMatching.behavior";
+import isArrayWhereItemAtBehavior from "./isArrayWhereItemAt.behavior";
 
 validate([
   isIdenticalToBehavior,
   equalsBehavior,
   isArrayWithLengthBehavior,
   isArrayWhereBehavior,
+  isArrayWhereItemAtBehavior,
   isArrayContainingBehavior,
   isStringContainingBehavior,
   isStringWithLengthBehavior,
