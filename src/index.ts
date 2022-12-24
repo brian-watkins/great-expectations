@@ -1,6 +1,6 @@
 import { Matcher } from "./matcher"
 import { MatchError } from "./matchError"
-export { equals, isIdenticalTo } from "./basicMatchers"
+export { equals, isIdenticalTo, isDefined } from "./basicMatchers"
 export { isArrayContaining, isArrayWhereItemAt, isArrayWithLength, isArrayWhere } from "./arrayMatchers"
 export type { ArrayContainingOptions, ArrayWhereOptions } from "./arrayMatchers"
 export { isStringMatching, isStringWithLength, isStringContaining } from "./stringMatchers"

@@ -34,3 +34,21 @@ export function equals<T>(expected: T): Matcher<T> {
     }
   }
 }
+
+export function isDefined(): Matcher<any> {
+  return (actual) => {
+    const message = description("a value that is defined")
+
+    if (actual === undefined) {
+      return new Invalid("The actual value is not defined.", {
+        actual: problem(actual),
+        expected: problem(message)
+      })
+    } else {
+      return new Valid({
+        actual,
+        expected: message
+      })
+    }
+  }
+}
