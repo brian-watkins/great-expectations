@@ -34,3 +34,8 @@ Here are the basic matchers we propose:
 - objectWith(propertyName, matcher)
 - objectWhere({ name: matcher, name2: matcher })
 - satisfying(Array{matcher})
+
+### 4. great-expectations should run in node or the browser
+
+Sometimes it's helpful to run tests in the browser, great-expectations
+should not make that difficult to do so.
