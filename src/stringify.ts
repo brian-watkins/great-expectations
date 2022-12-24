@@ -1,6 +1,8 @@
 import { Formatter, noErrorFormatter, noInfoFormatter } from "./formatter"
 import { Description, Problem } from "./matcher"
 
+let visited: Array<any> = []
+
 export function stringify(val: any, formatter: Formatter): string {
   const stringifyWithFormatter = (val: any) => stringify(val, formatter)
 
@@ -12,10 +14,15 @@ export function stringify(val: any, formatter: Formatter): string {
     case "bigint":
       return val.toString()
     case "object":
-      if (val === null) {
+      if (visited.indexOf(val) !== -1) {
+        return "<CIRCULAR>"
+      } else if (val === null) {
         return "<NULL>"
       } else if (Array.isArray(val)) {
-        return `[ ${val.map(stringifyWithFormatter).join("\n, ")}\n]`
+        visited.push(val)
+        const arrayString = `[\n  ${val.map(stringifyWithFormatter).join(",\n  ")},\n]`
+        visited.pop()
+        return arrayString
       } else if (isProblem(val)) {
         return formatter.error(stringify(val.value, noErrorFormatter(formatter)))
       } else if (isDescription(val)) {
@@ -26,7 +33,10 @@ export function stringify(val: any, formatter: Formatter): string {
           return formatter.info(val.message)
         }
       } else {
-        return `{ ${Object.keys(val).map(key => `${key}: ${stringify(val[key], formatter)}`).join(", ")} }`
+        visited.push(val)
+        const objectString = `{ ${Object.keys(val).map(key => `${key}: ${stringify(val[key], formatter)}`).join(", ")} }`
+        visited.pop()
+        return objectString
       }
     case "function":
       return "<FUNCTION>"

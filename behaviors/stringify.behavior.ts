@@ -79,7 +79,7 @@ export default behavior("stringify", [
   exhibit("stringify an array", () => stringify([1, 2, 3], testFormatter))
     .check([
       property("it prints the stringified elements", (result) => {
-        assert.deepEqual(result, "[ 1\n, 2\n, 3\n]")
+        assert.deepEqual(result, "[\n  1,\n  2,\n  3,\n]")
       })
     ]),
 
@@ -129,6 +129,26 @@ export default behavior("stringify", [
   }).check([
     property("it prints the message with the proper formatting", (result) => {
       assert.deepEqual(result, "info(Two things: (1) a thing and (2) error(another thing))")
+    })
+  ]),
+
+  exhibit("stringify object with circular reference", () => {
+    const myObject: any = { name: "cool dude", subobject: {} }
+    myObject.subobject.ref = myObject
+    return stringify(myObject, testFormatter)
+  }).check([
+    property("it prints the object without any problem", (result) => {
+      assert.deepEqual(result, "{ name: \"cool dude\", subobject: { ref: <CIRCULAR> } }")
+    })
+  ]),
+
+  exhibit("stringify array with circular reference", () => {
+    const myArray: Array<any> = [ { name: "fun person" }, { name: "cool dude" } ]
+    myArray[2] = myArray
+    return stringify(myArray, testFormatter)
+  }).check([
+    property("it prints the array without any problem", (result) => {
+      assert.deepEqual(result, "[\n  { name: \"fun person\" },\n  { name: \"cool dude\" },\n  <CIRCULAR>,\n]")
     })
   ])
 
