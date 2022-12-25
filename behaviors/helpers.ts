@@ -28,12 +28,12 @@ export function exhibit<T>(description: string, runner: () => T): UseCaseBuilder
 
 
 export function assertIsValidMatch(result: MatchResult): result is Valid {
-  assert(result instanceof Valid, "The result should be Valid")
+  assert(result instanceof Valid, `The result should be Valid\n\n${JSON.stringify(result)}`)
   return true
 }
 
 export function assertIsInvalidMatch(result: MatchResult): result is Invalid {
-  assert(result instanceof Invalid, "The result should be Invalid")
+  assert(result instanceof Invalid, `The result should be Invalid\n\n${JSON.stringify(result)}`)
   return true
 }
 

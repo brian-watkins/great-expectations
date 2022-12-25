@@ -13,6 +13,7 @@ import isArrayWhereItemAtBehavior from "./isArrayWhereItemAt.behavior";
 import isDefinedBehavior from "./isDefined.behavior";
 import resolvesToBehavior from "./resolvesTo.behavior";
 import isBehavior from "./is.behavior";
+import isObjectWithPropertyBehavior from "./isObjectWithProperty.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -25,6 +26,7 @@ validate([
   isStringContainingBehavior,
   isStringWithLengthBehavior,
   isStringMatchingBehavior,
+  isObjectWithPropertyBehavior,
   stringifyBehavior,
   satisfyingAllBehavior,
   isBehavior,
