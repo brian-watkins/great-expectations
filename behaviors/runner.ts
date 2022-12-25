@@ -11,6 +11,8 @@ import satisfyingAllBehavior from "./satisfyingAll.behavior";
 import isStringMatchingBehavior from "./isStringMatching.behavior";
 import isArrayWhereItemAtBehavior from "./isArrayWhereItemAt.behavior";
 import isDefinedBehavior from "./isDefined.behavior";
+import resolvesToBehavior from "./resolvesTo.behavior";
+import isBehavior from "./is.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -24,7 +26,9 @@ validate([
   isStringWithLengthBehavior,
   isStringMatchingBehavior,
   stringifyBehavior,
-  satisfyingAllBehavior
+  satisfyingAllBehavior,
+  isBehavior,
+  resolvesToBehavior
 ], {
   failFast: true
 })

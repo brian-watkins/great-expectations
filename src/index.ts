@@ -1,4 +1,4 @@
-import { Matcher } from "./matcher"
+import { description, Invalid, Matcher, problem } from "./matcher"
 import { MatchError } from "./matchError"
 export { equals, isIdenticalTo, isDefined } from "./basicMatchers"
 export { isArrayContaining, isArrayWhereItemAt, isArrayWithLength, isArrayWhere } from "./arrayMatchers"
@@ -7,7 +7,34 @@ export { isStringMatching, isStringWithLength, isStringContaining } from "./stri
 export type { StringContainingOptions } from "./stringMatchers"
 export { satisfyingAll } from "./satisfyingMatchers"
 
-export function expect<T>(value: T, matcher: Matcher<T>): void {
+type MatchEvaluator<T, S> = (value: T) => S
+
+export function expect<T, S>(value: T, evaluator: MatchEvaluator<T, S>): S {
+  return evaluator(value)
+}
+
+export function is<T>(matcher: Matcher<T>): MatchEvaluator<T, void> {
+  return (value) => {
+    evaluateMatch(value, matcher)
+  }
+}
+
+export function resolvesTo<T>(matcher: Matcher<T>): MatchEvaluator<Promise<T>, Promise<void>> {
+  return async (promised) => {
+    let resolvedValue
+    try {
+      resolvedValue = await promised
+    } catch (err) {
+      throw new MatchError(new Invalid("The promise was unexpectedly rejected.", {
+        actual: problem(description("a promise that rejected with %expected%", err)),
+        expected: problem(description("a promise that resolves"))
+      }))
+    }
+    evaluateMatch(resolvedValue, matcher)
+  }
+}
+
+function evaluateMatch<T>(value: T, matcher: Matcher<T>) {
   const matchResult = matcher(value)
   switch (matchResult.type) {
     case "valid":

@@ -47,6 +47,14 @@ export function assertHasActual<T>(expectedActual: T | Problem<T>, result: Match
   assert.deepEqual(result.values.actual, expectedActual)
 }
 
+export function assertHasActualMessage(expectedMessage: string, result: MatchResult) {
+  assert.deepEqual(stringify(result.values.actual, testFormatter), expectedMessage)
+}
+
+export function assertHasExpectedMessage(expectedMessage: string, result: MatchResult) {
+  assert.deepEqual(stringify(result.values.expected, testFormatter), expectedMessage)
+}
+
 export function isValidMatchResult(): Property<MatchResult> {
   return property("the match result is valid", (result) => {
     assertIsValidMatch(result)
@@ -67,7 +75,7 @@ export function hasMessage(message: string): Property<MatchResult> {
 
 export function hasExpectedMessageText(message: string): Property<MatchResult> {
   return property("a message explaining the expectation is shown", (result) => {
-    assert.deepEqual(stringify(result.values.expected, testFormatter), message)      
+    assertHasExpectedMessage(message, result)
   })
 }
 
