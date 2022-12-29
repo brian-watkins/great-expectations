@@ -75,24 +75,18 @@ function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
   return (actual) => {
     let actualValues: Array<any> = []
     let expected: Array<any> = []
-    let errorMessages: Array<ArrayMatchMessage> = []
+    let failures: number = 0
     for (let i = 0; i < actual.length; i++) {
       const itemResult = matchers[i](actual[i])
-      switch (itemResult.type) {
-        case "valid":
-          actualValues.push(itemResult.values.actual)
-          expected.push(itemResult.values.expected)
-          break
-        case "invalid":
-          errorMessages.push({ index: i, message: itemResult.description })
-          actualValues.push(itemResult.values.actual)
-          expected.push(itemResult.values.expected)
-          break
+      actualValues.push(itemResult.values.actual)
+      expected.push(itemResult.values.expected)
+      if (itemResult.type === "invalid") {
+        failures++
       }
     }
 
-    if (errorMessages.length > 0) {
-      return new Invalid(`The array failed to match:\n\n${errorMessages.map(e => `  at Actual[${e.index}]: ${e.message}`).join("\n\n")}`, {
+    if (failures > 0) {
+      return new Invalid("The array failed to match.", {
         actual: actualValues,
         expected: expected
       })
@@ -153,11 +147,6 @@ function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>
       })
     }
   }
-}
-
-interface ArrayMatchMessage {
-  index: number
-  message: string
 }
 
 export interface ArrayContainingOptions {

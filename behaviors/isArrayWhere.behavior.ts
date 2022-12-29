@@ -38,7 +38,7 @@ export default behavior("isArrayWhere", [
     ])([1, 6, 5])
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The array failed to match:\n\n  at Actual[1]: The actual value is not equal to the expected value.\n\n  at Actual[2]: The actual value is not equal to the expected value."),
+    hasMessage("The array failed to match."),
     hasExpected([
       description("a number that equals 1"), 
       problem(description("a number that equals 2")),
