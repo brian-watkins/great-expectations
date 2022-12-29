@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior"
 import { isStringContaining } from "../src"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
+import { exhibit, formattedList, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 import { satisfyingAll } from "../src"
 
 export default behavior("satisfyingAll", [
@@ -13,7 +13,7 @@ export default behavior("satisfyingAll", [
   }).check([
     isValidMatchResult(),
     hasActual("This is not a fish!"),
-    hasExpectedMessageText("info(a value that satisfies all of:\n  • a string that contains \"is\"\n  • a string that contains \"not\")")
+    hasExpectedMessageText(`info(a value that satisfies all of: ${formattedList(["a string that contains \"is\"", "a string that contains \"not\""])})`)
   ]),
 
   exhibit("one of the matchers is not satisfied", () => {
@@ -26,6 +26,6 @@ export default behavior("satisfyingAll", [
     isInvalidMatchResult(),
     hasMessage("The actual value did not satisfy all of the provided matchers."),
     hasInvalidActual("This is not a fish!"),
-    hasExpectedMessageText("info(a value that satisfies all of:\n  • a string that contains \"is\"\n  • error(a string that contains \"grapes\")\n  • error(a string that contains \"apple\"))")
+    hasExpectedMessageText(`info(a value that satisfies all of: ${formattedList(["a string that contains \"is\"", "error(a string that contains \"grapes\")", "error(a string that contains \"apple\")"])})`)
   ])
 ])

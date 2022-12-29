@@ -1,5 +1,5 @@
 import { Formatter, noErrorFormatter, noInfoFormatter } from "./formatter"
-import { Description, Problem } from "./matcher"
+import { Description, List, Problem } from "./matcher"
 
 let visited: Array<any> = []
 
@@ -32,6 +32,8 @@ export function stringify(val: any, formatter: Formatter): string {
         } else {
           return formatter.info(val.message)
         }
+      } else if (isList(val)) {
+        return `\n  • ${val.items.map(stringifyWithFormatter).join("\n  • ")}`
       } else {
         visited.push(val)
         const objectString = `{ ${Object.keys(val).map(key => `${key}: ${stringify(val[key], formatter)}`).join(", ")} }`
@@ -66,4 +68,8 @@ function isDescription(val: any): val is Description {
 
 function isProblem<T>(val: any): val is Problem<T> {
   return ("type" in val && val.type === "problem")
+}
+
+function isList(val: any): val is List {
+  return ("type" in val && val.type === "list")
 }

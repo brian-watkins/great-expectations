@@ -44,3 +44,15 @@ export function description(message: string, ...next: Array<any | undefined>): D
     next: next.filter(val => val !== undefined) as Array<any>
   }
 }
+
+export interface List {
+  type: "list"
+  items: Array<any>
+}
+
+export function list(items: Array<any>): List {
+  return {
+    type: "list",
+    items
+  }
+}

@@ -97,6 +97,9 @@ export function hasInvalidActual<T>(value: T): Property<MatchResult> {
   })
 }
 
+export function formattedList(items: Array<string>): string {
+  return `\n  • ${items.join("\n  • ")}`
+}
 
 export const testFormatter: Formatter = {
   info: (message) => `info(${message})`,

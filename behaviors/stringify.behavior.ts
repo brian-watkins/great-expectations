@@ -2,7 +2,7 @@ import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify";
 import { exhibit, property, testFormatter } from "./helpers";
 import { strict as assert } from "node:assert"
-import { description, problem } from "../src/matcher";
+import { description, list, problem } from "../src/matcher";
 
 export default behavior("stringify", [
 
@@ -149,6 +149,14 @@ export default behavior("stringify", [
   }).check([
     property("it prints the array without any problem", (result) => {
       assert.deepEqual(result, "[\n  { name: \"fun person\" },\n  { name: \"cool dude\" },\n  <CIRCULAR>,\n]")
+    })
+  ]),
+
+  exhibit("stringify list", () => {
+    return stringify(list([1, problem(2), 3, 4]), testFormatter)
+  }).check([
+    property("it prints the list", (result) => {
+      assert.deepEqual(result, "\n  • 1\n  • error(2)\n  • 3\n  • 4")
     })
   ])
 
