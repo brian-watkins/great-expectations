@@ -27,7 +27,7 @@ export default behavior("isObjectWithProperty", [
     return isObjectWithProperty("blah", equals(27))({ name: "cool dude" })
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The object does not have the specified property."),
+    hasMessage("The object does not have the expected property."),
     hasInvalidActual({name: "cool dude"}),
     hasExpectedMessageText("error(info(an object with a property \"blah\"))")
   ]), 

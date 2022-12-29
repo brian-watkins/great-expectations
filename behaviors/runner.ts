@@ -14,6 +14,7 @@ import isDefinedBehavior from "./isDefined.behavior";
 import resolvesToBehavior from "./resolvesTo.behavior";
 import isBehavior from "./is.behavior";
 import isObjectWithPropertyBehavior from "./isObjectWithProperty.behavior";
+import isObjectWhereBehavior from "./isObjectWhere.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -27,6 +28,7 @@ validate([
   isStringWithLengthBehavior,
   isStringMatchingBehavior,
   isObjectWithPropertyBehavior,
+  isObjectWhereBehavior,
   stringifyBehavior,
   satisfyingAllBehavior,
   isBehavior,
