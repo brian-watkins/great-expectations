@@ -7,7 +7,7 @@ the descriptions you write.
 
 There are two guiding principles behind the design of Great Expectations:
 
-1. Descriptions should be as determinate.
+1. Descriptions should be determinate.
 
 Consider a numeric value. One might be tempted to describe it by asserting that
 it is `not 7` or `less than 8`. While this narrows down the possibilities, it still
