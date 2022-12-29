@@ -1,11 +1,11 @@
 import { behavior } from "esbehavior"
-import { isDefined } from "../src"
+import { defined } from "../src"
 import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 export default behavior("isDefined", [
 
   exhibit("the value is defined", () => {
-    return isDefined()("")
+    return defined()("")
   }).check([
     isValidMatchResult(),
     hasActual(""),
@@ -13,7 +13,7 @@ export default behavior("isDefined", [
   ]),
 
   exhibit("the value is not defined", () => {
-    return isDefined()(undefined)
+    return defined()(undefined)
   }).check([
     isInvalidMatchResult(),
     hasMessage("The actual value is not defined."),

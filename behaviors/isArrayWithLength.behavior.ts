@@ -1,11 +1,11 @@
 import { behavior } from "esbehavior";
-import { isArrayWithLength } from "../src";
+import { arrayWithLength } from "../src";
 import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("isArrayWithLength", [
 
   exhibit("the array has the expected length", () => {
-    return isArrayWithLength(4)([1, 2, 3, 4])
+    return arrayWithLength(4)([1, 2, 3, 4])
   }).check([
     isValidMatchResult(),
     hasActual([1, 2, 3, 4]),
@@ -13,7 +13,7 @@ export default behavior("isArrayWithLength", [
   ]),
 
   exhibit("the array does not have the expected length", () => {
-    return isArrayWithLength(3)([1, 2, 3, 4])
+    return arrayWithLength(3)([1, 2, 3, 4])
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array length (4) is unexpected."),

@@ -1,6 +1,6 @@
 import { description, Invalid, list, Matcher, MatchResult, problem, Valid } from "./matcher";
 
-export function satisfyingAll<T>(matchers: Array<Matcher<T>>): Matcher<T> {
+export function satisfying<T>(matchers: Array<Matcher<T>>): Matcher<T> {
   return (actual) => {
     let failed = false
     let results: Array<MatchResult> = []

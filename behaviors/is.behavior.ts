@@ -1,5 +1,5 @@
 import { behavior, effect, example } from "esbehavior"
-import { expect, is, isStringContaining } from "../src"
+import { expect, is, stringContaining } from "../src"
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError"
 
@@ -10,7 +10,7 @@ export default behavior("expect is", [
     .script({
       observe: [
         effect("it runs the match as expected", () => {
-          expect("blah blah", is(isStringContaining("blah", { times: 2 })))
+          expect("blah blah", is(stringContaining("blah", { times: 2 })))
         })
       ]
     }),
@@ -21,7 +21,7 @@ export default behavior("expect is", [
       observe: [
         effect("it throws the MatchError", () => {
           assert.throws(() => {
-            expect("blah blah", is(isStringContaining("blah", { times: 21 })))
+            expect("blah blah", is(stringContaining("blah", { times: 21 })))
           }, (err: MatchError) => {
             assert.ok(err.expected.includes("a string that contains \"blah\" exactly 21 times"))
             return true

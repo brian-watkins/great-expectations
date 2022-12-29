@@ -1,6 +1,6 @@
 import { description, Invalid, list, Matcher, MatchResult, problem, Valid } from "./matcher";
 
-export function isObjectWithProperty<T>(property: PropertyKey, matcher: Matcher<T>): Matcher<any> {
+export function objectWithProperty<T>(property: PropertyKey, matcher: Matcher<T>): Matcher<any> {
   return (actual) => {
     if (!Object.hasOwn(actual, property)) {
       return new Invalid("The object does not have the expected property.", {
@@ -28,7 +28,7 @@ export function isObjectWithProperty<T>(property: PropertyKey, matcher: Matcher<
   }
 }
 
-export function isObjectWhere(matchObject: { [key: PropertyKey]: Matcher<any> }): Matcher<{ [key: PropertyKey]: any }> {
+export function objectWhere(matchObject: { [key: PropertyKey]: Matcher<any> }): Matcher<{ [key: PropertyKey]: any }> {
   return (actual) => {
     const objectMatchResult = new ObjectMatchResult(actual, matchObject)
 

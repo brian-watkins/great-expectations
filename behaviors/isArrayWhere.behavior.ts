@@ -1,15 +1,15 @@
 import { behavior } from "esbehavior";
-import { equals, isArrayWhere } from "../src";
+import { equalTo, arrayWhere } from "../src";
 import { description, problem } from "../src/matcher";
 import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("isArrayWhere", [
 
   exhibit("the array matches", () => {
-    return isArrayWhere([
-      equals(1),
-      equals(2),
-      equals(3)
+    return arrayWhere([
+      equalTo(1),
+      equalTo(2),
+      equalTo(3)
     ])([1, 2, 3])
   }).check([
     isValidMatchResult(),
@@ -22,7 +22,7 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the actual array does not have the expected number of items", () => {
-    return isArrayWhere([equals(1), equals(2), equals(3)])([1, 2])
+    return arrayWhere([equalTo(1), equalTo(2), equalTo(3)])([1, 2])
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array length (2) is unexpected."),
@@ -31,10 +31,10 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the array fails to match at an item", () => {
-    return isArrayWhere([
-      equals(1),
-      equals(2),
-      equals(3)
+    return arrayWhere([
+      equalTo(1),
+      equalTo(2),
+      equalTo(3)
     ])([1, 6, 5])
   }).check([
     isInvalidMatchResult(),
@@ -48,30 +48,30 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the array fails to match when not ordered as expected", () => {
-    return isArrayWhere([
-      equals(1),
-      equals(2),
-      equals(3)
+    return arrayWhere([
+      equalTo(1),
+      equalTo(2),
+      equalTo(3)
     ], { withAnyOrder: false })([3, 1, 2])
   }).check([
     isInvalidMatchResult()
   ]),
 
   exhibit("the array is matched regardless of order", () => {
-    return isArrayWhere([
-      equals(1),
-      equals(2),
-      equals(3)
+    return arrayWhere([
+      equalTo(1),
+      equalTo(2),
+      equalTo(3)
     ], { withAnyOrder: true })([3, 1, 2])
   }).check([
     isValidMatchResult()
   ]),
 
   exhibit("the unexpected value is displayed for an array that fails to match regardless of order", () => {
-    return isArrayWhere([
-      equals(1),
-      equals(2),
-      equals(3)
+    return arrayWhere([
+      equalTo(1),
+      equalTo(2),
+      equalTo(3)
     ], { withAnyOrder: true })([ 3, 6, 2 ])
   }).check([
     isInvalidMatchResult(),
@@ -85,10 +85,10 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the correct unexpected value is displayed for identical matchers within the array", () => {
-    return isArrayWhere([
-      equals(2),
-      equals(2),
-      equals(3)
+    return arrayWhere([
+      equalTo(2),
+      equalTo(2),
+      equalTo(3)
     ], { withAnyOrder: true })([ 3, 6, 2 ])
   }).check([
     isInvalidMatchResult(),

@@ -1,14 +1,14 @@
 import { behavior } from "esbehavior"
-import { isStringContaining } from "../src"
+import { stringContaining } from "../src"
 import { exhibit, formattedList, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
-import { satisfyingAll } from "../src"
+import { satisfying } from "../src"
 
 export default behavior("satisfyingAll", [
 
   exhibit("all the matchers are satisfied", () => {
-    return satisfyingAll([
-      isStringContaining("is"),
-      isStringContaining("not")
+    return satisfying([
+      stringContaining("is"),
+      stringContaining("not")
     ])("This is not a fish!")
   }).check([
     isValidMatchResult(),
@@ -17,10 +17,10 @@ export default behavior("satisfyingAll", [
   ]),
 
   exhibit("one of the matchers is not satisfied", () => {
-    return satisfyingAll([
-      isStringContaining("is"),
-      isStringContaining("grapes"),
-      isStringContaining("apple")
+    return satisfying([
+      stringContaining("is"),
+      stringContaining("grapes"),
+      stringContaining("apple")
     ])("This is not a fish!")
   }).check([
     isInvalidMatchResult(),

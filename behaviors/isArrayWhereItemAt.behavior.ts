@@ -1,12 +1,12 @@
 import { behavior } from "esbehavior"
-import { equals, isArrayWhereItemAt } from "../src"
+import { equalTo, arrayWhereItemAt } from "../src"
 import { problem } from "../src/matcher"
 import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 export default behavior("isArrayWhereItemAt", [
 
   exhibit("the item at the specified index matches", () => {
-    return isArrayWhereItemAt(2, equals(3))([1, 2, 3])
+    return arrayWhereItemAt(2, equalTo(3))([1, 2, 3])
   }).check([
     isValidMatchResult(),
     hasActual([1, 2, 3]),
@@ -14,7 +14,7 @@ export default behavior("isArrayWhereItemAt", [
   ]),
 
   exhibit("the item at the specified index does not match", () => {
-    return isArrayWhereItemAt(3, equals(1))([1, 2, 3, 4, 5])
+    return arrayWhereItemAt(3, equalTo(1))([1, 2, 3, 4, 5])
   }).check([
     isInvalidMatchResult(),
     hasMessage("The item at index 3 did not match."),
@@ -23,7 +23,7 @@ export default behavior("isArrayWhereItemAt", [
   ]),
 
   exhibit("the array has no item at the specified index", () => {
-    return isArrayWhereItemAt(17, equals(2))([1, 2, 3, 4])
+    return arrayWhereItemAt(17, equalTo(2))([1, 2, 3, 4])
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array has no item at index 17."),

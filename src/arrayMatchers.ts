@@ -1,9 +1,9 @@
-import { equals } from "./basicMatchers"
+import { equalTo } from "./basicMatchers"
 import { Description, description, Invalid, Matcher, MatchValues, problem, Valid } from "./matcher"
 import { timesMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
-export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
+export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
   return (actual) => {
     const message = description("an array with length %expected%", expectedLength)
 
@@ -21,7 +21,7 @@ export function isArrayWithLength<T>(expectedLength: number): Matcher<Array<T>> 
   }
 }
 
-export function isArrayWhereItemAt<T>(index: number, matcher: Matcher<T>): Matcher<Array<T>> {
+export function arrayWhereItemAt<T>(index: number, matcher: Matcher<T>): Matcher<Array<T>> {
   return (actual) => {
     if (actual.length <= index) {
       return new Invalid(`The array has no item at index ${index}.`, {
@@ -53,11 +53,11 @@ export interface ArrayWhereOptions {
   withAnyOrder?: boolean
 }
 
-export function isArrayWhere<T>(matchers: Array<Matcher<T>>, options: ArrayWhereOptions = {}): Matcher<Array<T>> {
+export function arrayWhere<T>(matchers: Array<Matcher<T>>, options: ArrayWhereOptions = {}): Matcher<Array<T>> {
   const allowAnyOrder = options.withAnyOrder ?? false
 
   return (actual) => {
-    const lengthResult = isArrayWithLength<T>(matchers.length)(actual)
+    const lengthResult = arrayWithLength<T>(matchers.length)(actual)
 
     if (lengthResult.type === "invalid") {
       return lengthResult
@@ -164,7 +164,7 @@ export interface ArrayContainingOptions {
   times?: number
 }
 
-export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
+export function arrayContaining<T>(matcher: Matcher<T>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
   const expectedMatchCount = options.times
 
   return (actual) => {
@@ -184,7 +184,7 @@ export function isArrayContaining<T>(matcher: Matcher<T>, options: ArrayContaini
     if (expectedMatchCount === undefined) {
       countMatcher = isNumberGreaterThan(0)
     } else {
-      countMatcher = equals(expectedMatchCount)
+      countMatcher = equalTo(expectedMatchCount)
     }
 
     const countResult = countMatcher(matchedCount)

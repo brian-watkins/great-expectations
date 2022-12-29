@@ -3,7 +3,7 @@ import { description, Invalid, Matcher, problem, Valid } from "./matcher"
 import { typeName } from "./message"
 
 
-export function isIdenticalTo<T>(expected: T): Matcher<T> {
+export function identicalTo<T>(expected: T): Matcher<T> {
   return (actual) => {
     if (actual === expected) {
       return new Valid({
@@ -19,7 +19,7 @@ export function isIdenticalTo<T>(expected: T): Matcher<T> {
   }
 }
 
-export function equals<T>(expected: T): Matcher<T> {
+export function equalTo<T>(expected: T): Matcher<T> {
   return (actual) => {
     if (equal(actual, expected, { strict: true })) {
       return new Valid({
@@ -35,7 +35,7 @@ export function equals<T>(expected: T): Matcher<T> {
   }
 }
 
-export function isDefined(): Matcher<any> {
+export function defined(): Matcher<any> {
   return (actual) => {
     const message = description("a value that is defined")
 

@@ -1,14 +1,14 @@
 import { behavior } from "esbehavior"
-import { equals, isArrayContaining, isObjectWhere, isStringContaining } from "../src"
+import { equalTo, arrayContaining, objectWhere, stringContaining } from "../src"
 import { description, problem } from "../src/matcher"
 import { exhibit, formattedList, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 export default behavior("isObjectWhere", [
 
   exhibit("the object matches", () => {
-    return isObjectWhere({
-      name: isStringContaining("cool"),
-      age: equals(27)
+    return objectWhere({
+      name: stringContaining("cool"),
+      age: equalTo(27)
     })({ name: "cool dude", age: 27 })
   }).check([
     isValidMatchResult(),
@@ -20,10 +20,10 @@ export default behavior("isObjectWhere", [
   ]),
 
   exhibit("one of the properties fails to match", () => {
-    return isObjectWhere({
-      name: isStringContaining("cool"),
-      age: equals(27),
-      sport: isArrayContaining(isStringContaining("tennis"))
+    return objectWhere({
+      name: stringContaining("cool"),
+      age: equalTo(27),
+      sport: arrayContaining(stringContaining("tennis"))
     })({ name: "cool dude", age: 20, sport: [ "tennis" ] })
   }).check([
     isInvalidMatchResult(),
@@ -37,10 +37,10 @@ export default behavior("isObjectWhere", [
   ]),
 
   exhibit("several properties fail to match", () => {
-    return isObjectWhere({
-      name: isStringContaining("cool"),
-      age: equals(27),
-      sport: isArrayContaining(isStringContaining("tennis"))
+    return objectWhere({
+      name: stringContaining("cool"),
+      age: equalTo(27),
+      sport: arrayContaining(stringContaining("tennis"))
     })({ name: "bad dude", age: 27, sport: [ "bowling" ] })
   }).check([
     isInvalidMatchResult(),
@@ -54,10 +54,10 @@ export default behavior("isObjectWhere", [
   ]),
 
   exhibit("the object does not have one of the specified properties", () => {
-    return isObjectWhere({
-      name: isStringContaining("cool"),
-      age: equals(27),
-      sport: isArrayContaining(isStringContaining("tennis"))
+    return objectWhere({
+      name: stringContaining("cool"),
+      age: equalTo(27),
+      sport: arrayContaining(stringContaining("tennis"))
     })({ name: "cool dude", sport: [ "tennis" ] })
   }).check([
     isInvalidMatchResult(),
@@ -67,10 +67,10 @@ export default behavior("isObjectWhere", [
   ]),
 
   exhibit("the object does not have several of the specified properties", () => {
-    return isObjectWhere({
-      name: isStringContaining("cool"),
-      age: equals(27),
-      sport: isArrayContaining(isStringContaining("tennis"))
+    return objectWhere({
+      name: stringContaining("cool"),
+      age: equalTo(27),
+      sport: arrayContaining(stringContaining("tennis"))
     })({ name: "cool dude" })
   }).check([
     isInvalidMatchResult(),

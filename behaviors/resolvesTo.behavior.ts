@@ -1,5 +1,5 @@
 import { behavior, effect, example } from "esbehavior"
-import { equals, expect, isStringContaining, resolvesTo } from "../src"
+import { equalTo, expect, stringContaining, resolvesTo } from "../src"
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError"
 import { assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers"
@@ -11,7 +11,7 @@ export default behavior("expect resolvesTo", [
     .script({
       observe: [
         effect("it runs the match as expected", async () => {
-          await expect(Promise.resolve("blah blah"), resolvesTo(isStringContaining("blah", { times: 2 })))
+          await expect(Promise.resolve("blah blah"), resolvesTo(stringContaining("blah", { times: 2 })))
         })
       ]
     }),
@@ -22,7 +22,7 @@ export default behavior("expect resolvesTo", [
       observe: [
         effect("it throws the MatchError", async () => {
           await assert.rejects(async () => {
-            await expect(Promise.resolve("blah blah"), resolvesTo(isStringContaining("blah", { times: 21 })))
+            await expect(Promise.resolve("blah blah"), resolvesTo(stringContaining("blah", { times: 21 })))
           }, (err: MatchError) => {
             assertHasExpectedMessage("error(info(a string that contains \"blah\" exactly 21 times))", err.invalid)
             return true
@@ -37,7 +37,7 @@ export default behavior("expect resolvesTo", [
       observe: [
         effect("it throws a MatchError explaining the unexpected rejection", async () => {
           await assert.rejects(async () => {
-            await expect(Promise.reject("blah"), resolvesTo(equals(17)))
+            await expect(Promise.reject("blah"), resolvesTo(equalTo(17)))
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid)
             assertHasMessage("The promise was unexpectedly rejected.", err.invalid)

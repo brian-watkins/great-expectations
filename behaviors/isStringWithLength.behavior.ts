@@ -1,11 +1,11 @@
 import { behavior } from "esbehavior"
 import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
-import { isStringWithLength } from "../src/index"
+import { stringWithLength } from "../src/index"
 
 export default behavior("isStringWithLength", [
 
   exhibit("matches a string with the expected length", () => {
-    return isStringWithLength(4)("blah")
+    return stringWithLength(4)("blah")
   }).check([
     isValidMatchResult(),
     hasActual("blah"),
@@ -13,13 +13,13 @@ export default behavior("isStringWithLength", [
   ]),
 
   exhibit("matches an empty string", () => {
-    return isStringWithLength(0)("")
+    return stringWithLength(0)("")
   }).check([
     isValidMatchResult()
   ]),
 
   exhibit("a string with the wrong length fails to match", () => {
-    return isStringWithLength(14)("yo yo")
+    return stringWithLength(14)("yo yo")
   }).check([
     isInvalidMatchResult(),
     hasMessage("The actual value does not have the expected length."),

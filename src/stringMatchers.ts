@@ -1,10 +1,10 @@
-import { equals } from "./basicMatchers"
+import { equalTo } from "./basicMatchers"
 import { Description, description, Invalid, Matcher, problem, Valid } from "./matcher"
 import { timesMessage } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
 
-export function isStringMatching(regex: RegExp): Matcher<string> {
+export function stringMatching(regex: RegExp): Matcher<string> {
   return (actual) => {
     const message = description(`a string matching ${regex.toString()}`)
 
@@ -22,7 +22,7 @@ export function isStringMatching(regex: RegExp): Matcher<string> {
   }
 }
 
-export function isStringWithLength(expectedLength: number): Matcher<string> {
+export function stringWithLength(expectedLength: number): Matcher<string> {
   return (actual) => {
     const message = description(`a string with length %expected%`, expectedLength)
 
@@ -45,7 +45,7 @@ export interface StringContainingOptions {
   times?: number
 }
 
-export function isStringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
+export function stringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
   const isCaseSensitive = options.caseSensitive ?? true
   const expectedCount = options.times
 
@@ -65,7 +65,7 @@ export function isStringContaining(expected: string, options: StringContainingOp
       countMatcher = isNumberGreaterThan(0)
       message = description(stringInvalidMessage(isCaseSensitive), expected)
     } else {
-      countMatcher = equals(expectedCount)
+      countMatcher = equalTo(expectedCount)
       message = description(`${stringInvalidMessage(isCaseSensitive)} ${timesMessage(expectedCount)}`, expected)
     }
 

@@ -1,11 +1,11 @@
 import { behavior } from "esbehavior"
-import { isStringMatching } from "../src"
+import { stringMatching } from "../src"
 import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 export default behavior("isStringMatching", [
 
   exhibit("the regex matches the given string", () => {
-    return isStringMatching(/fun/)("funny stuff!")
+    return stringMatching(/fun/)("funny stuff!")
   }).check([
     isValidMatchResult(),
     hasActual("funny stuff!"),
@@ -13,7 +13,7 @@ export default behavior("isStringMatching", [
   ]),
 
   exhibit("the regex fails to match the given string", () => {
-    return isStringMatching(/^thing/)("nothing good")
+    return stringMatching(/^thing/)("nothing good")
   }).check([
     isInvalidMatchResult(),
     hasMessage("The actual value does not match the regular expression."),

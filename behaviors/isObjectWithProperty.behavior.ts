@@ -1,5 +1,5 @@
 import { behavior } from "esbehavior"
-import { equals, isObjectWithProperty, isStringContaining } from "../src"
+import { equalTo, objectWithProperty, stringContaining } from "../src"
 import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 const symbol = Symbol("fun-stuff")
@@ -7,7 +7,7 @@ const symbol = Symbol("fun-stuff")
 export default behavior("isObjectWithProperty", [
 
   exhibit("the object has a property that matches", () => {
-    return isObjectWithProperty("name", isStringContaining("cool"))({ name: "cool dude" })
+    return objectWithProperty("name", stringContaining("cool"))({ name: "cool dude" })
   }).check([
     isValidMatchResult(),
     hasActual({name: "cool dude"}),
@@ -15,7 +15,7 @@ export default behavior("isObjectWithProperty", [
   ]),
 
   exhibit("the object has a property that does not match", () => {
-    return isObjectWithProperty("name", isStringContaining("cool"))({ name: "someone else" })
+    return objectWithProperty("name", stringContaining("cool"))({ name: "someone else" })
   }).check([
     isInvalidMatchResult(),
     hasMessage("The value at the specified property is unexpected."),
@@ -24,7 +24,7 @@ export default behavior("isObjectWithProperty", [
   ]),
 
   exhibit("the object does not have the specified property", () => {
-    return isObjectWithProperty("blah", equals(27))({ name: "cool dude" })
+    return objectWithProperty("blah", equalTo(27))({ name: "cool dude" })
   }).check([
     isInvalidMatchResult(),
     hasMessage("The object does not have the expected property."),
@@ -33,7 +33,7 @@ export default behavior("isObjectWithProperty", [
   ]), 
 
   exhibit("the specified property name is a symbol", () => {
-    return isObjectWithProperty(symbol, equals(27))({ [symbol]: 27 })
+    return objectWithProperty(symbol, equalTo(27))({ [symbol]: 27 })
   }).check([
     isValidMatchResult(),
     hasActual({ [symbol]: 27 }),
@@ -41,7 +41,7 @@ export default behavior("isObjectWithProperty", [
   ]),
 
   exhibit("the specified property name is a number", () => {
-    return isObjectWithProperty(14, equals(8))({ 14: 8 })
+    return objectWithProperty(14, equalTo(8))({ 14: 8 })
   }).check([
     isValidMatchResult(),
     hasActual({ 14: 8 }),
