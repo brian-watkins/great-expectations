@@ -1,12 +1,12 @@
 import { behavior } from "esbehavior"
-import { equalTo, arrayContaining, objectWhere, stringContaining } from "../src"
+import { equalTo, arrayContaining, objectWith, stringContaining } from "../src"
 import { description, problem } from "../src/matcher"
 import { exhibit, formattedList, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 export default behavior("isObjectWhere", [
 
   exhibit("the object matches", () => {
-    return objectWhere({
+    return objectWith({
       name: stringContaining("cool"),
       age: equalTo(27)
     })({ name: "cool dude", age: 27 })
@@ -20,7 +20,7 @@ export default behavior("isObjectWhere", [
   ]),
 
   exhibit("one of the properties fails to match", () => {
-    return objectWhere({
+    return objectWith({
       name: stringContaining("cool"),
       age: equalTo(27),
       sport: arrayContaining(stringContaining("tennis"))
@@ -37,7 +37,7 @@ export default behavior("isObjectWhere", [
   ]),
 
   exhibit("several properties fail to match", () => {
-    return objectWhere({
+    return objectWith({
       name: stringContaining("cool"),
       age: equalTo(27),
       sport: arrayContaining(stringContaining("tennis"))
@@ -54,7 +54,7 @@ export default behavior("isObjectWhere", [
   ]),
 
   exhibit("the object does not have one of the specified properties", () => {
-    return objectWhere({
+    return objectWith({
       name: stringContaining("cool"),
       age: equalTo(27),
       sport: arrayContaining(stringContaining("tennis"))
@@ -67,7 +67,7 @@ export default behavior("isObjectWhere", [
   ]),
 
   exhibit("the object does not have several of the specified properties", () => {
-    return objectWhere({
+    return objectWith({
       name: stringContaining("cool"),
       age: equalTo(27),
       sport: arrayContaining(stringContaining("tennis"))

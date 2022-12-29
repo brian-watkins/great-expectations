@@ -1,12 +1,12 @@
 import { behavior } from "esbehavior";
-import { equalTo, arrayWhere } from "../src";
+import { equalTo, arrayWith } from "../src";
 import { description, problem } from "../src/matcher";
 import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("isArrayWhere", [
 
   exhibit("the array matches", () => {
-    return arrayWhere([
+    return arrayWith([
       equalTo(1),
       equalTo(2),
       equalTo(3)
@@ -22,7 +22,7 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the actual array does not have the expected number of items", () => {
-    return arrayWhere([equalTo(1), equalTo(2), equalTo(3)])([1, 2])
+    return arrayWith([equalTo(1), equalTo(2), equalTo(3)])([1, 2])
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array length (2) is unexpected."),
@@ -31,7 +31,7 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the array fails to match at an item", () => {
-    return arrayWhere([
+    return arrayWith([
       equalTo(1),
       equalTo(2),
       equalTo(3)
@@ -48,7 +48,7 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the array fails to match when not ordered as expected", () => {
-    return arrayWhere([
+    return arrayWith([
       equalTo(1),
       equalTo(2),
       equalTo(3)
@@ -58,7 +58,7 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the array is matched regardless of order", () => {
-    return arrayWhere([
+    return arrayWith([
       equalTo(1),
       equalTo(2),
       equalTo(3)
@@ -68,7 +68,7 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the unexpected value is displayed for an array that fails to match regardless of order", () => {
-    return arrayWhere([
+    return arrayWith([
       equalTo(1),
       equalTo(2),
       equalTo(3)
@@ -85,7 +85,7 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the correct unexpected value is displayed for identical matchers within the array", () => {
-    return arrayWhere([
+    return arrayWith([
       equalTo(2),
       equalTo(2),
       equalTo(3)

@@ -129,20 +129,20 @@ Asserts that the actual value is a string that matches the provided regular expr
 
 Asserts that the actual value is an array with the given length
 
-#### arrayWhereItemAt(index, matcher)
-
-Asserts that the actual value is an array with an item at the provided index
-that matches the provided matcher.
-
 #### arrayContaining(matcher, { times: undefined })
 
 Asserts that the actual value is an array with at least one item that matches
 the provided matcher. The optional option specifies whether some specific
 number of items should match.
 
-#### arrayWhere(array of matchers, { withAnyOrder: false })
+#### arrayWithItemAt(index, matcher)
 
-Asserts that the actual value is an array with items that match the provided
+Asserts that the actual value is an array with an item at the provided index
+that matches the provided matcher.
+
+#### arrayWith(array of matchers, { withAnyOrder: false })
+
+Asserts that the actual value is an array with exactly items that match the provided
 array of matchers in the given order. The optional option specifies whether
 order matters.
 
@@ -162,7 +162,7 @@ expect([ 1, 2, 3 ], is(arrayWhere([
 Asserts that the actual value is an object with an own property of the given name and a
 value that matches the provided matcher.
 
-#### objectWhere(matcherObject)
+#### objectWith(matcherObject)
 
 Asserts that the actual value is an object that has all the properties of the provided
 matcher object and the values of those properties match the matchers associated with each

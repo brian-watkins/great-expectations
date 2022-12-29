@@ -28,7 +28,7 @@ export function objectWithProperty<T>(property: PropertyKey, matcher: Matcher<T>
   }
 }
 
-export function objectWhere(matchObject: { [key: PropertyKey]: Matcher<any> }): Matcher<{ [key: PropertyKey]: any }> {
+export function objectWith(matchObject: { [key: PropertyKey]: Matcher<any> }): Matcher<{ [key: PropertyKey]: any }> {
   return (actual) => {
     const objectMatchResult = new ObjectMatchResult(actual, matchObject)
 
