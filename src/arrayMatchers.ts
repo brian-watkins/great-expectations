@@ -1,21 +1,21 @@
 import { equalTo } from "./basicMatchers"
-import { Description, description, Invalid, Matcher, MatchValues, problem, Valid } from "./matcher"
-import { timesMessage } from "./message"
+import { Invalid, Matcher, MatchValues, Valid } from "./matcher"
+import { Message, message, problem, timesMessage, value } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
 export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
   return (actual) => {
-    const message = description("an array with length %expected%", expectedLength)
+    const expectedMessage = message`an array with length ${value(expectedLength)}`
 
     if (expectedLength === actual.length) {
       return new Valid({
         actual,
-        expected: message
+        expected: expectedMessage
       })
     } else {
       return new Invalid(`The array length (${actual.length}) is unexpected.`, {
         actual: problem(actual),
-        expected: problem(message)
+        expected: problem(expectedMessage)
       })
     }
   }
@@ -26,24 +26,24 @@ export function arrayWithItemAt<T>(index: number, matcher: Matcher<T>): Matcher<
     if (actual.length <= index) {
       return new Invalid(`The array has no item at index ${index}.`, {
         actual: problem(actual),
-        expected: problem(description(`an array with some item to check at index ${index}`))
+        expected: problem(message`an array with some item at index ${index}`)
       })
     }
 
     const result = matcher(actual[index])
 
-    const message = description(`an array where the item at index ${index} is %expected%`, result.values.expected)
+    const expectedMessage = message`an array where the item at index ${index} is ${value(result.values.expected)}`
 
     switch (result.type) {
       case "valid":
         return new Valid({
           actual,
-          expected: message
+          expected: expectedMessage
         })
       case "invalid":
         return new Invalid(`The item at index ${index} did not match.`, {
           actual: actual.map((val, i) => i === index ? problem(val) : val),
-          expected: problem(message)
+          expected: problem(expectedMessage)
         })
     }
   }
@@ -192,8 +192,8 @@ export function arrayContaining<T>(matcher: Matcher<T>, options: ArrayContaining
   }
 }
 
-function arrayContainsMessage(expectedMatchCount: number | undefined, matchValues: MatchValues | undefined): Description {
+function arrayContainsMessage(expectedMatchCount: number | undefined, matchValues: MatchValues | undefined): Message {
   return (expectedMatchCount === undefined)
-    ? description("an array that contains %expected%", matchValues?.expected)
-    : description(`an array that contains, ${timesMessage(expectedMatchCount)}, %expected%`, matchValues?.expected)
+    ? message`an array that contains ${matchValues?.expected}`
+    : message`an array that contains, ${timesMessage(expectedMatchCount)}, ${value(matchValues?.expected)}`
 }

@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior"
 import { equalTo, arrayContaining, objectWith, stringContaining } from "../src"
-import { description, problem } from "../src/matcher"
+import { message, problem } from "../src/message"
 import { exhibit, formattedList, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 export default behavior("isObjectWhere", [
@@ -14,8 +14,8 @@ export default behavior("isObjectWhere", [
     isValidMatchResult(),
     hasActual({name: "cool dude", age: 27 }),
     hasExpected({
-      name: description("a string that contains \"cool\""),
-      age: description("a number that equals 27")
+      name: message`a string that contains \"cool\"`,
+      age: message`a number that equals 27`
     })
   ]),
 
@@ -30,9 +30,9 @@ export default behavior("isObjectWhere", [
     hasMessage("One of the object's properties was unexpected."),
     hasActual({name: "cool dude", age: problem(20), sport: [ "tennis" ] }),
     hasExpected({
-      name: description("a string that contains \"cool\""),
-      age: problem(description("a number that equals 27")),
-      sport: description("an array that contains a string that contains \"tennis\"")
+      name: message`a string that contains \"cool\"`,
+      age: problem(message`a number that equals 27`),
+      sport: message`an array that contains a string that contains \"tennis\"`
     })
   ]),
 
@@ -47,9 +47,9 @@ export default behavior("isObjectWhere", [
     hasMessage("Some of the object's properties were unexpected."),
     hasActual({name: problem("bad dude"), age: 27, sport: problem([ "bowling" ]) }),
     hasExpected({
-      name: problem(description("a string that contains \"cool\"")),
-      age: description("a number that equals 27"),
-      sport: problem(description("an array that contains a string that contains \"tennis\""))
+      name: problem(message`a string that contains \"cool\"`),
+      age: message`a number that equals 27`,
+      sport: problem(message`an array that contains a string that contains \"tennis\"`)
     })
   ]),
 

@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior"
 import { equalTo, arrayWithItemAt } from "../src"
-import { problem } from "../src/matcher"
+import { problem } from "../src/message"
 import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
 export default behavior("isArrayWhereItemAt", [
@@ -28,7 +28,7 @@ export default behavior("isArrayWhereItemAt", [
     isInvalidMatchResult(),
     hasMessage("The array has no item at index 17."),
     hasInvalidActual([1, 2, 3, 4]),
-    hasExpectedMessageText("error(info(an array with some item to check at index 17))")
+    hasExpectedMessageText("error(info(an array with some item at index 17))")
   ])
 
 ])

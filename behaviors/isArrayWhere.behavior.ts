@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior";
 import { equalTo, arrayWith } from "../src";
-import { description, problem } from "../src/matcher";
+import { message, problem } from "../src/message";
 import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("isArrayWhere", [
@@ -15,9 +15,9 @@ export default behavior("isArrayWhere", [
     isValidMatchResult(),
     hasActual([1, 2, 3]),
     hasExpected([
-      description("a number that equals 1"),
-      description("a number that equals 2"),
-      description("a number that equals 3"),
+      message`a number that equals 1`,
+      message`a number that equals 2`,
+      message`a number that equals 3`,
     ])
   ]),
 
@@ -40,9 +40,9 @@ export default behavior("isArrayWhere", [
     isInvalidMatchResult(),
     hasMessage("The array failed to match."),
     hasExpected([
-      description("a number that equals 1"), 
-      problem(description("a number that equals 2")),
-      problem(description("a number that equals 3"))
+      message`a number that equals 1`,
+      problem(message`a number that equals 2`),
+      problem(message`a number that equals 3`)
     ]),
     hasActual([1, problem(6), problem(5)]),
   ]),
@@ -77,9 +77,9 @@ export default behavior("isArrayWhere", [
     isInvalidMatchResult(),
     hasMessage("The array failed to match."),
     hasExpected([
-      problem(description("a number that equals 1")), 
-      description("a number that equals 2"),
-      description("a number that equals 3")
+      problem(message`a number that equals 1`),
+      message`a number that equals 2`,
+      message`a number that equals 3`
     ]),
     hasActual([3, problem(6), 2])
   ]),
@@ -94,9 +94,9 @@ export default behavior("isArrayWhere", [
     isInvalidMatchResult(),
     hasMessage("The array failed to match."),
     hasExpected([
-      description("a number that equals 2"),
-      problem(description("a number that equals 2")),
-      description("a number that equals 3")
+      message`a number that equals 2`,
+      problem(message`a number that equals 2`),
+      message`a number that equals 3`
     ]),
     hasActual([3, problem(6), 2])
   ])

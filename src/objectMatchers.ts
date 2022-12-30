@@ -1,28 +1,29 @@
-import { description, Invalid, list, Matcher, MatchResult, problem, Valid } from "./matcher";
+import { Invalid, Matcher, MatchResult, Valid } from "./matcher";
+import { list, message, problem, value } from "./message";
 
 export function objectWithProperty<T>(property: PropertyKey, matcher: Matcher<T>): Matcher<any> {
   return (actual) => {
     if (!Object.hasOwn(actual, property)) {
       return new Invalid("The object does not have the expected property.", {
         actual: problem(actual),
-        expected: problem(description("an object with a property %expected%", property))
+        expected: problem(message`an object with a property ${value(property)}`)
       })
     }
 
     const result = matcher(actual[property])
 
-    const message = description("an object with a property %expected% that is %expected%", property, result.values.expected)
+    const expectedMessage = message`an object with a property ${value(property)} that is ${value(result.values.expected)}`
 
     switch (result.type) {
       case "valid":
         return new Valid({
           actual,
-          expected: message
+          expected: expectedMessage
         })
       case "invalid":
         return new Invalid("The value at the specified property is unexpected.", {
           actual: problem(actual),
-          expected: problem(message)
+          expected: problem(expectedMessage)
         })
     }
   }
@@ -52,10 +53,10 @@ function validResult(objectMatchResult: ObjectMatchResult): MatchResult {
 }
 
 function invalidPropertyResult(objectMatchResult: ObjectMatchResult): MatchResult {
-  const message = objectMatchResult.totalInvalidProperties() == 1
+  const description = objectMatchResult.totalInvalidProperties() == 1
     ? "One of the object's properties was unexpected."
     : "Some of the object's properties were unexpected."
-  return new Invalid(message, {
+  return new Invalid(description, {
     actual: objectMatchResult.actuals,
     expected: objectMatchResult.expecteds
   })
@@ -72,7 +73,7 @@ function missingKeyResult(objectMatchResult: ObjectMatchResult): MatchResult {
 
   return new Invalid(`The object does not have ${objectMatchResult.totalMissingKeys() == 1 ? "one" : "several"} of the expected properties.`, {
     actual: problem(objectMatchResult.actual),
-    expected: description("an object that contains properties: %expected%", list(expectedKeys))
+    expected: message`an object that contains properties: ${list(expectedKeys)}`
   })
 }
 

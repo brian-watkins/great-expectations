@@ -1,4 +1,5 @@
-import { description, Invalid, list, Matcher, MatchResult, problem, Valid } from "./matcher";
+import { Invalid, Matcher, MatchResult, Valid } from "./matcher";
+import { list, message, problem } from "./message";
 
 export function satisfying<T>(matchers: Array<Matcher<T>>): Matcher<T> {
   return (actual) => {
@@ -12,17 +13,17 @@ export function satisfying<T>(matchers: Array<Matcher<T>>): Matcher<T> {
       results.push(result)
     }
 
-    const message = description("a value that satisfies all of: %expected%", list(results.map(result => result.values.expected)))
+    const expectedMessage = message`a value that satisfies all of: ${list(results.map(result => result.values.expected))}`
 
     if (failed) {
       return new Invalid("The actual value did not satisfy all of the provided matchers.", {
         actual: problem(actual),
-        expected: message
+        expected: expectedMessage
       })
     } else {
       return new Valid({
         actual,
-        expected: message
+        expected: expectedMessage
       })
     }
   }

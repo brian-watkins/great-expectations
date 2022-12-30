@@ -2,7 +2,7 @@ import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify";
 import { exhibit, property, testFormatter } from "./helpers";
 import { strict as assert } from "node:assert"
-import { description, list, problem } from "../src/matcher";
+import { list, message, problem, value } from "../src/message";
 
 export default behavior("stringify", [
 
@@ -90,8 +90,8 @@ export default behavior("stringify", [
       })
     ]),
 
-  exhibit("stringify an object with a description", () => {
-    return stringify({ name: "something", message: description("some message") }, testFormatter)
+  exhibit("stringify an object with a message", () => {
+    return stringify({ name: "something", message: message`some message` }, testFormatter)
   }).check([
     property("it recursively prints the message with the given formatter", (result) => {
       assert.deepEqual(result, "{ name: \"something\", message: info(some message) }")
@@ -107,25 +107,16 @@ export default behavior("stringify", [
       })
     ]),
 
-  exhibit("stringify a description", () => {
-    return stringify(description("You failed!"), testFormatter)
-  })
-    .check([
-      property("it prints the message", (result) => {
-        assert.deepEqual(result, "info(You failed!)")
-      })
-    ]),
-
-  exhibit("stringify an problematic description chain", () => {
-    return stringify(problem(description("First I did this, %expected%", description("Then I did this: %expected%", problem(14)))), testFormatter)
+  exhibit("stringify an problematic message chain", () => {
+    return stringify(problem(message`First I did this, ${message`Then I did this: ${problem(14)}`}`), testFormatter)
   }).check([
     property("it prints the message", (result) => {
       assert.deepEqual(result, "error(info(First I did this, Then I did this: 14))")
     })
   ]),
 
-  exhibit("stringify description with message that contains problematic descriptions", () => {
-    return stringify(description("Two things: (1) %expected% and (2) %expected%", description("a thing"), problem(description("another thing"))), testFormatter)
+  exhibit("stringify message that contains problematic descriptions", () => {
+    return stringify(message`Two things: (1) ${message`a thing`} and (2) ${problem(message`another thing`)}`, testFormatter)
   }).check([
     property("it prints the message with the proper formatting", (result) => {
       assert.deepEqual(result, "info(Two things: (1) a thing and (2) error(another thing))")
@@ -157,6 +148,22 @@ export default behavior("stringify", [
   }).check([
     property("it prints the list", (result) => {
       assert.deepEqual(result, "\n  • 1\n  • error(2)\n  • 3\n  • 4")
+    })
+  ]),
+
+  exhibit("stringify message", () => {
+    return stringify(message`This is something ${value("cool")}: ${value(27)} and other stuff.`, testFormatter)
+  }).check([
+    property("it prints the message", (result) => {
+      assert.deepEqual(result, "info(This is something \"cool\": 27 and other stuff.)")
+    })
+  ]),
+
+  exhibit("stringify message with a generated string", () => {
+    return stringify(message`This is ${"something"}.`, testFormatter)
+  }).check([
+    property("it prints the message", (result) => {
+      assert.deepEqual(result, "info(This is something.)")
     })
   ])
 

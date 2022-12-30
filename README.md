@@ -206,13 +206,24 @@ Then you can just use it like any other matcher:
 expect(8, is(even()))
 ```
 
+#### MatchResult
+
+A type that is either `Valid` or `Invalid`. All `MatchResult` instances following this
+interface:
+
+```
+{
+  type: "valid" | "invalid"
+  values: { actual: any, expected: any }
+}
+```
 
 #### Valid({ actual, expected }): MatchResult
 
 Create a `Valid` when the actual value matches what's expected.
 
 The `actual` and `expected` values are used to present these values when necessary.
-These can each be any value but you can use `description` to create human readable
+These can each be any value but you can use `message` to create human readable
 descriptions.
 
 #### Invalid(description, { actual, expected }): MatchResult
@@ -220,15 +231,24 @@ descriptions.
 Create an `Invalid` when the actual value fails to match what's expected.
 
 The `actual` and `expected` values are used to present these values when necessary.
-These can each be any value but you can use `description` to create human readable
+These can each be any value but you can use `message` to create human readable
 descriptions, and `problem` to indicate unexpected values.
 
-#### description(message, array of values)
+Instances of `Invalid` also have a `description` field.
 
-Produces a description from the given message, replacing each occurrence of `%expected%`
-with the provided values, stringified, in order.
+#### message`template literal`
+
+Produces a message from the given template literal. String expressions will be printed as is;
+other expressions will be stringified. Use `value`, `problem`, and `list` to markup expressions.
+
+#### value(value)
+
+Stringifies a given value for pretty output.
 
 #### problem(value)
 
 Highlights a value as problematic in the output.
 
+#### list(array of values)
+
+Stringifies the values into a pretty list for output.

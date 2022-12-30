@@ -1,22 +1,22 @@
 import { equalTo } from "./basicMatchers"
-import { Description, description, Invalid, Matcher, problem, Valid } from "./matcher"
-import { timesMessage } from "./message"
+import { Invalid, Matcher, Valid } from "./matcher"
+import { Message, message, problem, timesMessage, value } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
 
 export function stringMatching(regex: RegExp): Matcher<string> {
   return (actual) => {
-    const message = description(`a string matching ${regex.toString()}`)
+    const expectedMessage = message`a string matching ${regex.toString()}`
 
     if (regex.test(actual)) {
       return new Valid({
         actual,
-        expected: message
+        expected: expectedMessage
       })
     } else {
       return new Invalid("The actual value does not match the regular expression.", {
         actual: problem(actual),
-        expected: problem(message)
+        expected: problem(expectedMessage)
       })
     }
   }
@@ -24,17 +24,17 @@ export function stringMatching(regex: RegExp): Matcher<string> {
 
 export function stringWithLength(expectedLength: number): Matcher<string> {
   return (actual) => {
-    const message = description(`a string with length %expected%`, expectedLength)
+    const expectedMessage = message`a string with length ${expectedLength}`
 
     if (expectedLength === actual.length) {
       return new Valid({
         actual,
-        expected: message
+        expected: expectedMessage
       })
     } else {
       return new Invalid("The actual value does not have the expected length.", {
         actual: problem(actual),
-        expected: problem(message)
+        expected: problem(expectedMessage)
       })
     }
   }
@@ -60,13 +60,13 @@ export function stringContaining(expected: string, options: StringContainingOpti
     const count = getStringMatchCount(actualString, expectedString)
 
     let countMatcher: Matcher<number>
-    let message: Description
+    let message: Message
     if (expectedCount === undefined) {
       countMatcher = isNumberGreaterThan(0)
-      message = description(stringInvalidMessage(isCaseSensitive), expected)
+      message = stringInvalidMessage(isCaseSensitive, expected)
     } else {
       countMatcher = equalTo(expectedCount)
-      message = description(`${stringInvalidMessage(isCaseSensitive)} ${timesMessage(expectedCount)}`, expected)
+      message = stringInvalidMessage(isCaseSensitive, expected, expectedCount)
     }
 
     const countResult = countMatcher(count)
@@ -85,16 +85,12 @@ export function stringContaining(expected: string, options: StringContainingOpti
   }
 }
 
-function stringInvalidMessage(isCaseSensitive: boolean): string {
-  let message = `a string that contains`
-
-  if (!isCaseSensitive) {
-    message += " (case-insensitive)"
-  }
-
-  message += " %expected%"
-
-  return message
+function stringInvalidMessage(isCaseSensitive: boolean, expected: any, expectedCount?: number): Message {
+  return message`a string that contains${
+    isCaseSensitive ? "" : " (case-insensitive)"
+  } ${value(expected)}${
+    expectedCount !== undefined ? " " + timesMessage(expectedCount) : ""
+  }`
 }
 
 function getStringMatchCount(message: string, term: string): number {
