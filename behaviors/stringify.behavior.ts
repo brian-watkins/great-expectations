@@ -2,7 +2,7 @@ import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify";
 import { exhibit, property, testFormatter } from "./helpers";
 import { strict as assert } from "node:assert"
-import { list, message, problem, value } from "../src/message";
+import { list, message, problem, typeName, value } from "../src/message";
 
 export default behavior("stringify", [
 
@@ -164,6 +164,14 @@ export default behavior("stringify", [
   }).check([
     property("it prints the message", (result) => {
       assert.deepEqual(result, "info(This is something.)")
+    })
+  ]),
+
+  exhibit("stringify the type names", () => {
+    return stringify(message`${typeName(true)}, ${typeName("hello")}, ${typeName(1)}, ${typeName({foo: "bar"})}, ${typeName(() => {})}, ${typeName(Symbol("fun"))}, ${typeName(BigInt("234452"))}, ${typeName(undefined)}`, testFormatter)
+  }).check([
+    property("it prints the type name", (result) => {
+      assert.deepEqual(result, "info(a boolean, a string, a number, an object, a function, a symbol, a bigint, undefined)")
     })
   ])
 

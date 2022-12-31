@@ -1,13 +1,11 @@
-export function typeName(value: any): string {
-  switch (typeof(value)) {
-    case "object":
-      return "an object"
-    case "number":
-      return "a number"
-    case "string":
-      return "a string"
-    default:
-      return "not done yet"
+export interface TypeName {
+  type: "type-name"
+  value: any
+}
+export function typeName(value: any): TypeName {
+  return {
+    type: "type-name",
+    value
   }
 }
 
