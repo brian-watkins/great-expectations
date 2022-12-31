@@ -254,6 +254,9 @@ The `actual` and `expected` values are used to present these values when necessa
 These can each be any value but you can use `message` to create human readable
 descriptions, and `problem` to indicate unexpected values.
 
+
+### Creating Messages
+
 #### message\`template literal\`
 
 Produces a message from the given template literal. String expressions will be printed as is;
