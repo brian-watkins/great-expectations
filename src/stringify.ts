@@ -1,5 +1,5 @@
 import { Formatter, noErrorFormatter, noInfoFormatter } from "./formatter"
-import { List, Message, Problem, TypeName, Value } from "./message"
+import { List, Message, Problem, Times, TypeName, Value } from "./message"
 
 let visited: Array<any> = []
 
@@ -25,6 +25,8 @@ export function stringify(val: any, formatter: Formatter): string {
         return arrayString
       } else if (isTypeName(val)) {
         return formatTypeName(val.value)
+      } else if (isTimes(val)) {
+        return formatTimes(val.count)
       } else if (isValue(val)) {
         return stringifyWithFormatter(val.value)
       } else if (isProblem(val)) {
@@ -87,6 +89,14 @@ function formatTypeName(value: any): string {
   }
 }
 
+function formatTimes(count: number): string {
+  if (count === 1) {
+    return "exactly 1 time"
+  } else {
+    return `exactly ${count} times`
+  }
+}
+
 function isProblem<T>(val: any): val is Problem<T> {
   return ("type" in val && val.type === "problem")
 }
@@ -101,6 +111,10 @@ function isValue(val: any): val is Value {
 
 function isTypeName(val: any): val is TypeName {
   return ("type" in val && val.type === "type-name")
+}
+
+function isTimes(val: any): val is Times {
+  return ("type" in val && val.type === "times")
 }
 
 function isMessage(val: any): val is Message {

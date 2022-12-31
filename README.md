@@ -188,12 +188,12 @@ function even(): Matcher<number> {
     if (actual % 2 === 0) {
       return new Valid({
         actual,
-        expected: description("a number that is even")
+        expected: message`a number that is even`
       })
     } else {
       return new Invalid("The actual number was not even.", {
         actual: problem(actual),
-        expected: problem(description("a number that is even"))
+        expected: problem(message`a number that is even`)
       })
     }
   }
@@ -208,38 +208,63 @@ expect(8, is(even()))
 
 #### MatchResult
 
-A type that is either `Valid` or `Invalid`. All `MatchResult` instances following this
-interface:
+A type that is either `Valid` or `Invalid`. `MatchResult` is a discriminated union
+based on the `type` field. So it's possible to handle cases like so:
 
 ```
-{
-  type: "valid" | "invalid"
-  values: { actual: any, expected: any }
+const matchResult = equalTo(7)(5)
+switch (matchResult.type) {
+  case "valid":
+    // do something with the valid result
+  case "invalid":
+    // do something with the invalid result
 }
 ```
 
-#### Valid({ actual, expected }): MatchResult
+#### new Valid({ actual, expected }): MatchResult
 
-Create a `Valid` when the actual value matches what's expected.
+Create a `Valid` when the actual value matches what's expected. The instance looks
+like this:
+
+```
+{
+  type: "valid"
+  values: { actual: any, expected: any }
+}
+```
 
 The `actual` and `expected` values are used to present these values when necessary.
 These can each be any value but you can use `message` to create human readable
 descriptions.
 
-#### Invalid(description, { actual, expected }): MatchResult
+#### new Invalid(description, { actual, expected }): MatchResult
 
-Create an `Invalid` when the actual value fails to match what's expected.
+Create an `Invalid` when the actual value fails to match what's expected. The instance
+looks like this:
+
+```
+{
+  type: "valid" | "invalid"
+  description: string
+  values: { actual: any, expected: any }
+}
+```
 
 The `actual` and `expected` values are used to present these values when necessary.
 These can each be any value but you can use `message` to create human readable
 descriptions, and `problem` to indicate unexpected values.
 
-Instances of `Invalid` also have a `description` field.
-
 #### message\`template literal\`
 
 Produces a message from the given template literal. String expressions will be printed as is;
-other expressions will be stringified. Use `value`, `problem`, and `list` to markup expressions.
+other expressions will be stringified. Use `value`, `problem`, `list`, `typeName`, and `times`
+to format expressions.
+
+```
+const expected = "hello"
+message`${typeName(expected)} that contains ${value(expected)} ${times(2)}`
+===> a string that contains "hello" exactly 2 times
+```
 
 #### value(value)
 
@@ -252,3 +277,19 @@ Highlights a value as problematic in the output.
 #### list(array of values)
 
 Stringifies the values into a pretty list for output.
+
+#### typeName(value)
+
+Formats the type of the value for output.
+
+```
+typeName("hello") ===> "a string"
+```
+
+#### times(count)
+
+Prints the number of times for output.
+
+```
+times(7) ===> "exactly 7 times"
+```

@@ -1,6 +1,6 @@
 import { equalTo } from "./basicMatchers"
 import { Invalid, Matcher, MatchValues, Valid } from "./matcher"
-import { Message, message, problem, timesMessage, value } from "./message"
+import { Message, message, problem, times, value } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
 export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
@@ -195,5 +195,5 @@ export function arrayContaining<T>(matcher: Matcher<T>, options: ArrayContaining
 function arrayContainsMessage(expectedMatchCount: number | undefined, matchValues: MatchValues | undefined): Message {
   return (expectedMatchCount === undefined)
     ? message`an array that contains ${matchValues?.expected}`
-    : message`an array that contains, ${timesMessage(expectedMatchCount)}, ${value(matchValues?.expected)}`
+    : message`an array that contains, ${times(expectedMatchCount)}, ${value(matchValues?.expected)}`
 }

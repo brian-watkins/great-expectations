@@ -2,6 +2,7 @@ export interface TypeName {
   type: "type-name"
   value: any
 }
+
 export function typeName(value: any): TypeName {
   return {
     type: "type-name",
@@ -9,11 +10,15 @@ export function typeName(value: any): TypeName {
   }
 }
 
-export function timesMessage(count: number): string {
-  if (count === 1) {
-    return "exactly 1 time"
-  } else {
-    return `exactly ${count} times`
+export interface Times {
+  type: "times"
+  count: number
+}
+
+export function times(count: number): Times {
+  return {
+    type: "times",
+    count
   }
 }
 

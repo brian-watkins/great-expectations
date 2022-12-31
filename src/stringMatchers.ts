@@ -1,6 +1,6 @@
 import { equalTo } from "./basicMatchers"
 import { Invalid, Matcher, Valid } from "./matcher"
-import { Message, message, problem, timesMessage, value } from "./message"
+import { Message, message, problem, times, value } from "./message"
 import { isNumberGreaterThan } from "./numberMatchers"
 
 
@@ -86,11 +86,13 @@ export function stringContaining(expected: string, options: StringContainingOpti
 }
 
 function stringInvalidMessage(isCaseSensitive: boolean, expected: any, expectedCount?: number): Message {
-  return message`a string that contains${
-    isCaseSensitive ? "" : " (case-insensitive)"
-  } ${value(expected)}${
-    expectedCount !== undefined ? " " + timesMessage(expectedCount) : ""
-  }`
+  const operator = isCaseSensitive ? "contains" : "contains (case-insensitive)"
+  
+  if (expectedCount !== undefined) {
+    return message`a string that ${operator} ${value(expected)} ${times(expectedCount)}`
+  } else {
+    return message`a string that ${operator} ${value(expected)}`
+  }
 }
 
 function getStringMatchCount(message: string, term: string): number {
