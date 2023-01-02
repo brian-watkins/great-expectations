@@ -74,6 +74,11 @@ expect([1, 2, 3], is(listWhereItemAt(2, equalTo(3))))
 Evaluates the provided matcher against the promised actual value, when that promise resolves.
 Fails if the promise rejects.
 
+#### rejectsWith(matcher): MatchEvaluator
+
+Evaluates the provided matcher against the value received with that promise rejects. Fails if
+the promise resolves.
+
 
 ### Basic Matchers
 
@@ -187,7 +192,7 @@ function even(): Matcher<number> {
   return (actual) => {
     if (actual % 2 === 0) {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: message`a number that is even`
       })
     } else {
@@ -229,13 +234,16 @@ like this:
 ```
 {
   type: "valid"
-  values: { actual: any, expected: any }
+  values: {
+    actual: Value | Problem | Message,
+    expected: Value | Problem | Message
+  }
 }
 ```
 
 The `actual` and `expected` values are used to present these values when necessary.
-These can each be any value but you can use `message` to create human readable
-descriptions.
+You can use `message` to create human readable descriptions, `value` to indicate valid
+values, and `problem` to indicate unexpected values.
 
 #### new Invalid(description, { actual, expected }): MatchResult
 
@@ -244,15 +252,18 @@ looks like this:
 
 ```
 {
-  type: "valid" | "invalid"
+  type: "invalid"
   description: string
-  values: { actual: any, expected: any }
+  values: {
+    actual: Value | Problem | Message,
+    expected: Value | Problem | Message
+  }
 }
 ```
 
 The `actual` and `expected` values are used to present these values when necessary.
-These can each be any value but you can use `message` to create human readable
-descriptions, and `problem` to indicate unexpected values.
+You can use `message` to create human readable descriptions, `value` to indicate valid
+values, and `problem` to indicate unexpected values.
 
 
 ### Creating Messages
