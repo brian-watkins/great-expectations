@@ -3,6 +3,7 @@ import { stringify } from "../src/stringify";
 import { exhibit, property, testFormatter } from "./helpers";
 import { strict as assert } from "node:assert"
 import { list, message, problem, times, typeName, value } from "../src/message";
+import { satisfying, stringContaining } from "../src";
 
 export default behavior("stringify", [
 
@@ -180,6 +181,63 @@ export default behavior("stringify", [
   }).check([
     property("it prints the times messages", (result) => {
       assert.deepEqual(result, "info(exactly 0 times, exactly 1 time, exactly 5 times)")
+    })
+  ]),
+
+  (m) => m.pick() && exhibit("stringify an array with nested lists", () => {
+    return stringify([
+      message`hello`,
+      message`a value that satisfies:${list([
+        message`one`,
+        message`another list${list([
+          message`two ${problem("bad")}`,
+          message`three`
+        ])}`
+      ])}`,
+      message`goodbye`
+    ], testFormatter)
+  }).check([
+    property("it indents the lists properly", (result) => {
+      assert.deepEqual(result, `[
+  info(hello),
+  info(a value that satisfies:
+    • one
+    • another list
+      • two error("bad")
+      • three),
+  info(goodbye)
+]`)
+    })
+  ]),
+
+  (m) => m.pick() && exhibit("stringify an object with nested objects and arrays", () => {
+    return stringify({
+      name: message`${value("cool dude")}`,
+      sports: [
+        message`one`,
+        message`satisfying:${list([
+          message`contains ${value("bowling")}`
+        ])}`
+      ],
+      address: {
+        street: message`road`,
+        zip: message`11111`
+      }
+    }, testFormatter)
+  }).check([
+    property("it indents the object properly", (result) => {
+      assert.deepEqual(result, `{
+  name: info(\"cool dude\"),
+  sports: [
+    info(one),
+    info(satisfying:
+      • contains \"bowling\")
+  ],
+  address: {
+    street: info(road),
+    zip: info(11111)
+  }
+}`)
     })
   ])
 
