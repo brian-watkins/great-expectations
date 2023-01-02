@@ -111,7 +111,7 @@ function formatTimes(count: number): string {
   }
 }
 
-function isProblem<T>(val: any): val is Problem<T> {
+function isProblem(val: any): val is Problem {
   return ("type" in val && val.type === "problem")
 }
 

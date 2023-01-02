@@ -22,12 +22,12 @@ export function times(count: number): Times {
   }
 }
 
-export interface Problem<T> {
+export interface Problem {
   type: "problem"
-  value: T
+  value: any
 }
 
-export function problem<T>(value: T): Problem<T> {
+export function problem(value: any): Problem {
   return {
     type: "problem",
     value
