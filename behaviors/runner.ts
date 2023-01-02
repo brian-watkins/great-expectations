@@ -15,6 +15,7 @@ import resolvesToBehavior from "./resolvesTo.behavior";
 import isBehavior from "./is.behavior";
 import isObjectWithPropertyBehavior from "./isObjectWithProperty.behavior";
 import isObjectWhereBehavior from "./isObjectWhere.behavior";
+import rejectsWithBehavior from "./rejectsWith.behavior";
 
 validate([
   isIdenticalToBehavior,
@@ -32,7 +33,8 @@ validate([
   stringifyBehavior,
   satisfyingAllBehavior,
   isBehavior,
-  resolvesToBehavior
+  resolvesToBehavior,
+  rejectsWithBehavior
 ], {
   failFast: true
 })

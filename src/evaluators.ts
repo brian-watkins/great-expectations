@@ -25,6 +25,22 @@ export function resolvesTo<T>(matcher: Matcher<T>): MatchEvaluator<Promise<T>, P
   }
 }
 
+export function rejectsWith<T>(matcher: Matcher<T>): MatchEvaluator<Promise<any>, Promise<void>> {
+  return async (promised) => {
+    let resolvedValue
+    try {
+      resolvedValue = await promised
+    } catch (rejectedValue: any) {
+      evaluateMatch(rejectedValue, matcher)
+      return
+    }
+    throw new MatchError(new Invalid("The promise unexpectedly resolved.", {
+      actual: problem(message`a promise that resolved with ${value(resolvedValue)}`),
+      expected: problem(message`a promise that rejects`)
+    }))
+  }
+}
+
 function evaluateMatch<T>(value: T, matcher: Matcher<T>) {
   const matchResult = matcher(value)
   switch (matchResult.type) {
