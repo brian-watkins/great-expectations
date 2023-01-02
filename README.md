@@ -48,15 +48,17 @@ it("some test", () => {
 
 ### Writing Expectations
 
-#### expect(actual, MatchEvaluator)
+#### expect(actual, MatchEvaluator, description?)
 
-The expect function evaluates an actual value against the provided description. It will
+The expect function evaluates an actual value against the provided matcher. It will
 throw an Error if the actual value does not match, which is generally sufficient to cause
 a test to fail in most JS testing frameworks.
 
 A `MatchEvaluator` specifies whether the evaluation will occur synchronously or after
 a Promise resolves. Use `is` in most cases, and `resolvesTo` or `rejectsWith` in cases where
 the actual value is a Promise.
+
+Optionally, provide a description that will display with any invalid matches.
 
 
 ### MatchEvaluators
