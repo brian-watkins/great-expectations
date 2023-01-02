@@ -9,7 +9,7 @@ export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
 
     if (expectedLength === actual.length) {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: expectedMessage
       })
     } else {
@@ -32,17 +32,17 @@ export function arrayWithItemAt<T>(index: number, matcher: Matcher<T>): Matcher<
 
     const result = matcher(actual[index])
 
-    const expectedMessage = message`an array where the item at index ${index} is ${value(result.values.expected)}`
+    const expectedMessage = message`an array where the item at index ${index} is ${result.values.expected}`
 
     switch (result.type) {
       case "valid":
         return new Valid({
-          actual,
+          actual: value(actual),
           expected: expectedMessage
         })
       case "invalid":
         return new Invalid(`The item at index ${index} did not match.`, {
-          actual: actual.map((val, i) => i === index ? problem(val) : val),
+          actual: value(actual.map((val, i) => i === index ? problem(val) : val)),
           expected: problem(expectedMessage)
         })
     }
@@ -87,13 +87,13 @@ function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
 
     if (failures > 0) {
       return new Invalid("The array failed to match.", {
-        actual: actualValues,
-        expected: expected
+        actual: value(actualValues),
+        expected: value(expected)
       })
     } else {
       return new Valid({
-        actual: actualValues,
-        expected: expected
+        actual: value(actualValues),
+        expected: value(expected)
       })
     }
   }
@@ -137,13 +137,13 @@ function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>
 
     if (accumulatedResult.failed) {
       return new Invalid("The array failed to match.", {
-        actual: actualValues,
-        expected: accumulatedResult.expected
+        actual: value(actualValues),
+        expected: value(accumulatedResult.expected)
       })
     } else {
       return new Valid({
-        actual: actualValues,
-        expected: accumulatedResult.expected
+        actual: value(actualValues),
+        expected: value(accumulatedResult.expected)
       })
     }
   }
@@ -180,7 +180,7 @@ export function arrayContaining<T>(matcher: Matcher<T>, options: ArrayContaining
 
     if (countResult.type === "valid") {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: arrayContainsMessage(expectedMatchCount, validMatchValues)
       })
     } else {
@@ -195,5 +195,5 @@ export function arrayContaining<T>(matcher: Matcher<T>, options: ArrayContaining
 function arrayContainsMessage(expectedMatchCount: number | undefined, matchValues: MatchValues | undefined): Message {
   return (expectedMatchCount === undefined)
     ? message`an array that contains ${matchValues?.expected}`
-    : message`an array that contains, ${times(expectedMatchCount)}, ${value(matchValues?.expected)}`
+    : message`an array that contains, ${times(expectedMatchCount)}, ${matchValues?.expected}`
 }

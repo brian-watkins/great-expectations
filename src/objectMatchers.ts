@@ -12,12 +12,12 @@ export function objectWithProperty<T>(property: PropertyKey, matcher: Matcher<T>
 
     const result = matcher(actual[property])
 
-    const expectedMessage = message`an object with a property ${value(property)} that is ${value(result.values.expected)}`
+    const expectedMessage = message`an object with a property ${value(property)} that is ${result.values.expected}`
 
     switch (result.type) {
       case "valid":
         return new Valid({
-          actual,
+          actual: value(actual),
           expected: expectedMessage
         })
       case "invalid":
@@ -47,8 +47,8 @@ export function objectWith(matchObject: { [key: PropertyKey]: Matcher<any> }): M
 
 function validResult(objectMatchResult: ObjectMatchResult): MatchResult {
   return new Valid({
-    actual: objectMatchResult.actuals,
-    expected: objectMatchResult.expecteds
+    actual: value(objectMatchResult.actuals),
+    expected: value(objectMatchResult.expecteds)
   })
 }
 
@@ -57,8 +57,8 @@ function invalidPropertyResult(objectMatchResult: ObjectMatchResult): MatchResul
     ? "One of the object's properties was unexpected."
     : "Some of the object's properties were unexpected."
   return new Invalid(description, {
-    actual: objectMatchResult.actuals,
-    expected: objectMatchResult.expecteds
+    actual: value(objectMatchResult.actuals),
+    expected: value(objectMatchResult.expecteds)
   })
 }
 

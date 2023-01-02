@@ -7,7 +7,7 @@ export function isNumberGreaterThan(expected: number): Matcher<number> {
 
     if (actual > expected) {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: expectedMessage
       })
     } else {

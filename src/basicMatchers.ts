@@ -9,7 +9,7 @@ export function identicalTo<T>(expected: T): Matcher<T> {
 
     if (actual === expected) {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: expectedMessage
       })
     } else {
@@ -27,7 +27,7 @@ export function equalTo<T>(expected: T): Matcher<T> {
 
     if (equal(actual, expected, { strict: true })) {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: expectedMessage
       })
     } else {
@@ -50,7 +50,7 @@ export function defined(): Matcher<any> {
       })
     } else {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: expectedMessage
       })
     }

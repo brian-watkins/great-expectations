@@ -1,9 +1,9 @@
 import { behavior } from "esbehavior"
 import { equalTo, arrayContaining, objectWith, stringContaining } from "../src"
-import { message, problem } from "../src/message"
+import { message, problem, value } from "../src/message"
 import { exhibit, formattedList, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
 
-export default behavior("isObjectWhere", [
+export default behavior("objectWith", [
 
   exhibit("the object matches", () => {
     return objectWith({
@@ -12,7 +12,7 @@ export default behavior("isObjectWhere", [
     })({ name: "cool dude", age: 27 })
   }).check([
     isValidMatchResult(),
-    hasActual({name: "cool dude", age: 27 }),
+    hasActual({name: value("cool dude"), age: value(27) }),
     hasExpected({
       name: message`a string that contains \"cool\"`,
       age: message`a number that equals 27`
@@ -28,7 +28,7 @@ export default behavior("isObjectWhere", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("One of the object's properties was unexpected."),
-    hasActual({name: "cool dude", age: problem(20), sport: [ "tennis" ] }),
+    hasActual({name: value("cool dude"), age: problem(20), sport: value([ "tennis" ]) }),
     hasExpected({
       name: message`a string that contains \"cool\"`,
       age: problem(message`a number that equals 27`),
@@ -45,7 +45,7 @@ export default behavior("isObjectWhere", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("Some of the object's properties were unexpected."),
-    hasActual({name: problem("bad dude"), age: 27, sport: problem([ "bowling" ]) }),
+    hasActual({name: problem("bad dude"), age: value(27), sport: problem([ "bowling" ]) }),
     hasExpected({
       name: problem(message`a string that contains \"cool\"`),
       age: message`a number that equals 27`,

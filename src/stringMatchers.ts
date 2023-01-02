@@ -10,7 +10,7 @@ export function stringMatching(regex: RegExp): Matcher<string> {
 
     if (regex.test(actual)) {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: expectedMessage
       })
     } else {
@@ -28,7 +28,7 @@ export function stringWithLength(expectedLength: number): Matcher<string> {
 
     if (expectedLength === actual.length) {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: expectedMessage
       })
     } else {
@@ -73,7 +73,7 @@ export function stringContaining(expected: string, options: StringContainingOpti
     
     if (countResult.type === "valid") {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: message
       })
     } else {
@@ -85,7 +85,7 @@ export function stringContaining(expected: string, options: StringContainingOpti
   }
 }
 
-function stringInvalidMessage(isCaseSensitive: boolean, expected: any, expectedCount?: number): Message {
+function stringInvalidMessage(isCaseSensitive: boolean, expected: string, expectedCount?: number): Message {
   const operator = isCaseSensitive ? "contains" : "contains (case-insensitive)"
   
   if (expectedCount !== undefined) {

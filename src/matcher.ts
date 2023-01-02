@@ -1,6 +1,8 @@
+import { Message, Problem, Value } from "./message"
+
 export interface MatchValues {
-  actual: any
-  expected: any
+  actual: Problem | Value | Message
+  expected: Problem | Value | Message
 }
 
 export class Valid {

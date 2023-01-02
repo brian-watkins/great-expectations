@@ -2,7 +2,7 @@ import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior"
 import { strict as assert } from "node:assert"
 import { Formatter } from "../src/formatter";
 import { Invalid, MatchResult, Valid } from "../src/matcher";
-import { problem, Problem } from "../src/message";
+import { problem, Problem, value } from "../src/message";
 import { stringify } from "../src/stringify";
 
 type Property<T> = Observation<T>
@@ -44,7 +44,7 @@ export function assertHasMessage(expectedMessage: string, result: MatchResult) {
   }
 }
 
-export function assertHasActual<T>(expectedActual: T | Problem<T>, result: MatchResult) {
+export function assertHasActual<T>(expectedActual: T | Problem, result: MatchResult) {
   assert.deepEqual(result.values.actual, expectedActual)
 }
 
@@ -86,9 +86,9 @@ export function hasExpected(value: any): Property<MatchResult> {
   })
 }
 
-export function hasActual<T>(value: T): Property<MatchResult> {
+export function hasActual<T>(actual: T): Property<MatchResult> {
   return property("the actual value is shown", (result) => {
-    assertHasActual(value, result)
+    assertHasActual(value(actual), result)
   })
 }
 

@@ -1,5 +1,5 @@
 import { Invalid, Matcher, MatchResult, Valid } from "./matcher";
-import { list, message, problem } from "./message";
+import { list, message, problem, value } from "./message";
 
 export function satisfying<T>(matchers: Array<Matcher<T>>): Matcher<T> {
   return (actual) => {
@@ -22,7 +22,7 @@ export function satisfying<T>(matchers: Array<Matcher<T>>): Matcher<T> {
       })
     } else {
       return new Valid({
-        actual,
+        actual: value(actual),
         expected: expectedMessage
       })
     }

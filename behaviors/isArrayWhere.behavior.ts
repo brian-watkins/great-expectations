@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior";
 import { equalTo, arrayWith } from "../src";
-import { message, problem } from "../src/message";
+import { message, problem, value } from "../src/message";
 import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 
 export default behavior("isArrayWhere", [
@@ -13,7 +13,7 @@ export default behavior("isArrayWhere", [
     ])([1, 2, 3])
   }).check([
     isValidMatchResult(),
-    hasActual([1, 2, 3]),
+    hasActual([value(1), value(2), value(3)]),
     hasExpected([
       message`a number that equals 1`,
       message`a number that equals 2`,
@@ -44,7 +44,7 @@ export default behavior("isArrayWhere", [
       problem(message`a number that equals 2`),
       problem(message`a number that equals 3`)
     ]),
-    hasActual([1, problem(6), problem(5)]),
+    hasActual([value(1), problem(6), problem(5)]),
   ]),
 
   exhibit("the array fails to match when not ordered as expected", () => {
