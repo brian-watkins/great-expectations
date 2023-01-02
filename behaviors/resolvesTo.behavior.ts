@@ -30,6 +30,21 @@ export default behavior("expect resolvesTo", [
         })
       ]
     }),
+
+  example()
+    .description("a description is provided")
+    .script({
+      observe: [
+        effect("it prints the description", async () => {
+          await assert.rejects(async () => {
+            await expect(Promise.resolve("blah blah"), resolvesTo(stringContaining("blah", { times: 21 })), "Should be blah!")
+          }, (err: MatchError) => {
+            assertHasMessage("Should be blah!", err.invalid)
+            return true
+          })
+        })
+      ]
+    }),
   
   example()
     .description("the promised value rejects")
@@ -41,6 +56,24 @@ export default behavior("expect resolvesTo", [
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid)
             assertHasMessage("The promise was unexpectedly rejected.", err.invalid)
+            assertHasActualMessage("error(info(a promise that rejected with \"blah\"))", err.invalid)
+            assertHasExpectedMessage("error(info(a promise that resolves))", err.invalid)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("the promised value rejects, with a provided description")
+    .script({
+      observe: [
+        effect("it prints the provided description", async () => {
+          await assert.rejects(async () => {
+            await expect(Promise.reject("blah"), resolvesTo(equalTo(17)), "Wish it were a number!")
+          }, (err: MatchError) => {
+            assertIsInvalidMatch(err.invalid)
+            assertHasMessage("Wish it were a number!", err.invalid)
             assertHasActualMessage("error(info(a promise that rejected with \"blah\"))", err.invalid)
             assertHasExpectedMessage("error(info(a promise that resolves))", err.invalid)
             return true

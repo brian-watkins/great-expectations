@@ -35,6 +35,24 @@ export default behavior("expect rejectsWith", [
     }),
   
   example()
+    .description("a message is provided")
+    .script({
+      observe: [
+        effect("it prints the message", async () => {
+          await assert.rejects(async () => {
+            await expect(Promise.reject("error!"), rejectsWith(equalTo(17)), "Should be a number!")
+          }, (err: MatchError) => {
+            assertIsInvalidMatch(err.invalid),
+            assertHasMessage("Should be a number!", err.invalid)
+            assertHasActual(problem("error!"), err.invalid),
+            assertHasExpectedMessage("error(info(a number that equals 17))", err.invalid)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
     .description("the promise resolves instead of rejecting")
     .script({
       observe: [
@@ -44,6 +62,24 @@ export default behavior("expect rejectsWith", [
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid)
             assertHasMessage("The promise unexpectedly resolved.", err.invalid)
+            assertHasActualMessage("error(info(a promise that resolved with \"blah\"))", err.invalid)
+            assertHasExpectedMessage("error(info(a promise that rejects))", err.invalid)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("the promise resolves instead of rejecting, with a provided description")
+    .script({
+      observe: [
+        effect("it prints the description", async () => {
+          await assert.rejects(async () => {
+            await expect(Promise.resolve("blah"), rejectsWith(equalTo(17)), "Would be cool if it were a number!")
+          }, (err: MatchError) => {
+            assertIsInvalidMatch(err.invalid)
+            assertHasMessage("Would be cool if it were a number!", err.invalid)
             assertHasActualMessage("error(info(a promise that resolved with \"blah\"))", err.invalid)
             assertHasExpectedMessage("error(info(a promise that rejects))", err.invalid)
             return true

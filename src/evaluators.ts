@@ -1,52 +1,55 @@
-import { Invalid, Matcher } from "./matcher"
+import { Invalid, Matcher, MatchResult } from "./matcher"
 import { MatchError } from "./matchError"
 import { message, problem, value } from "./message"
 
-export type MatchEvaluator<T, S> = (value: T) => S
+export type MatchEvaluator<T, S> = (value: T, description?: string) => S
 
 export function is<T>(matcher: Matcher<T>): MatchEvaluator<T, void> {
-  return (value) => {
-    evaluateMatch(value, matcher)
+  return (value, description) => {
+    handleResult(matcher(value), description)
   }
 }
 
 export function resolvesTo<T>(matcher: Matcher<T>): MatchEvaluator<Promise<T>, Promise<void>> {
-  return async (promised) => {
-    let resolvedValue
+  return async (promised, description) => {
+    let result
     try {
-      resolvedValue = await promised
+      const resolvedValue = await promised
+      result = matcher(resolvedValue)
     } catch (err) {
-      throw new MatchError(new Invalid("The promise was unexpectedly rejected.", {
+      result = new Invalid("The promise was unexpectedly rejected.", {
         actual: problem(message`a promise that rejected with ${value(err)}`),
         expected: problem(message`a promise that resolves`)
-      }))
+      })
     }
-    evaluateMatch(resolvedValue, matcher)
+    handleResult(result, description)
   }
 }
 
 export function rejectsWith<T>(matcher: Matcher<T>): MatchEvaluator<Promise<any>, Promise<void>> {
-  return async (promised) => {
-    let resolvedValue
+  return async (promised, description) => {
+    let result
     try {
-      resolvedValue = await promised
+      const resolvedValue = await promised
+      result = new Invalid("The promise unexpectedly resolved.", {
+        actual: problem(message`a promise that resolved with ${value(resolvedValue)}`),
+        expected: problem(message`a promise that rejects`)
+      })
     } catch (rejectedValue: any) {
-      evaluateMatch(rejectedValue, matcher)
-      return
+      result = matcher(rejectedValue)
     }
-    throw new MatchError(new Invalid("The promise unexpectedly resolved.", {
-      actual: problem(message`a promise that resolved with ${value(resolvedValue)}`),
-      expected: problem(message`a promise that rejects`)
-    }))
+    handleResult(result, description)
   }
 }
 
-function evaluateMatch<T>(value: T, matcher: Matcher<T>) {
-  const matchResult = matcher(value)
+function handleResult(matchResult: MatchResult, description?: string) {
   switch (matchResult.type) {
     case "valid":
       return
     case "invalid":
+      if (description !== undefined) {
+        matchResult.description = description
+      }
       throw new MatchError(matchResult)
   }
 }
