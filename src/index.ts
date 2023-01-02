@@ -1,5 +1,5 @@
 import { MatchEvaluator } from "./evaluators"
-export { is, resolvesTo } from './evaluators'
+export { is, resolvesTo, rejectsWith } from './evaluators'
 export type { MatchEvaluator } from "./evaluators"
 export { equalTo, identicalTo, defined } from "./basicMatchers"
 export { arrayContaining, arrayWithItemAt, arrayWithLength, arrayWith } from "./arrayMatchers"

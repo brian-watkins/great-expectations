@@ -1,7 +1,6 @@
 import { behavior, effect, example } from "esbehavior"
-import { equalTo, expect, stringContaining } from "../src"
+import { equalTo, expect, rejectsWith, stringContaining } from "../src"
 import { strict as assert } from "node:assert"
-import { rejectsWith } from "../src/evaluators"
 import { MatchError } from "../src/matchError"
 import { assertHasActual, assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers"
 import { problem } from "../src/message"
