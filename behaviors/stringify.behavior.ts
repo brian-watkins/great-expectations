@@ -79,14 +79,14 @@ export default behavior("stringify", [
   exhibit("stringify an array", () => stringify([1, 2, 3], testFormatter))
     .check([
       property("it prints the stringified elements", (result) => {
-        assert.deepEqual(result, "[\n  1,\n  2,\n  3,\n]")
+        assert.deepEqual(result, "[\n  1,\n  2,\n  3\n]")
       })
     ]),
 
   exhibit("stringify an object", () => stringify({ name: "Cool Dude", count: 47 }, testFormatter))
     .check([
       property("it prints the stringified properties", (result) => {
-        assert.deepEqual(result, "{ name: \"Cool Dude\", count: 47 }")
+        assert.deepEqual(result, "{\n  name: \"Cool Dude\",\n  count: 47\n}")
       })
     ]),
 
@@ -94,7 +94,7 @@ export default behavior("stringify", [
     return stringify({ name: "something", message: message`some message` }, testFormatter)
   }).check([
     property("it recursively prints the message with the given formatter", (result) => {
-      assert.deepEqual(result, "{ name: \"something\", message: info(some message) }")
+      assert.deepEqual(result, "{\n  name: \"something\",\n  message: info(some message)\n}")
     })
   ]),
 
@@ -129,7 +129,7 @@ export default behavior("stringify", [
     return stringify(myObject, testFormatter)
   }).check([
     property("it prints the object without any problem", (result) => {
-      assert.deepEqual(result, "{ name: \"cool dude\", subobject: { ref: <CIRCULAR> } }")
+      assert.deepEqual(result, "{\n  name: \"cool dude\",\n  subobject: {\n    ref: <CIRCULAR>\n  }\n}")
     })
   ]),
 
@@ -139,7 +139,7 @@ export default behavior("stringify", [
     return stringify(myArray, testFormatter)
   }).check([
     property("it prints the array without any problem", (result) => {
-      assert.deepEqual(result, "[\n  { name: \"fun person\" },\n  { name: \"cool dude\" },\n  <CIRCULAR>,\n]")
+      assert.deepEqual(result, "[\n  {\n    name: \"fun person\"\n  },\n  {\n    name: \"cool dude\"\n  },\n  <CIRCULAR>\n]")
     })
   ]),
 
@@ -180,6 +180,88 @@ export default behavior("stringify", [
   }).check([
     property("it prints the times messages", (result) => {
       assert.deepEqual(result, "info(exactly 0 times, exactly 1 time, exactly 5 times)")
+    })
+  ]),
+
+  exhibit("stringify an array with nested lists", () => {
+    return stringify([
+      message`hello`,
+      message`a value that satisfies:${list([
+        message`one`,
+        message`another list${list([
+          message`two ${problem("bad")}`,
+          message`three`
+        ])}`
+      ])}`,
+      message`goodbye`
+    ], testFormatter)
+  }).check([
+    property("it indents the lists properly", (result) => {
+      assert.deepEqual(result, `[
+  info(hello),
+  info(a value that satisfies:
+    • one
+    • another list
+      • two error("bad")
+      • three),
+  info(goodbye)
+]`)
+    })
+  ]),
+
+  exhibit("stringify an object with nested objects and arrays", () => {
+    return stringify({
+      name: message`${value("cool dude")}`,
+      sports: [
+        message`one`,
+        message`satisfying:${list([
+          message`contains ${value("bowling")}`
+        ])}`
+      ],
+      address: {
+        street: message`road`,
+        zip: message`11111`
+      },
+      interests: problem(list([
+        message`hello`,
+        message`yo yo`
+      ]))
+    }, testFormatter)
+  }).check([
+    property("it indents the object properly", (result) => {
+      assert.deepEqual(result, `{
+  name: info(\"cool dude\"),
+  sports: [
+    info(one),
+    info(satisfying:
+      • contains \"bowling\")
+  ],
+  address: {
+    street: info(road),
+    zip: info(11111)
+  },
+  interests: error(
+    • info(hello)
+    • info(yo yo))
+}`)
+    })
+  ]),
+
+  exhibit("stringify a value with proper indentation", () => {
+    return stringify({
+      name: message`hello`,
+      stuff: value({
+        count: problem(7)
+      })
+    }, testFormatter)
+  }).check([
+    property("it indents properly", (result) => {
+      assert.deepEqual(result, `{
+  name: info(hello),
+  stuff: {
+    count: error(7)
+  }
+}`)
     })
   ])
 

@@ -9,7 +9,7 @@ export default behavior("equals", [
   }).check([
     isValidMatchResult(),
     hasActual({name: "cool dude"}),
-    hasExpectedMessageText("info(an object that equals { name: \"cool dude\" })")
+    hasExpectedMessageText("info(an object that equals {\n  name: \"cool dude\"\n})")
   ]),
 
   exhibit("the values are not deeply equal", () => {
@@ -18,7 +18,7 @@ export default behavior("equals", [
     isInvalidMatchResult(),
     hasMessage("The actual value is not equal to the expected value."),
     hasInvalidActual({ name: "cool dude", count: 5 }),
-    hasExpectedMessageText("error(info(an object that equals { name: \"cool dude\", count: 7 }))")
+    hasExpectedMessageText("error(info(an object that equals {\n  name: \"cool dude\",\n  count: 7\n}))")
   ]),
 
   exhibit("the values are not strictly deeply equal", () => {

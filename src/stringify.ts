@@ -3,9 +3,7 @@ import { List, Message, Problem, Times, TypeName, Value } from "./message"
 
 let visited: Array<any> = []
 
-export function stringify(val: any, formatter: Formatter): string {
-  const stringifyWithFormatter = (val: any) => stringify(val, formatter)
-
+export function stringify(val: any, formatter: Formatter, indentLevel: number = 0): string {
   switch (typeof val) {
     case "boolean":
       return val === true ? "<TRUE>" : "<FALSE>"
@@ -20,7 +18,7 @@ export function stringify(val: any, formatter: Formatter): string {
         return "<NULL>"
       } else if (Array.isArray(val)) {
         visited.push(val)
-        const arrayString = `[\n  ${val.map(stringifyWithFormatter).join(",\n  ")},\n]`
+        const arrayString = formatArray(val, formatter, indentLevel)
         visited.pop()
         return arrayString
       } else if (isTypeName(val)) {
@@ -28,16 +26,16 @@ export function stringify(val: any, formatter: Formatter): string {
       } else if (isTimes(val)) {
         return formatTimes(val.count)
       } else if (isValue(val)) {
-        return stringifyWithFormatter(val.value)
+        return stringify(val.value, formatter, indentLevel)
       } else if (isProblem(val)) {
-        return formatter.error(stringify(val.value, noErrorFormatter(formatter)))
+        return formatter.error(stringify(val.value, noErrorFormatter(formatter), indentLevel))
       } else if (isList(val)) {
-        return `\n  • ${val.items.map(stringifyWithFormatter).join("\n  • ")}`
+        return formatList(val.items, formatter, indentLevel)
       } else if (isMessage(val)) {
-        return formatter.info(formatMessage(val, formatter))
+        return formatter.info(formatMessage(val, formatter, indentLevel))
       } else {
         visited.push(val)
-        const objectString = `{ ${Object.keys(val).map(key => `${key}: ${stringifyWithFormatter(val[key])}`).join(", ")} }`
+        const objectString = formatObject(val, formatter, indentLevel)
         visited.pop()
         return objectString
       }
@@ -52,7 +50,7 @@ export function stringify(val: any, formatter: Formatter): string {
   }
 }
 
-function formatMessage(message: Message, formatter: Formatter): string {
+function formatMessage(message: Message, formatter: Formatter, indentLevel: number): string {
   let output = ""
   for (let i = 0; i < message.strings.length; i++) {
     output += message.strings[i]
@@ -62,10 +60,26 @@ function formatMessage(message: Message, formatter: Formatter): string {
         output += value
         continue
       }
-      output += stringify(message.values[i], noInfoFormatter(formatter))
+      output += stringify(message.values[i], noInfoFormatter(formatter), indentLevel)
     }
   }
   return output
+}
+
+function formatObject(val: any, formatter: Formatter, indentLevel: number): string {
+  return `{\n${Object.keys(val).map(key => `${padding(indentLevel)}${key}: ${stringify(val[key], formatter, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
+}
+
+function formatArray(items: Array<any>, formatter: Formatter, indentLevel: number): string {
+  return `[\n${padding(indentLevel)}${items.map((val) => stringify(val, formatter, indentLevel + 1)).join(`,\n${padding(indentLevel)}`)}\n${padding(indentLevel - 1)}]`
+}
+
+function formatList(items: Array<any>, formatter: Formatter, indentLevel: number): string {
+  return `\n${padding(indentLevel)}• ${items.map((val) => stringify(val, formatter, indentLevel + 1)).join(`\n${padding(indentLevel)}• `)}`
+}
+
+function padding(level: number): string {
+  return "  ".repeat(level + 1)
 }
 
 function formatTypeName(value: any): string {
