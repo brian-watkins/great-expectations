@@ -1,15 +1,23 @@
 {
   "name": "great-expectations",
+  "author": "Brian Watkins",
+  "license": "MIT",
   "version": "1.0.0",
   "description": "Write type-aware expectations for testing",
-  "main": "./build/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brian-watkins/great-expectations"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "build": "tsc --build --clean && tsc --build",
     "test": "tsx ./behaviors/runner.ts"
   },
-  "author": "Brian Watkins",
-  "license": "MIT",
   "devDependencies": {
     "@types/deep-equal": "^1.0.1",
     "@types/node": "^18.11.9",
