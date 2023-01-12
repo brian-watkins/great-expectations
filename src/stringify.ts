@@ -96,7 +96,11 @@ function formatTypeName(value: any): string {
     case "boolean":
       return "a boolean"
     case "object":
-      return "an object"
+      if (Array.isArray(value)) {
+        return "an array"
+      } else {
+        return "an object"
+      }
     case "number":
       return "a number"
     case "string":

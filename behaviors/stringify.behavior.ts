@@ -182,10 +182,10 @@ export default behavior("stringify", [
   ]),
 
   exhibit("stringify the type names", () => {
-    return stringify(message`${typeName(true)}, ${typeName("hello")}, ${typeName(1)}, ${typeName({foo: "bar"})}, ${typeName(() => {})}, ${typeName(Symbol("fun"))}, ${typeName(BigInt("234452"))}, ${typeName(undefined)}`, testFormatter)
+    return stringify(message`${typeName(true)}, ${typeName("hello")}, ${typeName(1)}, ${typeName({foo: "bar"})}, ${typeName(["hello"])}, ${typeName(() => {})}, ${typeName(Symbol("fun"))}, ${typeName(BigInt("234452"))}, ${typeName(undefined)}`, testFormatter)
   }).check([
     property("it prints the type name", (result) => {
-      assert.deepEqual(result, "info(a boolean, a string, a number, an object, a function, a symbol, a bigint, undefined)")
+      assert.deepEqual(result, "info(a boolean, a string, a number, an object, an array, a function, a symbol, a bigint, undefined)")
     })
   ]),
 
