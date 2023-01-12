@@ -67,10 +67,19 @@ function formatMessage(message: Message, formatter: Formatter, indentLevel: numb
 }
 
 function formatObject(val: any, formatter: Formatter, indentLevel: number): string {
-  return `{\n${Object.keys(val).map(key => `${padding(indentLevel)}${key}: ${stringify(val[key], formatter, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
+  const keys = Object.keys(val)
+  if (keys.length === 0) {
+    return "{}"
+  }
+
+  return `{\n${keys.map(key => `${padding(indentLevel)}${key}: ${stringify(val[key], formatter, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
 }
 
 function formatArray(items: Array<any>, formatter: Formatter, indentLevel: number): string {
+  if (items.length === 0) {
+    return '[]'
+  }
+
   return `[\n${padding(indentLevel)}${items.map((val) => stringify(val, formatter, indentLevel + 1)).join(`,\n${padding(indentLevel)}`)}\n${padding(indentLevel - 1)}]`
 }
 

@@ -83,10 +83,24 @@ export default behavior("stringify", [
       })
     ]),
 
+  exhibit("stringify an empty array", () => stringify([], testFormatter))
+    .check([
+      property("it prints the stringified elements", (result) => {
+        assert.deepEqual(result, "[]")
+      })
+    ]),
+
   exhibit("stringify an object", () => stringify({ name: "Cool Dude", count: 47 }, testFormatter))
     .check([
       property("it prints the stringified properties", (result) => {
         assert.deepEqual(result, "{\n  name: \"Cool Dude\",\n  count: 47\n}")
+      })
+    ]),
+
+  exhibit("stringify an empty object", () => stringify({}, testFormatter))
+    .check([
+      property("it prints the stringified properties", (result) => {
+        assert.deepEqual(result, "{}")
       })
     ]),
 
