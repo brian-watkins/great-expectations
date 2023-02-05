@@ -94,7 +94,18 @@ Asserts that the actual value is the same instance as the expected value (ie `==
 
 #### defined()
 
-Asserts that the actual value is defined (ie not `undefined`).
+Asserts that the actual value is defined (i.e. not `undefined`).
+
+#### assignedWith(matcher)
+
+Asserts that the actual variable is assigned a value (i.e. not `undefined`) and that
+it matches the provided matcher. Use this matcher when the expected value is potentially
+undefined.
+
+```
+const someVariable: string | undefined = "hello"
+expect(someVariable, is(assignedWith(stringContaining("he"))))
+```
 
 #### satisfying(array of matchers)
 

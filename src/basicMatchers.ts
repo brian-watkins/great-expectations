@@ -56,3 +56,16 @@ export function defined(): Matcher<any> {
     }
   }
 }
+
+export function assignedWith<T>(matcher: Matcher<T>): Matcher<T | undefined> {
+  return (actual) => {
+    if (actual === undefined) {
+      return new Invalid("The actual variable is not assigned a value.", {
+        actual: problem(actual),
+        expected: problem(message`a variable that is assigned a value`)
+      })
+    }
+
+    return matcher(actual)
+  }
+}

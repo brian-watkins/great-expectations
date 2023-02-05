@@ -16,11 +16,13 @@ import isBehavior from "./is.behavior";
 import isObjectWithPropertyBehavior from "./isObjectWithProperty.behavior";
 import isObjectWhereBehavior from "./isObjectWhere.behavior";
 import rejectsWithBehavior from "./rejectsWith.behavior";
+import assignedWithBehavior from "./assignedWith.behavior";
 
 validate([
   isIdenticalToBehavior,
   equalsBehavior,
   isDefinedBehavior,
+  assignedWithBehavior,
   isArrayWithLengthBehavior,
   isArrayWhereBehavior,
   isArrayWhereItemAtBehavior,

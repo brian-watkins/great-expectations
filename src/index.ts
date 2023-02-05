@@ -1,7 +1,7 @@
 import { MatchEvaluator } from "./evaluators"
 export { is, resolvesTo, rejectsWith } from './evaluators'
 export type { MatchEvaluator } from "./evaluators"
-export { equalTo, identicalTo, defined } from "./basicMatchers"
+export { equalTo, identicalTo, defined, assignedWith } from "./basicMatchers"
 export { arrayContaining, arrayWithItemAt, arrayWithLength, arrayWith } from "./arrayMatchers"
 export type { ArrayContainingOptions, ArrayWhereOptions } from "./arrayMatchers"
 export { stringMatching, stringWithLength, stringContaining } from "./stringMatchers"
