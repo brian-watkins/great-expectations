@@ -25,6 +25,14 @@ export default behavior("equals", [
     return equalTo<number | string>(7)("7")
   }).check([
     isInvalidMatchResult()
+  ]),
+
+  exhibit("the expected value is undefined", () => {
+    return equalTo<string | undefined>(undefined)("blah")
+  }).check([
+    isInvalidMatchResult(),
+    hasInvalidActual("blah"),
+    hasExpectedMessageText("error(info(a variable that is undefined))")
   ])
 
 ])

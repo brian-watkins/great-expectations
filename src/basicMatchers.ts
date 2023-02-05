@@ -5,7 +5,9 @@ import { message, problem, typeName, value } from "./message"
 
 export function identicalTo<T>(expected: T): Matcher<T> {
   return (actual) => {
-    const expectedMessage = message`${typeName(expected)} that is identical to ${value(expected)}`
+    const expectedMessage = expected === undefined ?
+      message`a variable that is undefined` :
+      message`${typeName(expected)} that is identical to ${value(expected)}`
 
     if (actual === expected) {
       return new Valid({
@@ -23,7 +25,9 @@ export function identicalTo<T>(expected: T): Matcher<T> {
 
 export function equalTo<T>(expected: T): Matcher<T> {
   return (actual) => {
-    const expectedMessage = message`${typeName(expected)} that equals ${value(expected)}`
+    const expectedMessage = expected === undefined ?
+      message`a variable that is undefined` :
+      message`${typeName(expected)} that equals ${value(expected)}`
 
     if (equal(actual, expected, { strict: true })) {
       return new Valid({
