@@ -1,5 +1,14 @@
 # Changelog
 
+### 2/20/2023
+
+great-expectations 1.1.1
+
+#### Fixed
+- Set `.js` extensions for all imports so module resolution will
+work correctly in node.
+
+
 ### 2/5/2023
 
 great-expectations 1.1.0
