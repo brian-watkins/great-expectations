@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
-import { stringWithLength } from "../src/index"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { stringWithLength } from "../src/index.js"
 
 export default behavior("isStringWithLength", [
 

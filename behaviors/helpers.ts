@@ -1,9 +1,9 @@
 import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
-import { Formatter } from "../src/formatter";
-import { Invalid, MatchResult, Valid } from "../src/matcher";
-import { problem, Problem, value } from "../src/message";
-import { stringify } from "../src/stringify";
+import { Formatter } from "../src/formatter.js";
+import { Invalid, MatchResult, Valid } from "../src/matcher.js";
+import { problem, Problem, value } from "../src/message.js";
+import { stringify } from "../src/stringify.js";
 
 type Property<T> = Observation<T>
 

@@ -1,5 +1,5 @@
-import { Invalid, Matcher, Valid } from "./matcher";
-import { message, problem, value } from "./message";
+import { Invalid, Matcher, Valid } from "./matcher.js";
+import { message, problem, value } from "./message.js";
 
 export function isNumberGreaterThan(expected: number): Matcher<number> {
   return (actual) => {

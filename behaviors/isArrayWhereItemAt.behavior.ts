@@ -1,7 +1,7 @@
 import { behavior } from "esbehavior"
-import { equalTo, arrayWithItemAt } from "../src"
-import { problem } from "../src/message"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
+import { equalTo, arrayWithItemAt } from "../src/index.js"
+import { problem } from "../src/message.js"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 export default behavior("isArrayWhereItemAt", [
 

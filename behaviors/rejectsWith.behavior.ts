@@ -1,9 +1,9 @@
 import { behavior, effect, example } from "esbehavior"
-import { equalTo, expect, rejectsWith, stringContaining } from "../src"
+import { equalTo, expect, rejectsWith, stringContaining } from "../src/index.js"
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError"
-import { assertHasActual, assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers"
-import { problem } from "../src/message"
+import { assertHasActual, assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers.js"
+import { problem } from "../src/message.js"
 
 export default behavior("expect rejectsWith", [
 

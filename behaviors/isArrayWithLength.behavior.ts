@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior";
-import { arrayWithLength } from "../src";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { arrayWithLength } from "../src/index.js";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
 
 export default behavior("isArrayWithLength", [
 

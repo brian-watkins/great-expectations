@@ -1,5 +1,5 @@
-import { Formatter, noErrorFormatter, noInfoFormatter } from "./formatter"
-import { List, Message, Problem, Times, TypeName, Value } from "./message"
+import { Formatter, noErrorFormatter, noInfoFormatter } from "./formatter.js"
+import { List, Message, Problem, Times, TypeName, Value } from "./message.js"
 
 let visited: Array<any> = []
 

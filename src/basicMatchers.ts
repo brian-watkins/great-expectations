@@ -1,6 +1,6 @@
 import equal from "deep-equal"
-import { Invalid, Matcher, Valid } from "./matcher"
-import { message, problem, typeName, value } from "./message"
+import { Invalid, Matcher, Valid } from "./matcher.js"
+import { message, problem, typeName, value } from "./message.js"
 
 
 export function identicalTo<T>(expected: T): Matcher<T> {

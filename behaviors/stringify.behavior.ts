@@ -1,8 +1,8 @@
 import { behavior } from "esbehavior";
-import { stringify } from "../src/stringify";
-import { exhibit, property, testFormatter } from "./helpers";
+import { stringify } from "../src/stringify.js";
+import { exhibit, property, testFormatter } from "./helpers.js";
 import { strict as assert } from "node:assert"
-import { list, message, problem, times, typeName, value } from "../src/message";
+import { list, message, problem, times, typeName, value } from "../src/message.js";
 
 export default behavior("stringify", [
 

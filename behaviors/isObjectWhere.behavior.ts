@@ -1,7 +1,7 @@
 import { behavior } from "esbehavior"
-import { equalTo, arrayContaining, objectWith, stringContaining } from "../src"
-import { message, problem, value } from "../src/message"
-import { exhibit, formattedList, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
+import { equalTo, arrayContaining, objectWith, stringContaining } from "../src/index.js"
+import { message, problem, value } from "../src/message.js"
+import { exhibit, formattedList, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 export default behavior("objectWith", [
 

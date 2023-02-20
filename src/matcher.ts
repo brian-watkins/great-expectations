@@ -1,4 +1,4 @@
-import { Message, Problem, Value } from "./message"
+import { Message, Problem, Value } from "./message.js"
 
 export interface MatchValues {
   actual: Problem | Value | Message

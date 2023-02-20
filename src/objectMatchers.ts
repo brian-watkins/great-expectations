@@ -1,5 +1,5 @@
-import { Invalid, Matcher, MatchResult, Valid } from "./matcher";
-import { list, message, problem, value } from "./message";
+import { Invalid, Matcher, MatchResult, Valid } from "./matcher.js";
+import { list, message, problem, value } from "./message.js";
 
 export function objectWithProperty<T>(property: PropertyKey, matcher: Matcher<T>): Matcher<any> {
   return (actual) => {

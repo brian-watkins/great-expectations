@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior"
-import { assignedWith, equalTo,  } from "../src"
-import { exhibit, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
+import { assignedWith, equalTo,  } from "../src/index.js"
+import { exhibit, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 export default behavior("assignedWith", [
 

@@ -1,6 +1,6 @@
 import { behavior } from "esbehavior"
-import { equalTo, objectWithProperty, stringContaining } from "../src"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
+import { equalTo, objectWithProperty, stringContaining } from "../src/index.js"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 const symbol = Symbol("fun-stuff")
 

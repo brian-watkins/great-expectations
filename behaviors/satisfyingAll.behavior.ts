@@ -1,7 +1,7 @@
 import { behavior } from "esbehavior"
-import { stringContaining } from "../src"
-import { exhibit, formattedList, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers"
-import { satisfying } from "../src"
+import { stringContaining } from "../src/index.js"
+import { exhibit, formattedList, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { satisfying } from "../src/index.js"
 
 export default behavior("satisfyingAll", [
 

@@ -1,6 +1,6 @@
-import { ActualFormatter, ExpectedFormatter } from "./formatter"
-import { Invalid } from "./matcher"
-import { stringify } from "./stringify"
+import { ActualFormatter, ExpectedFormatter } from "./formatter.js"
+import { Invalid } from "./matcher.js"
+import { stringify } from "./stringify.js"
 
 export class MatchError extends Error {
   constructor(public invalid: Invalid, ...args: any) {

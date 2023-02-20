@@ -1,8 +1,8 @@
 import { behavior, effect, example } from "esbehavior"
-import { equalTo, expect, stringContaining, resolvesTo } from "../src"
+import { equalTo, expect, stringContaining, resolvesTo } from "../src/index.js"
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError"
-import { assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers"
+import { assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers.js"
 
 export default behavior("expect resolvesTo", [
 

@@ -1,22 +1,22 @@
 import { validate } from "esbehavior";
-import isIdenticalToBehavior from "./isIdenticalTo.behavior";
-import equalsBehavior from "./equals.behavior";
-import isArrayWhereBehavior from "./isArrayWhere.behavior";
-import stringifyBehavior from "./stringify.behavior";
-import isStringContainingBehavior from "./isStringContaining.behavior";
-import isArrayWithLengthBehavior from "./isArrayWithLength.behavior";
-import isArrayContainingBehavior from "./isArrayContaining.behavior";
-import isStringWithLengthBehavior from "./isStringWithLength.behavior";
-import satisfyingAllBehavior from "./satisfyingAll.behavior";
-import isStringMatchingBehavior from "./isStringMatching.behavior";
-import isArrayWhereItemAtBehavior from "./isArrayWhereItemAt.behavior";
-import isDefinedBehavior from "./isDefined.behavior";
-import resolvesToBehavior from "./resolvesTo.behavior";
-import isBehavior from "./is.behavior";
-import isObjectWithPropertyBehavior from "./isObjectWithProperty.behavior";
-import isObjectWhereBehavior from "./isObjectWhere.behavior";
-import rejectsWithBehavior from "./rejectsWith.behavior";
-import assignedWithBehavior from "./assignedWith.behavior";
+import isIdenticalToBehavior from "./isIdenticalTo.behavior.js";
+import equalsBehavior from "./equals.behavior.js";
+import isArrayWhereBehavior from "./isArrayWhere.behavior.js";
+import stringifyBehavior from "./stringify.behavior.js";
+import isStringContainingBehavior from "./isStringContaining.behavior.js";
+import isArrayWithLengthBehavior from "./isArrayWithLength.behavior.js";
+import isArrayContainingBehavior from "./isArrayContaining.behavior.js";
+import isStringWithLengthBehavior from "./isStringWithLength.behavior.js";
+import satisfyingAllBehavior from "./satisfyingAll.behavior.js";
+import isStringMatchingBehavior from "./isStringMatching.behavior.js";
+import isArrayWhereItemAtBehavior from "./isArrayWhereItemAt.behavior.js";
+import isDefinedBehavior from "./isDefined.behavior.js";
+import resolvesToBehavior from "./resolvesTo.behavior.js";
+import isBehavior from "./is.behavior.js";
+import isObjectWithPropertyBehavior from "./isObjectWithProperty.behavior.js";
+import isObjectWhereBehavior from "./isObjectWhere.behavior.js";
+import rejectsWithBehavior from "./rejectsWith.behavior.js";
+import assignedWithBehavior from "./assignedWith.behavior.js";
 
 validate([
   isIdenticalToBehavior,

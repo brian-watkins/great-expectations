@@ -1,8 +1,8 @@
 import { behavior, effect, example } from "esbehavior"
-import { expect, is, stringContaining } from "../src"
+import { expect, is, stringContaining } from "../src/index.js"
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError"
-import { assertHasExpectedMessage, assertHasMessage } from "./helpers"
+import { assertHasExpectedMessage, assertHasMessage } from "./helpers.js"
 
 export default behavior("expect is", [
 

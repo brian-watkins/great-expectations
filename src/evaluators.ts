@@ -1,6 +1,6 @@
-import { Invalid, Matcher, MatchResult } from "./matcher"
-import { MatchError } from "./matchError"
-import { message, problem, value } from "./message"
+import { Invalid, Matcher, MatchResult } from "./matcher.js"
+import { MatchError } from "./matchError.js"
+import { message, problem, value } from "./message.js"
 
 export type MatchEvaluator<T, S> = (value: T, description?: string) => S
 
