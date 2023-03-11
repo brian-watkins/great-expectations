@@ -68,7 +68,7 @@ Optionally, provide a description that will display with any invalid matches.
 Evaluates the provided matcher against the actual value synchronously.
 
 ```
-expect([1, 2, 3], is(listWhereItemAt(2, equalTo(3))))
+expect([1, 2, 3], is(arrayWithItemAt(2, equalTo(3))))
 ```
 
 #### resolvesTo(matcher): MatchEvaluator
@@ -165,7 +165,7 @@ array of matchers in the given order. The optional option specifies whether
 order matters.
 
 ```
-expect([ 1, 2, 3 ], is(arrayWhere([
+expect([ 1, 2, 3 ], is(arrayWith([
   equalTo(1),
   equalTo(2),
   equalTo(3)
@@ -188,7 +188,7 @@ propery in the matcher object. The actual object may have additional properties 
 match.
 
 ```
-expect({ name: "cool dude", age: 288 }, is(objectWhere({
+expect({ name: "cool dude", age: 288 }, is(objectWith({
   name: stringContaining("cool"),
   age: equalTo(288)
 })))
