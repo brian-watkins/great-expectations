@@ -2,7 +2,7 @@
   "name": "great-expectations",
   "author": "Brian Watkins",
   "license": "MIT",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Write type-aware expectations for testing",
   "repository": {
     "type": "git",
