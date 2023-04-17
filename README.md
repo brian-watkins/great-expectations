@@ -173,6 +173,34 @@ expect([ 1, 2, 3 ], is(arrayWith([
 ```
 
 
+### Map Matchers
+
+#### mapWith(array of MapEntryMatcher)
+
+Asserts that the actual value is a map with entries that match the
+given `MapEntryMatchers`. If the map has additional entries it will still match.
+
+A `MapEntryMatcher` is an object that conforms to this interface:
+
+```
+{
+  key: Matcher<K>,
+  value?: Matcher<V>
+}
+```
+
+```
+const map = new Map<string, string>()
+map.set("Cool Key", "Let's Party!")
+map.set("Another Key", "Let's do something fun!")
+
+expect(map, is(mapWith([
+  { key: equalTo("Cool Key") },
+  { key: equalTo("Another Key"), value: stringContaining("something fun") }
+])))
+```
+
+
 ### Object Matchers
 
 #### objectWithProperty(propertyName, matcher)
@@ -183,9 +211,9 @@ value that matches the provided matcher.
 #### objectWith(matcherObject)
 
 Asserts that the actual value is an object that has all the properties of the provided
-matcher object and the values of those properties match the matchers associated with each
-propery in the matcher object. The actual object may have additional properties and still
-match.
+matcher object and the values of those properties match the matchers associated
+with each propery in the matcher object. If the actual object has additional
+properties, it will still match.
 
 ```
 expect({ name: "cool dude", age: 288 }, is(objectWith({

@@ -1,5 +1,5 @@
 import { Formatter, noErrorFormatter, noInfoFormatter } from "./formatter.js"
-import { List, Message, Problem, Times, TypeName, Value } from "./message.js"
+import { AnyValue, List, Message, Problem, SpecificValue, Times, TypeName } from "./message.js"
 
 let visited: Array<any> = []
 
@@ -21,12 +21,20 @@ export function stringify(val: any, formatter: Formatter, indentLevel: number = 
         const arrayString = formatArray(val, formatter, indentLevel)
         visited.pop()
         return arrayString
+      } else if (val instanceof Map) {
+        // need to handle circular reference
+        visited.push(val)
+        const mapString = formatMap(val, formatter, indentLevel)
+        visited.pop()
+        return mapString
       } else if (isTypeName(val)) {
         return formatTypeName(val.value)
       } else if (isTimes(val)) {
         return formatTimes(val.count)
-      } else if (isValue(val)) {
+      } else if (isSpecificValue(val)) {
         return stringify(val.value, formatter, indentLevel)
+      } else if (isAnyValue(val)) {
+        return "<ANY>"
       } else if (isProblem(val)) {
         return formatter.error(stringify(val.value, noErrorFormatter(formatter), indentLevel))
       } else if (isList(val)) {
@@ -83,6 +91,16 @@ function formatArray(items: Array<any>, formatter: Formatter, indentLevel: numbe
   return `[\n${padding(indentLevel)}${items.map((val) => stringify(val, formatter, indentLevel + 1)).join(`,\n${padding(indentLevel)}`)}\n${padding(indentLevel - 1)}]`
 }
 
+function formatMap(map: Map<any, any>, formatter: Formatter, indentLevel: number): string {
+  if (map.size === 0) {
+    return "Map {}"
+  }
+
+  const keys = Array.from(map.keys())
+
+  return `Map {\n${keys.map(key => `${padding(indentLevel)}${stringify(key, formatter, indentLevel + 1)} => ${stringify(map.get(key), formatter, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
+}
+
 function formatList(items: Array<any>, formatter: Formatter, indentLevel: number): string {
   return `\n${padding(indentLevel)}• ${items.map((val) => stringify(val, formatter, indentLevel + 1)).join(`\n${padding(indentLevel)}• `)}`
 }
@@ -132,8 +150,12 @@ function isList(val: any): val is List {
   return ("type" in val && val.type === "list")
 }
 
-function isValue(val: any): val is Value {
-  return ("type" in val && val.type === "value")
+function isSpecificValue(val: any): val is SpecificValue {
+  return ("type" in val && val.type === "specific-value")
+}
+
+function isAnyValue(val: any): val is AnyValue {
+  return ("type" in val && val.type === "any-value")
 }
 
 function isTypeName(val: any): val is TypeName {

@@ -46,15 +46,27 @@ export function list(items: Array<any>): List {
   }
 }
 
-export interface Value {
-  type: "value"
+export interface SpecificValue {
+  type: "specific-value"
   value: any
 }
 
+export interface AnyValue {
+  type: "any-value"
+}
+
+export type Value = SpecificValue | AnyValue
+
 export function value(val: any): Value {
   return {
-    type: "value",
+    type: "specific-value",
     value: val
+  }
+}
+
+export function anyValue(): Value {
+  return {
+    type: "any-value"
   }
 }
 

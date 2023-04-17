@@ -2,9 +2,23 @@ import { behavior } from "esbehavior";
 import { stringify } from "../src/stringify.js";
 import { exhibit, property, testFormatter } from "./helpers.js";
 import { strict as assert } from "node:assert"
-import { list, message, problem, times, typeName, value } from "../src/message.js";
+import { anyValue, list, message, problem, times, typeName, value } from "../src/message.js";
 
 export default behavior("stringify", [
+
+  exhibit("stringify an any value", () => stringify(anyValue(), testFormatter))
+    .check([
+      property("it prints the any value", (result) => {
+        assert.deepEqual(result, "<ANY>")
+      })
+    ]),
+
+  exhibit("stringify a falsey value", () => stringify(value(0), testFormatter))
+    .check([
+      property("it prints the value", (result) => {
+        assert.deepEqual(result, "0")
+      })
+    ]),
 
   exhibit("stringify a string", () => stringify("hello", testFormatter))
     .check([
@@ -90,6 +104,37 @@ export default behavior("stringify", [
       })
     ]),
 
+  exhibit("stringify a map", () => {
+    const map = new Map<number, string>()
+    map.set(27, "Fun stuff!")
+    map.set(14, "Cool stuff!")
+    map.set(31, "Happy stuff!")
+    return stringify(map, testFormatter)
+  }).check([
+    property("it prints the stringified map entries", (result) => {
+      assert.deepEqual(result, `Map {\n  27 => "Fun stuff!",\n  14 => "Cool stuff!",\n  31 => "Happy stuff!"\n}`)
+    })
+  ]),
+
+  exhibit("stringify a complicated map", () => {
+    const map = new Map()
+    map.set({ name: "cool person" }, [ "apple", "pear" ])
+    map.set({ name: "funny person" }, [ "banana", "grapes" ])
+    return stringify(map, testFormatter)
+  }).check([
+    property("it prints the complicated map", (result) => {
+      assert.deepEqual(result, `Map {\n  {\n    name: "cool person"\n  } => [\n    "apple",\n    "pear"\n  ],\n  {\n    name: "funny person"\n  } => [\n    "banana",\n    "grapes"\n  ]\n}`)
+    })
+  ]),
+
+  exhibit("stringify an empty map", () => {
+    return stringify(new Map(), testFormatter)
+  }).check([
+    property("it prints the empty map", (result) => {
+      assert.deepEqual(result, `Map {}`)
+    })
+  ]),
+
   exhibit("stringify an object", () => stringify({ name: "Cool Dude", count: 47 }, testFormatter))
     .check([
       property("it prints the stringified properties", (result) => {
@@ -142,7 +187,7 @@ export default behavior("stringify", [
     myObject.subobject.ref = myObject
     return stringify(myObject, testFormatter)
   }).check([
-    property("it prints the object without any problem", (result) => {
+    property("it prints the object with a circular indicator", (result) => {
       assert.deepEqual(result, "{\n  name: \"cool dude\",\n  subobject: {\n    ref: <CIRCULAR>\n  }\n}")
     })
   ]),
@@ -152,8 +197,18 @@ export default behavior("stringify", [
     myArray[2] = myArray
     return stringify(myArray, testFormatter)
   }).check([
-    property("it prints the array without any problem", (result) => {
+    property("it prints the array with a circular indicator", (result) => {
       assert.deepEqual(result, "[\n  {\n    name: \"fun person\"\n  },\n  {\n    name: \"cool dude\"\n  },\n  <CIRCULAR>\n]")
+    })
+  ]),
+
+  exhibit("stringify map with circular reference", () => {
+    const map: Map<string, any> = new Map()
+    map.set("key", map)
+    return stringify(map, testFormatter)
+  }).check([
+    property("it prints the map with a circular indicator", (result) => {
+      assert.deepEqual(result, `Map {\n  "key" => <CIRCULAR>\n}`)
     })
   ]),
 

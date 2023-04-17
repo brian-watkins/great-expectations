@@ -1,4 +1,4 @@
-import { effect, example, ExampleScriptsBuilder, Observation } from "esbehavior";
+import { effect, example, ExampleScripts, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
 import { Formatter } from "../src/formatter.js";
 import { Invalid, MatchResult, Valid } from "../src/matcher.js";
@@ -12,7 +12,7 @@ export function property<T>(description: string, claim: (result: T) => void): Pr
 }
 
 interface UseCaseBuilder<T> {
-  check(properties: Array<Property<T>>): ExampleScriptsBuilder<T>
+  check(properties: Array<Property<T>>): ExampleScripts<T>
 }
 
 export function exhibit<T>(description: string, runner: () => T): UseCaseBuilder<T> {
