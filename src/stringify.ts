@@ -21,6 +21,12 @@ export function stringify(val: any, formatter: Formatter, indentLevel: number = 
         const arrayString = formatArray(val, formatter, indentLevel)
         visited.pop()
         return arrayString
+      } else if (val instanceof Map) {
+        // need to handle circular reference
+        visited.push(val)
+        const mapString = formatMap(val, formatter, indentLevel)
+        visited.pop()
+        return mapString
       } else if (isTypeName(val)) {
         return formatTypeName(val.value)
       } else if (isTimes(val)) {
@@ -81,6 +87,16 @@ function formatArray(items: Array<any>, formatter: Formatter, indentLevel: numbe
   }
 
   return `[\n${padding(indentLevel)}${items.map((val) => stringify(val, formatter, indentLevel + 1)).join(`,\n${padding(indentLevel)}`)}\n${padding(indentLevel - 1)}]`
+}
+
+function formatMap(map: Map<any, any>, formatter: Formatter, indentLevel: number): string {
+  if (map.size === 0) {
+    return "Map {}"
+  }
+
+  const keys = Array.from(map.keys())
+
+  return `Map {\n${keys.map(key => `${padding(indentLevel)}${stringify(key, formatter, indentLevel + 1)} => ${stringify(map.get(key), formatter, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
 }
 
 function formatList(items: Array<any>, formatter: Formatter, indentLevel: number): string {
