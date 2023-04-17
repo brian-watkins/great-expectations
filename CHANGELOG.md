@@ -1,5 +1,14 @@
 # Changelog
 
+### 4/17/2023
+
+great-expectations 1.2.0
+
+#### Added
+- Support for matching a map
+- Print assertion errors properly when using Uvu
+
+
 ### 2/20/2023
 
 great-expectations 1.1.1
