@@ -14,17 +14,20 @@ interface ExpectedMapEntry {
 export function mapWith<K, V>(matchers: Array<MapEntryMatcher<K, V>>): Matcher<Map<K, V>> {
   return (actual) => {
     let expecteds: Array<ExpectedMapEntry> = []
-    let isValid = true
+    let invalidCount = 0
+
+    let actualKeys = new Set(actual.keys())
 
     for (const entryMatcher of matchers) {
       let lastKeyResult: MatchResult | null = null
       let lastValueResult: MatchResult | null = null
-      for (const key of actual.keys()) {
+      for (const key of actualKeys) {
         lastKeyResult = entryMatcher.key(key)
         if (lastKeyResult.type === "valid") {
           if (entryMatcher.value) {
             lastValueResult = entryMatcher.value(actual.get(key)!)
           }
+          actualKeys.delete(key)
           break
         }
       }
@@ -34,30 +37,36 @@ export function mapWith<K, V>(matchers: Array<MapEntryMatcher<K, V>>): Matcher<M
           value: lastValueResult ? lastValueResult.values.expected : anyValue()
         })
         if (lastKeyResult.type === "invalid" || (lastValueResult && lastValueResult.type === "invalid")) {
-          isValid = false
+          invalidCount = invalidCount + 1
         }
       }
     }
 
     let expected
-    if (expecteds.length > 0) {
+    if (actualKeys.size - invalidCount > 0) {
+      invalidCount = 1
+      expected = problem(message`a map with only ${formatEntryCount(matchers.length)}`)
+    } else if (expecteds.length > 0 && expecteds.length !== matchers.length) {
+      invalidCount = 1
+      expected = problem(message`a map with ${formatEntryCount(matchers.length)}`)
+    } else if (expecteds.length === 0 && matchers.length > 0) {
+      invalidCount = 1
+      expected = problem(message`a map with ${formatEntryCount(matchers.length)}`)
+    } else {
       const map = new Map()
       for (const e of expecteds) {
         map.set(e.key, e.value)
       }
       expected = value(map)
-    } else {
-      isValid = false
-      expected = message`a map with at least ${formatEntryCount(matchers.length)}`
     }
 
-    if (isValid) {
+    if (invalidCount === 0) {
       return new Valid({
         actual: value(actual),
         expected
       })
     } else {
-      const message = expecteds.length === 0 ? "The map is empty." : "The map does not contain the expected entries."
+      const message = expecteds.length === 0 ? "The map is empty." : "The map does not match the expected entries."
       return new Invalid(message, {
         actual: problem(actual),
         expected

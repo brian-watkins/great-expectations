@@ -178,7 +178,7 @@ expect([ 1, 2, 3 ], is(arrayWith([
 #### mapWith(array of MapEntryMatcher)
 
 Asserts that the actual value is a map with entries that match the
-given `MapEntryMatchers`. If the map has additional entries it will still match.
+given `MapEntryMatchers`.
 
 A `MapEntryMatcher` is an object that conforms to this interface:
 

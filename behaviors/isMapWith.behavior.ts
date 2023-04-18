@@ -1,7 +1,7 @@
 import { behavior } from "esbehavior";
-import { equalTo, mapWith } from "../src";
+import { equalTo, mapWith, stringContaining } from "../src";
 import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
-import { anyValue, message, problem } from "../src/message";
+import { Message, Problem, Value, anyValue, message, problem } from "../src/message";
 
 export default behavior("isMapWith", [
 
@@ -42,7 +42,7 @@ export default behavior("isMapWith", [
     ])(actualMap)
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The map does not contain the expected entries."),
+    hasMessage("The map does not match the expected entries."),
     hasInvalidActual(new Map([["awesome-key", "cool stuff"]])),
     hasExpected(new Map([
       [ problem(message`a string that equals "fun-key"`), anyValue() ]
@@ -58,7 +58,7 @@ export default behavior("isMapWith", [
     ])(actualMap)
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The map does not contain the expected entries."),
+    hasMessage("The map does not match the expected entries."),
     hasInvalidActual(new Map([["awesome-key", "cool stuff"]])),
     hasExpected(new Map([
       [ message`a string that equals "awesome-key"`, problem(message`a string that equals "rad stuff"`) ]
@@ -75,7 +75,7 @@ export default behavior("isMapWith", [
     isInvalidMatchResult(),
     hasMessage("The map is empty."),
     hasInvalidActual(new Map()),
-    hasExpectedMessageText(`info(a map with at least 1 entry)`)
+    hasExpectedMessageText(`error(info(a map with 1 entry))`)
   ]),
 
   exhibit("the map does not contain any entries, but many are expected", () => {
@@ -89,7 +89,81 @@ export default behavior("isMapWith", [
     isInvalidMatchResult(),
     hasMessage("The map is empty."),
     hasInvalidActual(new Map()),
-    hasExpectedMessageText(`info(a map with at least 2 entries)`)
+    hasExpectedMessageText(`error(info(a map with 2 entries))`)
   ]),
+
+  exhibit("the map contains one expected entry, but others", () => {
+    const actualMap = new Map<string, string>()
+    actualMap.set("blah", "blah")
+    actualMap.set("fun", "fun")
+
+    return mapWith([
+      { key: equalTo("blah") }
+    ])(actualMap)
+  }).check([
+    isInvalidMatchResult(),
+    hasMessage("The map does not match the expected entries."),
+    hasInvalidActual(new Map([["blah", "blah"], ["fun", "fun"]])),
+    hasExpectedMessageText("error(info(a map with only 1 entry))")
+  ]),
+
+  exhibit("the map contains many expected entries", () => {
+    const actualMap = new Map<string, string>()
+    actualMap.set("blah", "blah")
+    actualMap.set("fun", "fun")
+    actualMap.set("awesome", "awesome")
+
+    return mapWith([
+      { key: equalTo("blah") },
+      { key: equalTo("awesome") }
+    ])(actualMap)
+  }).check([
+    isInvalidMatchResult(),
+    hasMessage("The map does not match the expected entries."),
+    hasInvalidActual(new Map([["blah", "blah"], ["fun", "fun"], ["awesome", "awesome"]])),
+    hasExpectedMessageText("error(info(a map with only 2 entries))")
+  ]),
+
+  exhibit("the map contains the wrong number of entries and an entry that matches several entry matchers", () => {
+    const actualMap = new Map<string, string>()
+    actualMap.set("blah", "blah")
+
+    return mapWith([
+      { key: equalTo("blah") },
+      { key: stringContaining("b") }
+    ])(actualMap)
+  }).check([
+    isInvalidMatchResult(),
+    hasMessage("The map does not match the expected entries."),
+    hasInvalidActual(new Map([["blah", "blah"]])),
+    hasExpectedMessageText("error(info(a map with 2 entries))")
+  ]),
+
+  exhibit("the map contains the correct number of entries but has an entry that matches several entry matchers", () => {
+    const actualMap = new Map<string, string>()
+    actualMap.set("blah", "blah")
+    actualMap.set("cat", "cat")
+
+    return mapWith([
+      { key: equalTo("blah") },
+      { key: stringContaining("b") }
+    ])(actualMap)
+  }).check([
+    isInvalidMatchResult(),
+    hasMessage("The map does not match the expected entries."),
+    hasInvalidActual(new Map([["blah", "blah"], ["cat", "cat"]])),
+    hasExpected(new Map<Problem | Message, Value>([
+      [ message`a string that equals "blah"`, anyValue() ],
+      [ problem(message`a string that contains "b"`), anyValue() ]
+    ]))
+  ]),
+
+  exhibit("the map contains no entries and no entries are expected", () => {
+    return mapWith([])(new Map())
+  }).check([
+    isValidMatchResult(),
+    hasActual(new Map()),
+    hasExpected(new Map())
+  ])
 
 ])
