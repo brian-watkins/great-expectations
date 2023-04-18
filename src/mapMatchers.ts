@@ -1,5 +1,5 @@
-import { Invalid, Matcher, MatchResult, Valid } from "./matcher";
-import { anyValue, Message, message, Problem, problem, Value, value } from "./message";
+import { Invalid, Matcher, MatchResult, Valid } from "./matcher.js";
+import { anyValue, Message, message, Problem, problem, Value, value } from "./message.js";
 
 export interface MapEntryMatcher<K, V> {
   key: Matcher<K>
