@@ -54,7 +54,7 @@ export default behavior("objectWith", [
   ]),
 
   exhibit("the object does not have one of the specified properties", () => {
-    return objectWith({
+    return objectWith<any>({
       name: stringContaining("cool"),
       age: equalTo(27),
       sport: arrayContaining(stringContaining("tennis"))
@@ -67,7 +67,7 @@ export default behavior("objectWith", [
   ]),
 
   exhibit("the object does not have several of the specified properties", () => {
-    return objectWith({
+    return objectWith<any>({
       name: stringContaining("cool"),
       age: equalTo(27),
       sport: arrayContaining(stringContaining("tennis"))

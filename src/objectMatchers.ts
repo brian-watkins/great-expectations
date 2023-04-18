@@ -1,7 +1,7 @@
 import { Invalid, Matcher, MatchResult, Valid } from "./matcher.js";
 import { list, message, problem, value } from "./message.js";
 
-export function objectWithProperty<T>(property: PropertyKey, matcher: Matcher<T>): Matcher<any> {
+export function objectWithProperty<Obj extends { [key: PropertyKey]: any }, Key extends keyof Obj>(property: Key, matcher: Matcher<Obj[Key]>): Matcher<Obj> {
   return (actual) => {
     if (!Object.hasOwn(actual, property)) {
       return new Invalid("The object does not have the expected property.", {
@@ -29,7 +29,7 @@ export function objectWithProperty<T>(property: PropertyKey, matcher: Matcher<T>
   }
 }
 
-export function objectWith(matchObject: { [key: PropertyKey]: Matcher<any> }): Matcher<{ [key: PropertyKey]: any }> {
+export function objectWith<Obj extends { [key: PropertyKey]: any }>(matchObject: { [key in keyof Partial<Obj>]: Matcher<Obj[key]> }): Matcher<Obj> {
   return (actual) => {
     const objectMatchResult = new ObjectMatchResult(actual, matchObject)
 
@@ -45,14 +45,14 @@ export function objectWith(matchObject: { [key: PropertyKey]: Matcher<any> }): M
   }
 }
 
-function validResult(objectMatchResult: ObjectMatchResult): MatchResult {
+function validResult<Obj extends { [key: PropertyKey]: any }>(objectMatchResult: ObjectMatchResult<Obj>): MatchResult {
   return new Valid({
     actual: value(objectMatchResult.actuals),
     expected: value(objectMatchResult.expecteds)
   })
 }
 
-function invalidPropertyResult(objectMatchResult: ObjectMatchResult): MatchResult {
+function invalidPropertyResult<Obj extends { [key: PropertyKey]: any }>(objectMatchResult: ObjectMatchResult<Obj>): MatchResult {
   const description = objectMatchResult.totalInvalidProperties() == 1
     ? "One of the object's properties was unexpected."
     : "Some of the object's properties were unexpected."
@@ -62,7 +62,7 @@ function invalidPropertyResult(objectMatchResult: ObjectMatchResult): MatchResul
   })
 }
 
-function missingKeyResult(objectMatchResult: ObjectMatchResult): MatchResult {
+function missingKeyResult<Obj extends { [key: PropertyKey]: any }>(objectMatchResult: ObjectMatchResult<Obj>): MatchResult {
   const expectedKeys = objectMatchResult.getExpectedKeys().map((key) => {
     if (objectMatchResult.hasMissingKey(key)) {
       return problem(key)
@@ -77,13 +77,13 @@ function missingKeyResult(objectMatchResult: ObjectMatchResult): MatchResult {
   })
 }
 
-class ObjectMatchResult {
+class ObjectMatchResult<Obj extends { [key: PropertyKey]: any }> {
   expecteds: { [key: PropertyKey]: any } = {}
   actuals: { [key: PropertyKey]: any } = {}
   missingKeys: Array<PropertyKey> = []
   invalidMatches: number = 0
 
-  constructor(public actual: { [key: PropertyKey]: any }, public matchObject: { [key: PropertyKey]: Matcher<any> }) {
+  constructor(public actual: Obj, public matchObject: { [key in keyof Partial<Obj>]: Matcher<Obj[key]> }) {
     for (const matchKey in this.matchObject) {
       if (!Object.hasOwn(this.actual, matchKey)) {
         this.recordMissingKey(matchKey)
