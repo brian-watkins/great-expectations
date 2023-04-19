@@ -18,6 +18,7 @@ import isObjectWhereBehavior from "./isObjectWhere.behavior.js";
 import rejectsWithBehavior from "./rejectsWith.behavior.js";
 import assignedWithBehavior from "./assignedWith.behavior.js";
 import isMapWithBehavior from "./isMapWith.behavior.js";
+import isMapContainingBehavior from "./isMapContaining.behavior.js";
 
 validate([
   isIdenticalToBehavior,
@@ -29,6 +30,7 @@ validate([
   isArrayWhereItemAtBehavior,
   isArrayContainingBehavior,
   isMapWithBehavior,
+  isMapContainingBehavior,
   isStringContainingBehavior,
   isStringWithLengthBehavior,
   isStringMatchingBehavior,

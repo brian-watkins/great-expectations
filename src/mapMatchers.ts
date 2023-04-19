@@ -6,6 +6,51 @@ export interface MapEntryMatcher<K, V> {
   value?: Matcher<V>
 }
 
+export function mapContaining<K, V>(matcher: MapEntryMatcher<K, V>): Matcher<Map<K, V>> {
+  return (actual) => {
+    if (actual.size === 0) {
+      return new Invalid("The map does not contain the expected entry.", {
+        actual: problem(actual),
+        expected: problem(message`a map with at least 1 entry`)
+      })
+    }
+
+    let expectedKey
+    let expectedValue: Value | Problem | Message = anyValue()
+    let isValid = false
+    for (const key of actual.keys()) {
+      const keyResult = matcher.key(key)
+      expectedKey = keyResult.values.expected
+      if (keyResult.type === "valid") {
+        if (matcher.value) {
+          const valueResult = matcher.value(actual.get(key)!)
+          expectedValue = valueResult.values.expected
+          if (valueResult.type === "valid") {
+            isValid = true
+            break
+          }
+        } else {
+          isValid = true
+        }
+        break
+      }
+    }
+
+    if (isValid) {
+      return new Valid({
+        actual: value(actual),
+        expected: message`a map that contains the entry { ${expectedKey} => ${expectedValue} }`
+      })
+    } else {
+      return new Invalid("The map does not contain the expected entry.", {
+        actual: problem(actual),
+        expected: message`a map that contains the entry { ${expectedKey} => ${expectedValue} }`
+      })
+    }
+
+  }
+}
+
 interface ExpectedMapEntry {
   key: Problem | Value | Message
   value: Problem | Value | Message

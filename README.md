@@ -149,20 +149,20 @@ Asserts that the actual value is an array with the given length
 
 #### arrayContaining(matcher, { times: undefined })
 
-Asserts that the actual value is an array with at least one item that matches
+Asserts that the actual value is an array with at least one element that matches
 the provided matcher. The optional option specifies whether some specific
-number of items should match.
+number of elements should match.
 
 #### arrayWithItemAt(index, matcher)
 
-Asserts that the actual value is an array with an item at the provided index
+Asserts that the actual value is an array with an element at the provided index
 that matches the provided matcher.
 
 #### arrayWith(array of matchers, { withAnyOrder: false })
 
-Asserts that the actual value is an array with exactly items that match the provided
-array of matchers in the given order. The optional option specifies whether
-order matters.
+Asserts that the actual value is an array with exactly the elements that
+match the provided array of matchers in the given order. The optional option
+specifies whether order matters.
 
 ```
 expect([ 1, 2, 3 ], is(arrayWith([
@@ -177,7 +177,7 @@ expect([ 1, 2, 3 ], is(arrayWith([
 
 #### mapWith(array of MapEntryMatcher)
 
-Asserts that the actual value is a map with entries that match the
+Asserts that the actual value is a map with all and only entries that match the
 given `MapEntryMatchers`.
 
 A `MapEntryMatcher` is an object that conforms to this interface:
@@ -199,6 +199,10 @@ expect(map, is(mapWith([
   { key: equalTo("Another Key"), value: stringContaining("something fun") }
 ])))
 ```
+
+#### mapContaining(MapEntryMatcher)
+
+Asserts that the actual map contains an entry that matches the given `MapEntryMatcher`.
 
 
 ### Object Matchers
