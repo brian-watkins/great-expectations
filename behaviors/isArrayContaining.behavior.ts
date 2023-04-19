@@ -16,7 +16,7 @@ export default behavior("isArrayContaining", [
     return arrayContaining(stringContaining("hello"))(["goodbye", "bye", "later"])
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The array does not contain what was expected."),
+    hasMessage("The array does not contain the expected element."),
     hasInvalidActual(["goodbye", "bye", "later"]),
     hasExpectedMessageText("error(info(an array that contains a string that contains \"hello\"))")
   ]),
@@ -48,5 +48,13 @@ export default behavior("isArrayContaining", [
     isInvalidMatchResult(),
     hasExpectedMessageText("error(info(an array that contains, exactly 2 times, a string that equals \"fun\"))")
   ]),
+
+  exhibit("the array is empty", () => {
+    return arrayContaining(equalTo("fun"))([])
+  }).check([
+    isInvalidMatchResult(),
+    hasMessage("The array does not contain the expected element."),
+    hasExpectedMessageText(`error(info(an array that contains at least 1 element))`)
+  ])
 
 ])

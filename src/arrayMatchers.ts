@@ -157,6 +157,13 @@ export function arrayContaining<T>(matcher: Matcher<T>, options: ArrayContaining
   const expectedMatchCount = options.times
 
   return (actual) => {
+    if (actual.length === 0) {
+      return new Invalid("The array does not contain the expected element.", {
+        actual: problem(actual),
+        expected: problem(message`an array that contains at least 1 element`)
+      })
+    }
+
     let validMatchValues, invalidMatchValues: MatchValues | undefined
     let matchedCount = 0
     for (const item of actual) {
@@ -184,7 +191,7 @@ export function arrayContaining<T>(matcher: Matcher<T>, options: ArrayContaining
         expected: arrayContainsMessage(expectedMatchCount, validMatchValues)
       })
     } else {
-      return new Invalid("The array does not contain what was expected.", {
+      return new Invalid("The array does not contain the expected element.", {
         actual: problem(actual),
         expected: problem(arrayContainsMessage(expectedMatchCount, invalidMatchValues))
       })
