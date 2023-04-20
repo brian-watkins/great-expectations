@@ -1,5 +1,18 @@
 # Changelog
 
+### 4/20/2023
+
+great-expectations 1.3.0
+
+#### Added
+- Support for matching an entry contained in a map
+- Type support for object matchers
+
+#### Fixed
+- Set `.js` extensions for all imports so module resolution will
+work correctly in node.
+
+
 ### 4/17/2023
 
 great-expectations 1.2.0
