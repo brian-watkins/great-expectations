@@ -99,6 +99,23 @@ export default behavior("isArrayWhere", [
       message`a number that equals 3`
     ]),
     hasActual([3, problem(6), 2])
+  ]),
+
+  exhibit("the array is expected to be empty but it is not", () => {
+    return arrayWith([])([ 3, 6, 2 ])
+  }).check([
+    isInvalidMatchResult(),
+    hasMessage("The array length (3) is unexpected."),
+    hasExpectedMessageText("error(info(an array with length 0))"),
+    hasInvalidActual([ 3, 6, 2 ])
+  ]),
+
+  exhibit("an empty array is expected to be empty", () => {
+    return arrayWith([])([])
+  }).check([
+    isValidMatchResult(),
+    hasExpected([]),
+    hasActual([])
   ])
 
 ])
