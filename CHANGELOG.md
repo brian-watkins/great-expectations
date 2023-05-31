@@ -1,5 +1,14 @@
 # Changelog
 
+### 5/31/2023
+
+great-expectations 1.4.0
+
+#### Added
+- Support for consuming great-expectations as a commonjs module
+in projects that need to do so.
+
+
 ### 4/20/2023
 
 great-expectations 1.3.0
