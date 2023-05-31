@@ -8,15 +8,28 @@
     "type": "git",
     "url": "https://github.com/brian-watkins/great-expectations"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/cjs/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
   "files": [
     "dist/"
   ],
   "scripts": {
+    "fix:cjs": "cp ./cjs_package.json ./dist/cjs/package.json",
     "prepublishOnly": "npm run build",
-    "build": "rm -rf dist && tsc --build",
+    "build": "rm -rf dist && tsc -p ./tsconfig.json && tsc -p ./tsconfig-cjs.json && npm run fix:cjs",
     "test": "tsx ./behaviors/runner.ts",
     "test:swc": "ts-node --esm --swc ./behaviors/runner.ts"
   },
