@@ -1,6 +1,29 @@
 import { Invalid, Matcher, MatchResult, Valid } from "./matcher.js";
 import { list, message, problem, value } from "./message.js";
 
+export interface Constructor<T> extends Function {
+  prototype: T;
+}
+
+export function objectOfType(constuctor: Constructor<any>): Matcher<any> {
+  return (actual) => {
+    const actualMessage = message`an object of type ${actual.constructor.name}`
+    const expectedMessage = message`an object of type ${constuctor.name}`
+
+    if (actual instanceof constuctor) {
+      return new Valid({
+        actual: actualMessage,
+        expected: expectedMessage
+      })
+    } else {
+      return new Invalid("", {
+        actual: problem(actualMessage),
+        expected: problem(expectedMessage)
+      })
+    }
+  }
+}
+
 export function objectWithProperty<Obj extends { [key: PropertyKey]: any }, Key extends keyof Obj>(property: Key, matcher: Matcher<Obj[Key]>): Matcher<Obj> {
   return (actual) => {
     if (!Object.hasOwn(actual, property)) {

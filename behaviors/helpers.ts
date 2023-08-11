@@ -80,6 +80,12 @@ export function hasExpectedMessageText(message: string): Property<MatchResult> {
   })
 }
 
+export function hasActualMessageText(message: string): Property<MatchResult> {
+  return property("a message explaining the actual value is shown", (result) => {
+    assertHasActualMessage(message, result)
+  })
+}
+
 export function hasExpected(value: any): Property<MatchResult> {
   return property("a message explaining the expectation is shown", (result) => {
     assert.deepEqual(stringify(result.values.expected, testFormatter), stringify(value, testFormatter))

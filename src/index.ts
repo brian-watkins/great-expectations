@@ -9,7 +9,7 @@ export type { MapEntryMatcher } from "./mapMatchers.js"
 export { stringMatching, stringWithLength, stringContaining } from "./stringMatchers.js"
 export type { StringContainingOptions } from "./stringMatchers.js"
 export { satisfying } from "./satisfyingMatchers.js"
-export { objectWithProperty, objectWith } from "./objectMatchers.js"
+export { objectOfType, objectWithProperty, objectWith } from "./objectMatchers.js"
 export { Valid, Invalid } from "./matcher.js"
 export type { Matcher, MatchResult, MatchValues } from "./matcher.js"
 

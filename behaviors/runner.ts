@@ -20,6 +20,7 @@ import assignedWithBehavior from "./assignedWith.behavior.js";
 import isMapWithBehavior from "./isMapWith.behavior.js";
 import isMapContainingBehavior from "./isMapContaining.behavior.js";
 import throwsBehavior from "./throws.behavior.js";
+import isObjectOfTypeBehavior from "./isObjectOfType.behavior.js";
 
 validate([
   isIdenticalToBehavior,
@@ -35,6 +36,7 @@ validate([
   isStringContainingBehavior,
   isStringWithLengthBehavior,
   isStringMatchingBehavior,
+  isObjectOfTypeBehavior,
   isObjectWithPropertyBehavior,
   isObjectWhereBehavior,
   stringifyBehavior,
