@@ -1,5 +1,5 @@
 import { behavior, effect, example } from "esbehavior"
-import { equalTo, expect, rejectsWith, stringContaining } from "../src/index.js"
+import { Invalid, equalTo, expect, rejectsWith, stringContaining } from "../src/index.js"
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError"
 import { assertHasActual, assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers.js"
@@ -16,7 +16,7 @@ export default behavior("expect rejectsWith", [
         })
       ]
     }),
-  
+
   example()
     .description("the rejected value fails to match")
     .script({
@@ -26,14 +26,14 @@ export default behavior("expect rejectsWith", [
             await expect(Promise.reject("error!"), rejectsWith(equalTo(17)))
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid),
-            assertHasActual(problem("error!"), err.invalid),
-            assertHasExpectedMessage("error(info(a number that equals 17))", err.invalid)
+              assertHasActual(problem("error!"), err.invalid),
+              assertHasExpectedMessage("error(info(a number that equals 17))", err.invalid)
             return true
           })
         })
       ]
     }),
-  
+
   example()
     .description("a message is provided")
     .script({
@@ -43,9 +43,9 @@ export default behavior("expect rejectsWith", [
             await expect(Promise.reject("error!"), rejectsWith(equalTo(17)), "Should be a number!")
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid),
-            assertHasMessage("Should be a number!", err.invalid)
+              assertHasMessage("Should be a number!", err.invalid)
             assertHasActual(problem("error!"), err.invalid),
-            assertHasExpectedMessage("error(info(a number that equals 17))", err.invalid)
+              assertHasExpectedMessage("error(info(a number that equals 17))", err.invalid)
             return true
           })
         })
@@ -82,6 +82,48 @@ export default behavior("expect rejectsWith", [
             assertHasMessage("Would be cool if it were a number!", err.invalid)
             assertHasActualMessage("error(info(a promise that resolved with \"blah\"))", err.invalid)
             assertHasExpectedMessage("error(info(a promise that rejects))", err.invalid)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("the provided value equals the actual rejected value")
+    .script({
+      observe: [
+        effect("it reports a valid match", async () => {
+          await expect(Promise.reject("blah blah"), rejectsWith("blah blah"))
+        })
+      ]
+    }),
+
+  example()
+    .description("the provided value fails to equal the rejected value")
+    .script({
+      observe: [
+        effect("it reports an invalid equalTo match", async () => {
+          await assert.rejects(async () => {
+            await expect(Promise.reject("error!"), rejectsWith(17))
+          }, (err: MatchError) => {
+            const expectedInvalid = equalTo<any>(17)("error!") as Invalid
+            assertHasMessage(expectedInvalid.description, err.invalid)
+            assert.deepEqual(err.invalid.values, expectedInvalid.values)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("the provided value fails to equal the rejected value, with a description")
+    .script({
+      observe: [
+        effect("it reports the description", async () => {
+          await assert.rejects(async () => {
+            await expect(Promise.reject("error!"), rejectsWith(17), "Hmmm")
+          }, (err: MatchError) => {
+            assertHasMessage("Hmmm", err.invalid)
             return true
           })
         })

@@ -65,7 +65,7 @@ export function resolvesTo<T>(matcher: T | Matcher<T>): MatchEvaluator<Promise<T
   }
 }
 
-export function rejectsWith<T>(matcher: Matcher<T>): MatchEvaluator<Promise<any>, Promise<void>> {
+export function rejectsWith<T>(matcher: T | Matcher<T>): MatchEvaluator<Promise<any>, Promise<void>> {
   return async (promised, description) => {
     let result
     try {
@@ -75,7 +75,11 @@ export function rejectsWith<T>(matcher: Matcher<T>): MatchEvaluator<Promise<any>
         expected: problem(message`a promise that rejects`)
       })
     } catch (rejectedValue: any) {
-      result = matcher(rejectedValue)
+      if (isMatcher(matcher)) {
+        result = matcher(rejectedValue)
+      } else {
+        result = equalTo(matcher)(rejectedValue)
+      }
     }
     handleResult(result, description)
   }
