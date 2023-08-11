@@ -23,7 +23,7 @@ function isMatcher<T>(value: T | Matcher<T>): value is Matcher<T> {
 export function throws<T>(matcher: Matcher<T>): MatchEvaluator<() => void, void> {
   return (thunk, description) => {
     let didThrow = false
-    let result
+    let result: MatchResult
     try {
       thunk()
     } catch (err: any) {
