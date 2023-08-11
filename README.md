@@ -71,6 +71,17 @@ Evaluates the provided matcher against the actual value synchronously.
 expect([1, 2, 3], is(arrayWithItemAt(2, equalTo(3))))
 ```
 
+#### throws(matcher): MatchEvaluator
+
+Evaluates the provided matcher against any exception thrown when the actual
+no-argument function is called. To expect that functions with arguments should
+throw, wrap the call to the function under test with a no-argument function.
+Fails if the no-argument function does not throw when called.
+
+```
+expect(() => { myFunc("some argument") }, throws(objectOfType(SpecialError)))
+```
+
 #### resolvesTo(matcher): MatchEvaluator
 
 Evaluates the provided matcher against the promised actual value, when that promise resolves.
@@ -206,6 +217,10 @@ Asserts that the actual map contains an entry that matches the given `MapEntryMa
 
 
 ### Object Matchers
+
+#### objectOfType(class)
+
+Asserts that the actual value is an object that instantiates the given class.
 
 #### objectWithProperty(propertyName, matcher)
 
