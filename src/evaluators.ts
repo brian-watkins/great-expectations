@@ -20,7 +20,7 @@ function isMatcher<T>(value: T | Matcher<T>): value is Matcher<T> {
   return typeof(value) === "function"
 }
 
-export function throws<T>(matcher: Matcher<T>): MatchEvaluator<() => void, void> {
+export function throws<T>(matcher: T | Matcher<T>): MatchEvaluator<() => void, void> {
   return (thunk, description) => {
     let didThrow = false
     let result: MatchResult
@@ -28,7 +28,11 @@ export function throws<T>(matcher: Matcher<T>): MatchEvaluator<() => void, void>
       thunk()
     } catch (err: any) {
       didThrow = true
-      result = matcher(err)
+      if (isMatcher(matcher)) {
+        result = matcher(err)
+      } else {
+        result = equalTo(matcher)(err)
+      }
     } finally {
       if (!didThrow) {
         result = new Invalid("The function did not throw.", {

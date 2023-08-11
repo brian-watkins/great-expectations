@@ -1,5 +1,5 @@
 import { behavior, effect, example } from "esbehavior";
-import { equalTo, expect, stringContaining, throws } from "../src";
+import { Invalid, equalTo, expect, stringContaining, throws } from "../src";
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError";
 import { assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers";
@@ -40,9 +40,51 @@ export default behavior("expect throws", [
       observe: [
         effect("it prints the description", () => {
           assert.throws(() => {
-            expect(() => "yo yo", throws(stringContaining("blah")), "Should throw blah!")
+            expect(() => { throw "yo yo" }, throws(stringContaining("blah")), "Should throw blah!")
           }, (err: MatchError) => {
             assertHasMessage("Should throw blah!", err.invalid)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that matches the thrown value")
+    .script({
+      observe: [
+        effect("it reports a valid match", () => {
+          expect(() => { throw "blah blah blah" }, throws("blah blah blah"))
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that does not match the thrown value")
+    .script({
+      observe: [
+        effect("it reports an invalid equalTo match", () => {
+          assert.throws(() => {
+            expect(() => { throw "yo yo" }, throws("blah"))
+          }, (err: MatchError) => {
+            const expectedInvalid = equalTo("blah")("yo yo") as Invalid
+            assertHasMessage(expectedInvalid.description, err.invalid)
+            assert.deepEqual(err.invalid.values, expectedInvalid.values)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that does not match the thrown value, with a description")
+    .script({
+      observe: [
+        effect("it reports an invalid equalTo match", () => {
+          assert.throws(() => {
+            expect(() => { throw "yo yo" }, throws("blah"), "Hope this works!")
+          }, (err: MatchError) => {
+            assertHasMessage("Hope this works!", err.invalid)
             return true
           })
         })
