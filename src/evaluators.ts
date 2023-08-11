@@ -10,6 +10,27 @@ export function is<T>(matcher: Matcher<T>): MatchEvaluator<T, void> {
   }
 }
 
+export function throws<T>(matcher: Matcher<T>): MatchEvaluator<() => void, void> {
+  return (thunk, description) => {
+    let didThrow = false
+    let result
+    try {
+      thunk()
+    } catch (err: any) {
+      didThrow = true
+      result = matcher(err)
+    } finally {
+      if (!didThrow) {
+        result = new Invalid("The function did not throw.", {
+          actual: problem(message`a function that did not throw`),
+          expected: problem(message`a function that throws`)
+        })
+      }
+    }
+    handleResult(result!, description)
+  }
+}
+
 export function resolvesTo<T>(matcher: Matcher<T>): MatchEvaluator<Promise<T>, Promise<void>> {
   return async (promised, description) => {
     let result

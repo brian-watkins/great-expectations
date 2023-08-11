@@ -19,6 +19,7 @@ import rejectsWithBehavior from "./rejectsWith.behavior.js";
 import assignedWithBehavior from "./assignedWith.behavior.js";
 import isMapWithBehavior from "./isMapWith.behavior.js";
 import isMapContainingBehavior from "./isMapContaining.behavior.js";
+import throwsBehavior from "./throws.behavior.js";
 
 validate([
   isIdenticalToBehavior,
@@ -40,7 +41,8 @@ validate([
   satisfyingAllBehavior,
   isBehavior,
   resolvesToBehavior,
-  rejectsWithBehavior
+  rejectsWithBehavior,
+  throwsBehavior
 ], {
   failFast: true
 })
