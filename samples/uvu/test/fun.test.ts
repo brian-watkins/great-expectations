@@ -1,5 +1,5 @@
 import { test } from "uvu"
-import { arrayWith, arrayWithLength, equalTo, expect, is, mapWith } from "../../../src/index.js"
+import { equalTo, expect, is, mapWith } from "../../../src/index.js"
 
 interface Item {
   id: number
@@ -19,7 +19,6 @@ test("This is a test", () => {
   expect(map, is(mapWith([
     {
       key: equalTo("Team 3"),
-      // value: arrayWithLength(0)
     }
   ])))
 })
