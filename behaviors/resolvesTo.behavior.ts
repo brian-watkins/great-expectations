@@ -1,5 +1,5 @@
 import { behavior, effect, example } from "esbehavior"
-import { equalTo, expect, stringContaining, resolvesTo } from "../src/index.js"
+import { equalTo, expect, stringContaining, resolvesTo, Invalid } from "../src/index.js"
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError"
 import { assertHasActualMessage, assertHasExpectedMessage, assertHasMessage, assertIsInvalidMatch } from "./helpers.js"
@@ -76,6 +76,48 @@ export default behavior("expect resolvesTo", [
             assertHasMessage("Wish it were a number!", err.invalid)
             assertHasActualMessage("error(info(a promise that rejected with \"blah\"))", err.invalid)
             assertHasExpectedMessage("error(info(a promise that resolves))", err.invalid)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that equals the promised actual")
+    .script({
+      observe: [
+        effect("it reports a valid match", async () => {
+          await expect(Promise.resolve("blah blah"), resolvesTo("blah blah"))
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that does not equal the promised actual")
+    .script({
+      observe: [
+        effect("it reports an invalid equalTo match", async () => {
+          await assert.rejects(async () => {
+            await expect(Promise.resolve("blah blah"), resolvesTo("who dis?"))
+          }, (err: MatchError) => {
+            const expectedInvalid = equalTo("who dis?")("blah blah") as Invalid
+            assertHasMessage(expectedInvalid.description, err.invalid)
+            assert.deepEqual(err.invalid.values, expectedInvalid.values)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that does not equal the promised actual, with a description")
+    .script({
+      observe: [
+        effect("it prints the description", async () => {
+          await assert.rejects(async () => {
+            await expect(Promise.resolve("blah blah"), resolvesTo("who dis?"), "Special Greeting Expected")
+          }, (err: MatchError) => {
+            assertHasMessage("Special Greeting Expected", err.invalid)
             return true
           })
         })

@@ -41,12 +41,16 @@ export function throws<T>(matcher: Matcher<T>): MatchEvaluator<() => void, void>
   }
 }
 
-export function resolvesTo<T>(matcher: Matcher<T>): MatchEvaluator<Promise<T>, Promise<void>> {
+export function resolvesTo<T>(matcher: T | Matcher<T>): MatchEvaluator<Promise<T>, Promise<void>> {
   return async (promised, description) => {
     let result
     try {
       const resolvedValue = await promised
-      result = matcher(resolvedValue)
+      if (isMatcher(matcher)) {
+        result = matcher(resolvedValue)
+      } else {
+        result = equalTo(matcher)(resolvedValue)
+      }
     } catch (err) {
       result = new Invalid("The promise was unexpectedly rejected.", {
         actual: problem(message`a promise that rejected with ${value(err)}`),
