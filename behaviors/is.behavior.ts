@@ -30,7 +30,7 @@ export default behavior("expect is", [
         })
       ]
     }),
-  
+
   example()
     .description("a description is provided")
     .script({
@@ -67,6 +67,21 @@ export default behavior("expect is", [
             const expectedInvalid = equalTo(21)(17) as Invalid
             assertHasMessage(expectedInvalid.description, err.invalid)
             assert.deepEqual(err.invalid.values, expectedInvalid.values)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that does not equal the actual with a description")
+    .script({
+      observe: [
+        effect("it reports an invalid match", () => {
+          assert.throws(() => {
+            expect(17, is(21), "Things are bad!")
+          }, (err: MatchError) => {
+            assertHasMessage("Things are bad!", err.invalid)
             return true
           })
         })
