@@ -7,7 +7,7 @@ import { assertHasExpectedMessage, assertHasMessage } from "./helpers.js"
 export default behavior("expect is", [
 
   example()
-    .description("the actual value is the result of a promise")
+    .description("the actual value matches")
     .script({
       observe: [
         effect("it runs the match as expected", () => {
