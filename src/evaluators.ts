@@ -1,13 +1,23 @@
+import { equalTo } from "./basicMatchers.js"
 import { Invalid, Matcher, MatchResult } from "./matcher.js"
 import { MatchError } from "./matchError.js"
 import { message, problem, value } from "./message.js"
 
 export type MatchEvaluator<T, S> = (value: T, description?: string) => S
 
-export function is<T>(matcher: Matcher<T>): MatchEvaluator<T, void> {
+export function is<T>(matcher: T | Matcher<T>): MatchEvaluator<T, void> {
   return (value, description) => {
-    handleResult(matcher(value), description)
+    if (isMatcher(matcher)) {
+      handleResult(matcher(value), description)
+    } else {
+      handleResult(equalTo(matcher)(value), description)
+    }
+
   }
+}
+
+function isMatcher<T>(value: T | Matcher<T>): value is Matcher<T> {
+  return typeof(value) === "function"
 }
 
 export function throws<T>(matcher: Matcher<T>): MatchEvaluator<() => void, void> {

@@ -1,5 +1,5 @@
 import { behavior, effect, example } from "esbehavior"
-import { expect, is, stringContaining } from "../src/index.js"
+import { Invalid, equalTo, expect, is, stringContaining } from "../src/index.js"
 import { strict as assert } from "node:assert"
 import { MatchError } from "../src/matchError"
 import { assertHasExpectedMessage, assertHasMessage } from "./helpers.js"
@@ -40,6 +40,33 @@ export default behavior("expect is", [
             expect("yo yo", is(stringContaining("blah")), "Should be blah!")
           }, (err: MatchError) => {
             assertHasMessage("Should be blah!", err.invalid)
+            return true
+          })
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that equals the actual")
+    .script({
+      observe: [
+        effect("it reports a valid match", () => {
+          expect(17, is(17))
+        })
+      ]
+    }),
+
+  example()
+    .description("a value is provided that does not equal the actual")
+    .script({
+      observe: [
+        effect("it reports an invalid match", () => {
+          assert.throws(() => {
+            expect(17, is(21))
+          }, (err: MatchError) => {
+            const expectedInvalid = equalTo(21)(17) as Invalid
+            assertHasMessage(expectedInvalid.description, err.invalid)
+            assert.deepEqual(err.invalid.values, expectedInvalid.values)
             return true
           })
         })
