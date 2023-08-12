@@ -36,19 +36,36 @@ which can make your test suite easier to read and easier to extend.
 npm install --save-dev great-expectations
 ```
 
-Here's how you would use Great Expectations in a mocha test:
+Great Expectations is an excellent matcher library to use with the coolest
+test framework around:
+[esbehavior](https://github.com/brian-watkins/esbehavior). But,
+you can also use Great Expectations with other javascript testing frameworks, like
+mocha, jest, uvu. In the case of mocha and jest, you'll need a small adapter
+to ensure that test failures are printed in the best way. Check out the
+[samples](./samples/) to see how it's done.
+
+Here's how you would use Great Expectations in an esbehavior test:
 
 ```
+import { behavior, example, effect } from "esbehavior"
 import { expect, is, equalTo } from "great-expectations"
 
-it("some test", () => {
-  expect(7, is(equalTo(5)))
-})
+export default behavior("some behavior", [
+  example()
+    .description("some cool case")
+    .script({
+      observe: [
+        effect("it does the right thing", () => {
+          expect("This is cool!", is(stringContaining("cool")))        
+        })
+      ]
+    })
+])
 ```
 
 ### Writing Expectations
 
-#### expect(actual, MatchEvaluator, description?)
+#### `expect(actual, MatchEvaluator, description?)`
 
 The expect function evaluates an actual value against the provided matcher. It will
 throw an Error if the actual value does not match, which is generally sufficient to cause
