@@ -63,51 +63,58 @@ Optionally, provide a description that will display with any invalid matches.
 
 ### MatchEvaluators
 
-#### is(matcher): MatchEvaluator
+#### `is(T | Matcher<T>): MatchEvaluator`
 
-Evaluates the provided matcher against the actual value synchronously.
+If the provided value is a matcher, it evaluates the provided matcher against
+the actual value synchronously. Otherwise, it checks that the provided value deeply
+equals the actual value.
 
 ```
 expect([1, 2, 3], is(arrayWithItemAt(2, equalTo(3))))
 ```
 
-#### throws(matcher): MatchEvaluator
+#### `throws(T | Matcher<T>): MatchEvaluator`
 
-Evaluates the provided matcher against any exception thrown when the actual
-no-argument function is called. To expect that functions with arguments should
-throw, wrap the call to the function under test with a no-argument function.
-Fails if the no-argument function does not throw when called.
+If the provided value is a matcher, it evaluates the provided matcher against
+any exception thrown when the actual no-argument function is called. Otherwise,
+it checks that the provided value deeply equals the actual thrown value. To expect
+that functions with arguments should throw, wrap the call to the function under
+test with a no-argument function. Fails if the no-argument function does not
+throw when called.
 
 ```
 expect(() => { myFunc("some argument") }, throws(objectOfType(SpecialError)))
 ```
 
-#### resolvesTo(matcher): MatchEvaluator
+#### `resolvesTo(T | Matcher<T>): MatchEvaluator`
 
-Evaluates the provided matcher against the promised actual value, when that promise resolves.
-Fails if the promise rejects.
+If the provided value is a matcher, it evaluates the provided matcher against
+the promised actual value, when that promise resolves. Otherwise, it checks that
+the provided value deeply equals the promized actual value. Fails if the promise
+rejects.
 
-#### rejectsWith(matcher): MatchEvaluator
+#### `rejectsWith(T | Matcher<T>): MatchEvaluator`
 
-Evaluates the provided matcher against the value received with that promise rejects. Fails if
-the promise resolves.
+If the provided value is a matcher, it evaluates the provided matcher against
+the value received with that promise rejects. Othewise, it checks that the
+provided value deeply equals the rejected value. Fails if the promise resolves.
 
 
 ### Basic Matchers
 
-#### equalTo(expected)
+#### `equalTo(expected)`
 
 Asserts that the actual value is deeply equal to the expected value.
 
-#### identicalTo(expected)
+#### `identicalTo(expected)`
 
 Asserts that the actual value is the same instance as the expected value (ie `===`).
 
-#### defined()
+#### `defined()`
 
 Asserts that the actual value is defined (i.e. not `undefined`).
 
-#### assignedWith(matcher)
+#### `assignedWith(matcher)`
 
 Asserts that the actual variable is assigned a value (i.e. not `undefined`) and that
 it matches the provided matcher. Use this matcher when the expected value is potentially
@@ -118,7 +125,7 @@ const someVariable: string | undefined = "hello"
 expect(someVariable, is(assignedWith(stringContaining("he"))))
 ```
 
-#### satisfying(array of matchers)
+#### `satisfying(array of matchers)`
 
 Asserts that the actual value matches all of the provided matchers.
 
@@ -132,7 +139,7 @@ expect("something fun", is(satisfying([
 
 ### String Matchers
 
-#### stringWithLength(length)
+#### `stringWithLength(length)`
 
 Asserts that the actual value is a string with the given length.
 
@@ -140,36 +147,36 @@ Asserts that the actual value is a string with the given length.
 expect("", is(stringWithLength(0)))
 ```
 
-#### stringContaining(expected, { caseSensitive: true, times: undefined })
+#### `stringContaining(expected, { caseSensitive: true, times: undefined })`
 
 Asserts that the actual value is a string that contains the expected value at
 least one time. The optional options specify whether the match should be case
 sensitive and whether the string should be expected to occur some specific
 number of times.
 
-#### stringMatching(regex)
+#### `stringMatching(regex)`
 
 Asserts that the actual value is a string that matches the provided regular expression.
 
 
 ### Array Matchers
 
-#### arrayWithLength(number)
+#### `arrayWithLength(number)`
 
 Asserts that the actual value is an array with the given length
 
-#### arrayContaining(matcher, { times: undefined })
+#### `arrayContaining(matcher, { times: undefined })`
 
 Asserts that the actual value is an array with at least one element that matches
 the provided matcher. The optional option specifies whether some specific
 number of elements should match.
 
-#### arrayWithItemAt(index, matcher)
+#### `arrayWithItemAt(index, matcher)`
 
 Asserts that the actual value is an array with an element at the provided index
 that matches the provided matcher.
 
-#### arrayWith(array of matchers, { withAnyOrder: false })
+#### `arrayWith(array of matchers, { withAnyOrder: false })`
 
 Asserts that the actual value is an array with exactly the elements that
 match the provided array of matchers in the given order. The optional option
@@ -186,7 +193,7 @@ expect([ 1, 2, 3 ], is(arrayWith([
 
 ### Map Matchers
 
-#### mapWith(array of MapEntryMatcher)
+#### `mapWith(array of MapEntryMatcher)`
 
 Asserts that the actual value is a map with all and only entries that match the
 given `MapEntryMatchers`.
@@ -211,23 +218,23 @@ expect(map, is(mapWith([
 ])))
 ```
 
-#### mapContaining(MapEntryMatcher)
+#### `mapContaining(MapEntryMatcher)`
 
 Asserts that the actual map contains an entry that matches the given `MapEntryMatcher`.
 
 
 ### Object Matchers
 
-#### objectOfType(class)
+#### `objectOfType(class)`
 
 Asserts that the actual value is an object that instantiates the given class.
 
-#### objectWithProperty(propertyName, matcher)
+#### `objectWithProperty(propertyName, matcher)`
 
 Asserts that the actual value is an object with an own property of the given name and a
 value that matches the provided matcher.
 
-#### objectWith(matcherObject)
+#### `objectWith(matcherObject)`
 
 Asserts that the actual value is an object that has all the properties of the provided
 matcher object and the values of those properties match the matchers associated
@@ -271,7 +278,7 @@ Then you can just use it like any other matcher:
 expect(8, is(even()))
 ```
 
-#### MatchResult
+#### `MatchResult`
 
 A type that is either `Valid` or `Invalid`. `MatchResult` is a discriminated union
 based on the `type` field. So it's possible to handle cases like so:
@@ -286,7 +293,7 @@ switch (matchResult.type) {
 }
 ```
 
-#### new Valid({ actual, expected }): MatchResult
+#### `new Valid({ actual, expected }): MatchResult`
 
 Create a `Valid` when the actual value matches what's expected. The instance looks
 like this:
@@ -305,7 +312,7 @@ The `actual` and `expected` values are used to present these values when necessa
 You can use `message` to create human readable descriptions, `value` to indicate valid
 values, and `problem` to indicate unexpected values.
 
-#### new Invalid(description, { actual, expected }): MatchResult
+#### `new Invalid(description, { actual, expected }): MatchResult`
 
 Create an `Invalid` when the actual value fails to match what's expected. The instance
 looks like this:
@@ -328,7 +335,7 @@ values, and `problem` to indicate unexpected values.
 
 ### Creating Messages
 
-#### message\`template literal\`
+#### `message\`template literal\``
 
 Produces a message from the given template literal. String expressions will be printed as is;
 other expressions will be stringified. Use `value`, `problem`, `list`, `typeName`, and `times`
@@ -340,19 +347,19 @@ message`${typeName(expected)} that contains ${value(expected)} ${times(2)}`
 ===> a string that contains "hello" exactly 2 times
 ```
 
-#### value(value)
+#### `value(value)`
 
 Stringifies a given value for pretty output.
 
-#### problem(value)
+#### `problem(value)`
 
 Highlights a value as problematic in the output.
 
-#### list(array of values)
+#### `list(array of values)`
 
 Stringifies the values into a pretty list for output.
 
-#### typeName(value)
+#### `typeName(value)`
 
 Formats the type of the value for output.
 
@@ -360,7 +367,7 @@ Formats the type of the value for output.
 typeName("hello") ===> "a string"
 ```
 
-#### times(count)
+#### `times(count)`
 
 Prints the number of times for output.
 
