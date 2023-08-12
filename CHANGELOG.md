@@ -1,5 +1,19 @@
 # Changelog
 
+### 8/11/2023
+
+great-expectations 1.5.0
+
+#### Added
+- Expect that functions throw
+- Match objects that instantiate some class
+- `is`, `throws`, `resolvesTo`, and `rejectsWith` use the `equalTo` matcher with
+the provided value, if a matcher is not provided.
+
+#### Fixed
+- Improved jest example
+
+
 ### 5/31/2023
 
 great-expectations 1.4.0
