@@ -1,5 +1,13 @@
 # Changelog
 
+### 8/13/2023
+
+great-expectations 1.5.1
+
+#### Fixed
+- Stringify instances of Error properly
+
+
 ### 8/11/2023
 
 great-expectations 1.5.0
