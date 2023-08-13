@@ -27,6 +27,8 @@ export function stringify(val: any, formatter: Formatter, indentLevel: number = 
         const mapString = formatMap(val, formatter, indentLevel)
         visited.pop()
         return mapString
+      } else if (val instanceof Error) {
+        return val.toString()
       } else if (isTypeName(val)) {
         return formatTypeName(val.value)
       } else if (isTimes(val)) {

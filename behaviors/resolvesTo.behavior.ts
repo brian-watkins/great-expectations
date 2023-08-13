@@ -56,7 +56,7 @@ export default behavior("expect resolvesTo", [
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid)
             assertHasMessage("The promise was unexpectedly rejected.", err.invalid)
-            assertHasActualMessage("error(info(a promise that rejected with \"blah\"))", err.invalid)
+            assertHasActualMessage("error(info(a promise that rejected with:\n\n\"blah\"))", err.invalid)
             assertHasExpectedMessage("error(info(a promise that resolves))", err.invalid)
             return true
           })
@@ -74,7 +74,7 @@ export default behavior("expect resolvesTo", [
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid)
             assertHasMessage("Wish it were a number!", err.invalid)
-            assertHasActualMessage("error(info(a promise that rejected with \"blah\"))", err.invalid)
+            assertHasActualMessage("error(info(a promise that rejected with:\n\n\"blah\"))", err.invalid)
             assertHasExpectedMessage("error(info(a promise that resolves))", err.invalid)
             return true
           })

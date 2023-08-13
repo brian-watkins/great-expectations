@@ -135,6 +135,14 @@ export default behavior("stringify", [
     })
   ]),
 
+  exhibit("stringify an error", () => {
+    return stringify(new Error("Hey I'm an error!"), testFormatter)
+  }).check([
+    property("it prints the error message", (result) => {
+      assert.deepEqual(result, "Error: Hey I'm an error!")
+    })
+  ]),
+
   exhibit("stringify an object", () => stringify({ name: "Cool Dude", count: 47 }, testFormatter))
     .check([
       property("it prints the stringified properties", (result) => {

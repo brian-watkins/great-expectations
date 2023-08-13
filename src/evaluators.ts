@@ -12,7 +12,6 @@ export function is<T>(matcher: T | Matcher<T>): MatchEvaluator<T, void> {
     } else {
       handleResult(equalTo(matcher)(value), description)
     }
-
   }
 }
 
@@ -57,7 +56,7 @@ export function resolvesTo<T>(matcher: T | Matcher<T>): MatchEvaluator<Promise<T
       }
     } catch (err) {
       result = new Invalid("The promise was unexpectedly rejected.", {
-        actual: problem(message`a promise that rejected with ${value(err)}`),
+        actual: problem(message`a promise that rejected with:\n\n${value(err)}`),
         expected: problem(message`a promise that resolves`)
       })
     }
