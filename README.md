@@ -116,6 +116,25 @@ If the provided value is a matcher, it evaluates the provided matcher against
 the value received with that promise rejects. Othewise, it checks that the
 provided value deeply equals the rejected value. Fails if the promise resolves.
 
+#### `eventually(evaluator: MatchEvaluator, options): MatchEvaluator`
+
+Evaluates a value of type `() => T` (where `T` can be a Promise) using the
+provided evaluator. If the evaluation fails, it will wait for some time and
+try again until a timeout is reached. By default, `eventually` will wait for
+30ms before trying again, and it will continue to retry for 500ms. Adjust these
+values by passing in an options parameter that specifies the `timeout` and
+`waitFor` time in milliseconds, as in this example:
+
+```
+await expect(
+  () => someFunctionThatReturnsAPromise(),
+  eventually(resolvesTo(someValue), {
+    timeout: 200,
+    waitFor: 75
+  })
+)
+```
+
 
 ### Basic Matchers
 

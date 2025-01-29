@@ -1,5 +1,5 @@
 import { MatchEvaluator } from "./evaluators.js"
-export { is, throws, resolvesTo, rejectsWith } from './evaluators.js'
+export { is, throws, resolvesTo, rejectsWith, eventually } from './evaluators.js'
 export type { MatchEvaluator } from "./evaluators.js"
 export { equalTo, identicalTo, defined, assignedWith } from "./basicMatchers.js"
 export { arrayContaining, arrayWithItemAt, arrayWithLength, arrayWith } from "./arrayMatchers.js"

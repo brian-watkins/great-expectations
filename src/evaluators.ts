@@ -16,7 +16,7 @@ export function is<T>(matcher: T | Matcher<T>): MatchEvaluator<T, void> {
 }
 
 function isMatcher<T>(value: T | Matcher<T>): value is Matcher<T> {
-  return typeof(value) === "function"
+  return typeof (value) === "function"
 }
 
 export function throws<T>(matcher: T | Matcher<T>): MatchEvaluator<() => void, void> {
@@ -81,6 +81,39 @@ export function rejectsWith<T>(matcher: T | Matcher<T>): MatchEvaluator<Promise<
       }
     }
     handleResult(result, description)
+  }
+}
+
+export interface EventuallyOptions {
+  timeout?: number
+  waitFor?: number
+}
+
+export function eventually<T, S>(evaluator: MatchEvaluator<T, S>, options: EventuallyOptions = {}): MatchEvaluator<() => T, Promise<void>> {
+  const resolvedOptions = { timeout: 500, waitFor: 30, ...options }
+
+  return async (value, description) => {
+    const start = Date.now()
+    let lastFailure: MatchError | undefined
+
+    let count = 0
+    while (Date.now() - start < resolvedOptions.timeout) {
+      try {
+        await evaluator(value(), description)
+        return
+      } catch (err: any) {
+        count++
+        lastFailure = err
+        await new Promise(resolve => setTimeout(resolve, resolvedOptions.waitFor))
+      }
+    }
+
+    const result = new Invalid(
+      `The value did not match after ${count} attempts over ${resolvedOptions.timeout}ms.`,
+      lastFailure!.invalid.values
+    )
+
+    throw handleResult(result, description)
   }
 }
 
