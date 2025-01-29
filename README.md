@@ -21,7 +21,7 @@ value with determinacy -- property-based testing frameworks or fuzz testing migh
 benefit from those, but, again, Great Expectations was written with example-based
 testing in mind.
 
-2. It should be very easy to add new matchers.
+2. It should be easy to add new matchers.
 
 In Great Expectations, a `matcher` is just a function from a value to a `MatchResult`.
 The `MatchResult` contains information about how to describe what was expected
@@ -288,23 +288,46 @@ expect({ name: "cool dude", age: 288 }, is(objectWith({
 
 ### Creating Custom Matchers
 
-A matcher is just a function from a value to a `MatchResult`, which is either an
-instance of `Valid` or `Invalid`. Here's an example of an `even` matcher:
+The easiest way to create a custom matcher is just to create a function
+that returns an existing matcher configured for your domain. For example,
+here's a custom matcher that matches the `name` attribute in an object
+that implements the `Person` interface:
 
 ```
-function even(): Matcher<number> {
-  return (actual) => {
-    if (actual % 2 === 0) {
-      return new Valid({
-        actual: value(actual),
-        expected: message`a number that is even`
-      })
-    } else {
-      return new Invalid("The actual number was not even.", {
-        actual: problem(actual),
-        expected: problem(message`a number that is even`)
-      })
-    }
+interface Person {
+  name: string
+  address: Address
+}
+
+function personNamed(expectedName: string): Matcher<Person> {
+  return objectWithProperty("name", equalTo(expectedName))
+}
+```
+
+Then you can use the matcher like so:
+
+```
+expect(someone, is(personNamed("Cool Dude")))
+```
+
+Use this pattern to phrase your tests in terms of your domain language.
+
+You can also create matchers from scratch. A matcher is just a function
+from a value to a `MatchResult`, which is either an instance of `Valid`
+or `Invalid`. Here's an example of an `even` matcher:
+
+```
+const even: Matcher<number> = (actual) => {
+  if (actual % 2 === 0) {
+    return new Valid({
+      actual: value(actual),
+      expected: message`a number that is even`
+    })
+  } else {
+    return new Invalid("The actual number was not even.", {
+      actual: problem(actual),
+      expected: problem(message`a number that is even`)
+    })
   }
 }
 ```
@@ -312,7 +335,7 @@ function even(): Matcher<number> {
 Then you can just use it like any other matcher:
 
 ```
-expect(8, is(even()))
+expect(8, is(even))
 ```
 
 #### `MatchResult`
