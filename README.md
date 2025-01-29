@@ -352,7 +352,7 @@ values, and `problem` to indicate unexpected values.
 
 ### Creating Messages
 
-#### ``message`template literal```
+#### ``message `template literal` ``
 
 Produces a message from the given template literal. String expressions will be printed as is;
 other expressions will be stringified. Use `value`, `problem`, `list`, `typeName`, and `times`
