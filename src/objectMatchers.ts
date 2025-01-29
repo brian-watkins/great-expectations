@@ -112,7 +112,7 @@ class ObjectMatchResult<Obj extends { [key: PropertyKey]: any }> {
         this.recordMissingKey(matchKey)
         continue
       }
-      const result = this.matchObject[matchKey](this.actual[matchKey])
+      const result = this.matchObject[matchKey]!(this.actual[matchKey])
       this.recordResult(matchKey, result)
     }
   }
