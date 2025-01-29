@@ -73,7 +73,8 @@ a test to fail in most JS testing frameworks.
 
 A `MatchEvaluator` specifies whether the evaluation will occur synchronously or after
 a Promise resolves. Use `is` in most cases, and `resolvesTo` or `rejectsWith` in cases where
-the actual value is a Promise.
+the actual value is a Promise. If you need to automatically retry an expectation
+until some timeout, use `eventually`.
 
 Optionally, provide a description that will display with any invalid matches.
 
@@ -121,9 +122,9 @@ provided value deeply equals the rejected value. Fails if the promise resolves.
 Evaluates a value of type `() => T` (where `T` can be a Promise) using the
 provided evaluator. If the evaluation fails, it will wait for some time and
 try again until a timeout is reached. By default, `eventually` will wait for
-30ms before trying again, and it will continue to retry for 500ms. Adjust these
-values by passing in an options parameter that specifies the `timeout` and
-`waitFor` time in milliseconds, as in this example:
+30ms before trying again, and it will continue to retry for up to 500ms. Adjust
+these values by passing in an options parameter that specifies the `timeout`
+and `waitFor` time in milliseconds, as in this example:
 
 ```
 await expect(
