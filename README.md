@@ -38,16 +38,16 @@ npm install --save-dev great-expectations
 
 Great Expectations is an excellent matcher library to use with the coolest
 test framework around:
-[esbehavior](https://github.com/brian-watkins/esbehavior). But,
+[best-behavior](https://github.com/brian-watkins/best-behavior). But,
 you can also use Great Expectations with other javascript testing frameworks, like
 mocha, jest, uvu. In the case of mocha and jest, you'll need a small adapter
 to ensure that test failures are printed in the best way. Check out the
 [samples](./samples/) to see how it's done.
 
-Here's how you would use Great Expectations in an esbehavior test:
+Here's how you would use Great Expectations in a best-behavior test:
 
 ```
-import { behavior, example, effect } from "esbehavior"
+import { behavior, example, effect } from "best-behavior"
 import { expect, is, equalTo } from "great-expectations"
 
 export default behavior("some behavior", [
@@ -62,6 +62,9 @@ export default behavior("some behavior", [
     })
 ])
 ```
+
+Note: If you need to disable ANSI escape code color formatting, set
+the `NO_COLOR` environment variable to a non-empty value.
 
 ### Writing Expectations
 

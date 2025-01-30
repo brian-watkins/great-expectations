@@ -1,49 +1,38 @@
-export interface Formatter {
-  info(message: string): string
-  error(message: string): string
+
+export function dim(message: string): string {
+  return wrapWithCodes("\x1b[2m", message, "\x1b[22m")
 }
 
-function wrapColor(code: string, message: string): string {
-  return "\x1b[" + code + "m" + message + "\x1b[39m"
+export function underline(message: string): string {
+  return wrapWithCodes("\x1b[4m", message, "\x1b[24m")
 }
 
-function red(message: string): string {
+export function red(message: string): string {
   return wrapColor("31", message)
 }
 
-function yellow(message: string): string {
+export function yellow(message: string): string {
   return wrapColor("33", message)
 }
 
-function info(message: string): string {
-  return `${message}`
-}
-
-export const ActualFormatter: Formatter = {
-  info,
-  error: red,
-}
-
-export const ExpectedFormatter: Formatter = {
-  info,
-  error: yellow,
-}
-
-
-function identity(message: string): string {
-  return message
-}
-
-export function noInfoFormatter(formatter: Formatter): Formatter {
-  return {
-    ...formatter,
-    info: identity
+function wrapWithCodes(start: string, message: string, end: string): string {
+  if (ansiCodesAreDisabled()) {
+    return message
   }
+
+  return start + message + end
 }
 
-export function noErrorFormatter(formatter: Formatter): Formatter {
-  return {
-    ...formatter,
-    error: identity,
+function wrapColor(code: string, message: string): string {
+  return wrapWithCodes("\x1b[" + code + "m", message, "\x1b[39m")
+}
+
+function ansiCodesAreDisabled(): boolean {
+  if (typeof process === "undefined") {
+    return false
   }
+
+  const noColor = process.env["NO_COLOR"]
+
+  return noColor !== undefined && noColor !== ""
 }

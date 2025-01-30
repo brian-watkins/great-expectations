@@ -1,6 +1,7 @@
-import { ActualFormatter, ExpectedFormatter } from "./formatter.js"
+import { ActualWriter, ExpectedWriter } from "./writer.js"
 import { Invalid } from "./matcher.js"
 import { stringify } from "./stringify.js"
+import { dim, underline } from "./formatter.js"
 
 export class MatchError extends Error {
   constructor(public invalid: Invalid, ...args: any) {
@@ -18,11 +19,11 @@ export class MatchError extends Error {
   }
 
   get actual(): string {
-    return stringify(this.invalid.values.actual, ActualFormatter)
+    return stringify(this.invalid.values.actual, ActualWriter)
   }
 
   get expected(): string {
-    return stringify(this.invalid.values.expected, ExpectedFormatter)
+    return stringify(this.invalid.values.expected, ExpectedWriter)
   }
 }
 
@@ -30,10 +31,3 @@ function detail(label: string, message: string): string {
   return `${dim(underline(label))}\n\n${message}\n\n`
 }
 
-function dim(message: string): string {
-  return `\x1b[2m${message}\x1b[22m`
-}
-
-function underline(message: string): string {
-  return `\x1b[4m${message}\x1b[24m`
-}

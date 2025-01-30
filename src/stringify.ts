@@ -1,9 +1,9 @@
-import { Formatter, noErrorFormatter, noInfoFormatter } from "./formatter.js"
+import { Writer, noErrorWriter, noInfoWriter } from "./writer.js"
 import { AnyValue, List, Message, Problem, SpecificValue, Times, TypeName } from "./message.js"
 
 let visited: Array<any> = []
 
-export function stringify(val: any, formatter: Formatter, indentLevel: number = 0): string {
+export function stringify(val: any, writer: Writer, indentLevel: number = 0): string {
   switch (typeof val) {
     case "boolean":
       return val === true ? "<TRUE>" : "<FALSE>"
@@ -18,34 +18,34 @@ export function stringify(val: any, formatter: Formatter, indentLevel: number = 
         return "<NULL>"
       } else if (Array.isArray(val)) {
         visited.push(val)
-        const arrayString = formatArray(val, formatter, indentLevel)
+        const arrayString = writeArray(val, writer, indentLevel)
         visited.pop()
         return arrayString
       } else if (val instanceof Map) {
         // need to handle circular reference
         visited.push(val)
-        const mapString = formatMap(val, formatter, indentLevel)
+        const mapString = writeMap(val, writer, indentLevel)
         visited.pop()
         return mapString
       } else if (val instanceof Error) {
         return val.toString()
       } else if (isTypeName(val)) {
-        return formatTypeName(val.value)
+        return writeTypeName(val.value)
       } else if (isTimes(val)) {
-        return formatTimes(val.count)
+        return writeTimes(val.count)
       } else if (isSpecificValue(val)) {
-        return stringify(val.value, formatter, indentLevel)
+        return stringify(val.value, writer, indentLevel)
       } else if (isAnyValue(val)) {
         return "<ANY>"
       } else if (isProblem(val)) {
-        return formatter.error(stringify(val.value, noErrorFormatter(formatter), indentLevel))
+        return writer.error(stringify(val.value, noErrorWriter(writer), indentLevel))
       } else if (isList(val)) {
-        return formatList(val.items, formatter, indentLevel)
+        return writeList(val.items, writer, indentLevel)
       } else if (isMessage(val)) {
-        return formatter.info(formatMessage(val, formatter, indentLevel))
+        return writer.info(writeMessage(val, writer, indentLevel))
       } else {
         visited.push(val)
-        const objectString = formatObject(val, formatter, indentLevel)
+        const objectString = writeObject(val, writer, indentLevel)
         visited.pop()
         return objectString
       }
@@ -60,7 +60,7 @@ export function stringify(val: any, formatter: Formatter, indentLevel: number = 
   }
 }
 
-function formatMessage(message: Message, formatter: Formatter, indentLevel: number): string {
+function writeMessage(message: Message, writer: Writer, indentLevel: number): string {
   let output = ""
   for (let i = 0; i < message.strings.length; i++) {
     output += message.strings[i]
@@ -70,48 +70,48 @@ function formatMessage(message: Message, formatter: Formatter, indentLevel: numb
         output += value
         continue
       }
-      output += stringify(message.values[i], noInfoFormatter(formatter), indentLevel)
+      output += stringify(message.values[i], noInfoWriter(writer), indentLevel)
     }
   }
   return output
 }
 
-function formatObject(val: any, formatter: Formatter, indentLevel: number): string {
+function writeObject(val: any, writer: Writer, indentLevel: number): string {
   const keys = Object.keys(val)
   if (keys.length === 0) {
     return "{}"
   }
 
-  return `{\n${keys.map(key => `${padding(indentLevel)}${key}: ${stringify(val[key], formatter, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
+  return `{\n${keys.map(key => `${padding(indentLevel)}${key}: ${stringify(val[key], writer, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
 }
 
-function formatArray(items: Array<any>, formatter: Formatter, indentLevel: number): string {
+function writeArray(items: Array<any>, writer: Writer, indentLevel: number): string {
   if (items.length === 0) {
     return '[]'
   }
 
-  return `[\n${padding(indentLevel)}${items.map((val) => stringify(val, formatter, indentLevel + 1)).join(`,\n${padding(indentLevel)}`)}\n${padding(indentLevel - 1)}]`
+  return `[\n${padding(indentLevel)}${items.map((val) => stringify(val, writer, indentLevel + 1)).join(`,\n${padding(indentLevel)}`)}\n${padding(indentLevel - 1)}]`
 }
 
-function formatMap(map: Map<any, any>, formatter: Formatter, indentLevel: number): string {
+function writeMap(map: Map<any, any>, writer: Writer, indentLevel: number): string {
   if (map.size === 0) {
     return "Map {}"
   }
 
   const keys = Array.from(map.keys())
 
-  return `Map {\n${keys.map(key => `${padding(indentLevel)}${stringify(key, formatter, indentLevel + 1)} => ${stringify(map.get(key), formatter, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
+  return `Map {\n${keys.map(key => `${padding(indentLevel)}${stringify(key, writer, indentLevel + 1)} => ${stringify(map.get(key), writer, indentLevel + 1)}`).join(",\n")}\n${padding(indentLevel - 1)}}`
 }
 
-function formatList(items: Array<any>, formatter: Formatter, indentLevel: number): string {
-  return `\n${padding(indentLevel)}• ${items.map((val) => stringify(val, formatter, indentLevel + 1)).join(`\n${padding(indentLevel)}• `)}`
+function writeList(items: Array<any>, writer: Writer, indentLevel: number): string {
+  return `\n${padding(indentLevel)}• ${items.map((val) => stringify(val, writer, indentLevel + 1)).join(`\n${padding(indentLevel)}• `)}`
 }
 
 function padding(level: number): string {
   return "  ".repeat(level + 1)
 }
 
-function formatTypeName(value: any): string {
+function writeTypeName(value: any): string {
   switch (typeof (value)) {
     case "boolean":
       return "a boolean"
@@ -136,7 +136,7 @@ function formatTypeName(value: any): string {
   }
 }
 
-function formatTimes(count: number): string {
+function writeTimes(count: number): string {
   if (count === 1) {
     return "exactly 1 time"
   } else {

@@ -22,6 +22,7 @@ import isMapContainingBehavior from "./isMapContaining.behavior.js";
 import throwsBehavior from "./throws.behavior.js";
 import isObjectOfTypeBehavior from "./isObjectOfType.behavior.js";
 import eventuallyBehavior from "./eventually.behavior.js";
+import errorFormatBehavior from "./errorFormat.behavior.js";
 
 validate([
   isIdenticalToBehavior,
@@ -46,7 +47,8 @@ validate([
   resolvesToBehavior,
   rejectsWithBehavior,
   throwsBehavior,
-  eventuallyBehavior
+  eventuallyBehavior,
+  errorFormatBehavior
 ], {
   failFast: true
 })

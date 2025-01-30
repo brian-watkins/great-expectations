@@ -1,6 +1,6 @@
 import { effect, example, ExampleScripts, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
-import { Formatter } from "../src/formatter.js";
+import { Writer } from "../src/writer.js";
 import { Invalid, MatchResult, Valid } from "../src/matcher.js";
 import { problem, Problem, value } from "../src/message.js";
 import { stringify } from "../src/stringify.js";
@@ -49,11 +49,11 @@ export function assertHasActual<T>(expectedActual: T | Problem, result: MatchRes
 }
 
 export function assertHasActualMessage(expectedMessage: string, result: MatchResult) {
-  assert.deepEqual(stringify(result.values.actual, testFormatter), expectedMessage)
+  assert.deepEqual(stringify(result.values.actual, testWriter), expectedMessage)
 }
 
 export function assertHasExpectedMessage(expectedMessage: string, result: MatchResult) {
-  assert.deepEqual(stringify(result.values.expected, testFormatter), expectedMessage)
+  assert.deepEqual(stringify(result.values.expected, testWriter), expectedMessage)
 }
 
 export function isValidMatchResult(): Property<MatchResult> {
@@ -88,7 +88,7 @@ export function hasActualMessageText(message: string): Property<MatchResult> {
 
 export function hasExpected(value: any): Property<MatchResult> {
   return property("a message explaining the expectation is shown", (result) => {
-    assert.deepEqual(stringify(result.values.expected, testFormatter), stringify(value, testFormatter))
+    assert.deepEqual(stringify(result.values.expected, testWriter), stringify(value, testWriter))
   })
 }
 
@@ -108,7 +108,7 @@ export function formattedList(items: Array<string>): string {
   return `\n  • ${items.join("\n  • ")}`
 }
 
-export const testFormatter: Formatter = {
+export const testWriter: Writer = {
   info: (message) => `info(${message})`,
   error: (message) => `error(${message})`,
 }
