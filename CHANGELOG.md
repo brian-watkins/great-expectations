@@ -1,5 +1,14 @@
 # Changelog
 
+### 1/29/2025
+
+great-expectations 1.6.0
+
+#### Added
+- retry expectations with eventually
+- disable ANSI character codes with NO_COLOR env var
+
+
 ### 8/13/2023
 
 great-expectations 1.5.1
