@@ -6,7 +6,7 @@ export interface MapEntryMatcher<K, V> {
   value?: Matcher<V>
 }
 
-export function mapContaining<K, V>(matcher: MapEntryMatcher<K, V>): Matcher<Map<K, V>> {
+export function mapContaining<K, V>(matcher: MapEntryMatcher<NoInfer<K>, NoInfer<V>>): Matcher<Map<K, V>> {
   return (actual) => {
     if (actual.size === 0) {
       return new Invalid("The map does not contain the expected entry.", {
@@ -56,7 +56,7 @@ interface ExpectedMapEntry {
   value: Problem | Value | Message
 }
 
-export function mapWith<K, V>(matchers: Array<MapEntryMatcher<K, V>>): Matcher<Map<K, V>> {
+export function mapWith<K, V>(matchers: Array<MapEntryMatcher<NoInfer<K>, NoInfer<V>>>): Matcher<Map<K, V>> {
   return (actual) => {
     let expecteds: Array<ExpectedMapEntry> = []
     let invalidCount = 0

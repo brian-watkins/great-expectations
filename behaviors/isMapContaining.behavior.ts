@@ -21,7 +21,7 @@ export default behavior("isMapContaining", [
     const actualMap = new Map<string, string>()
     actualMap.set("happy-key", "cool stuff")
 
-    return mapContaining({
+    return mapContaining<string, string>({
       key: equalTo("happy-key"),
       value: stringContaining("cool")
     })(actualMap)
@@ -51,7 +51,7 @@ export default behavior("isMapContaining", [
     actualMap.set("fun-key", "cool stuff")
     actualMap.set("super-key", "super stuff")
 
-    return mapContaining({
+    return mapContaining<string, string>({
       key: equalTo("super-key"),
       value: stringContaining("weird")
     })(actualMap)
@@ -63,7 +63,7 @@ export default behavior("isMapContaining", [
   ]),
 
   exhibit("the map is empty", () => {
-    return mapContaining({
+    return mapContaining<string, string>({
       key: equalTo("super-key"),
       value: stringContaining("weird")
     })(new Map())

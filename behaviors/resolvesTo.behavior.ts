@@ -15,7 +15,7 @@ export default behavior("expect resolvesTo", [
         })
       ]
     }),
-  
+
   example()
     .description("the promised value fails to match")
     .script({
@@ -45,14 +45,14 @@ export default behavior("expect resolvesTo", [
         })
       ]
     }),
-  
+
   example()
     .description("the promised value rejects")
     .script({
       observe: [
         effect("it throws a MatchError explaining the unexpected rejection", async () => {
           await assert.rejects(async () => {
-            await expect(Promise.reject("blah"), resolvesTo(equalTo(17)))
+            await expect(Promise.reject("blah") as Promise<string>, resolvesTo(equalTo("17")))
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid)
             assertHasMessage("The promise was unexpectedly rejected.", err.invalid)
@@ -70,7 +70,7 @@ export default behavior("expect resolvesTo", [
       observe: [
         effect("it prints the provided description", async () => {
           await assert.rejects(async () => {
-            await expect(Promise.reject("blah"), resolvesTo(equalTo(17)), "Wish it were a number!")
+            await expect(Promise.reject("blah") as Promise<number>, resolvesTo(equalTo(17)), "Wish it were a number!")
           }, (err: MatchError) => {
             assertIsInvalidMatch(err.invalid)
             assertHasMessage("Wish it were a number!", err.invalid)

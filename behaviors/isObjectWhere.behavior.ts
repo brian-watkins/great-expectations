@@ -23,7 +23,7 @@ export default behavior("objectWith", [
     return objectWith({
       name: stringContaining("cool"),
       age: equalTo(27),
-      sport: arrayContaining(stringContaining("tennis"))
+      sport: arrayContaining<string>(stringContaining("tennis"))
     })({ name: "cool dude", age: 20, sport: [ "tennis" ] })
   }).check([
     isInvalidMatchResult(),
@@ -40,7 +40,7 @@ export default behavior("objectWith", [
     return objectWith({
       name: stringContaining("cool"),
       age: equalTo(27),
-      sport: arrayContaining(stringContaining("tennis"))
+      sport: arrayContaining<string>(stringContaining("tennis"))
     })({ name: "bad dude", age: 27, sport: [ "bowling" ] })
   }).check([
     isInvalidMatchResult(),
@@ -57,7 +57,7 @@ export default behavior("objectWith", [
     return objectWith<any>({
       name: stringContaining("cool"),
       age: equalTo(27),
-      sport: arrayContaining(stringContaining("tennis"))
+      sport: arrayContaining<string>(stringContaining("tennis"))
     })({ name: "cool dude", sport: [ "tennis" ] })
   }).check([
     isInvalidMatchResult(),
@@ -70,7 +70,7 @@ export default behavior("objectWith", [
     return objectWith<any>({
       name: stringContaining("cool"),
       age: equalTo(27),
-      sport: arrayContaining(stringContaining("tennis"))
+      sport: arrayContaining<string>(stringContaining("tennis"))
     })({ name: "cool dude" })
   }).check([
     isInvalidMatchResult(),

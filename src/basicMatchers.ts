@@ -3,7 +3,7 @@ import { Invalid, Matcher, Valid } from "./matcher.js"
 import { message, problem, typeName, value } from "./message.js"
 
 
-export function identicalTo<T>(expected: T): Matcher<T> {
+export function identicalTo<T>(expected: NoInfer<T>): Matcher<T> {
   return (actual) => {
     const expectedMessage = expected === undefined ?
       message`a variable that is undefined` :
@@ -23,7 +23,7 @@ export function identicalTo<T>(expected: T): Matcher<T> {
   }
 }
 
-export function equalTo<T>(expected: T): Matcher<T> {
+export function equalTo<T>(expected: NoInfer<T>): Matcher<T> {
   return (actual) => {
     const expectedMessage = expected === undefined ?
       message`a variable that is undefined` :
@@ -61,7 +61,7 @@ export function defined(): Matcher<any> {
   }
 }
 
-export function assignedWith<T>(matcher: Matcher<T>): Matcher<T | undefined> {
+export function assignedWith<T>(matcher: Matcher<NoInfer<T>>): Matcher<T | undefined> {
   return (actual) => {
     if (actual === undefined) {
       return new Invalid("The actual variable is not assigned a value.", {

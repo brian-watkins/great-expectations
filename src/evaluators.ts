@@ -5,7 +5,7 @@ import { message, problem, value } from "./message.js"
 
 export type MatchEvaluator<T, S> = (value: T, description?: string) => S
 
-export function is<T>(matcher: T | Matcher<T>): MatchEvaluator<T, void> {
+export function is<T>(matcher: NoInfer<T> | Matcher<NoInfer<T>>): MatchEvaluator<T, void> {
   return (value, description) => {
     if (isMatcher(matcher)) {
       handleResult(matcher(value), description)
@@ -19,7 +19,7 @@ function isMatcher<T>(value: T | Matcher<T>): value is Matcher<T> {
   return typeof (value) === "function"
 }
 
-export function throws<T>(matcher: T | Matcher<T>): MatchEvaluator<() => void, void> {
+export function throws<T>(matcher: NoInfer<T> | Matcher<NoInfer<T>>): MatchEvaluator<() => void, void> {
   return (thunk, description) => {
     let didThrow = false
     let result: MatchResult
@@ -44,7 +44,7 @@ export function throws<T>(matcher: T | Matcher<T>): MatchEvaluator<() => void, v
   }
 }
 
-export function resolvesTo<T>(matcher: T | Matcher<T>): MatchEvaluator<Promise<T>, Promise<void>> {
+export function resolvesTo<T>(matcher: NoInfer<T> | Matcher<NoInfer<T>>): MatchEvaluator<Promise<T>, Promise<void>> {
   return async (promised, description) => {
     let result
     try {
@@ -64,7 +64,7 @@ export function resolvesTo<T>(matcher: T | Matcher<T>): MatchEvaluator<Promise<T
   }
 }
 
-export function rejectsWith<T>(matcher: T | Matcher<T>): MatchEvaluator<Promise<any>, Promise<void>> {
+export function rejectsWith<T>(matcher: NoInfer<T> | Matcher<NoInfer<T>>): MatchEvaluator<Promise<any>, Promise<void>> {
   return async (promised, description) => {
     let result
     try {
@@ -89,7 +89,7 @@ export interface EventuallyOptions {
   waitFor?: number
 }
 
-export function eventually<T, S>(evaluator: MatchEvaluator<T, S>, options: EventuallyOptions = {}): MatchEvaluator<() => T, Promise<void>> {
+export function eventually<T, S>(evaluator: MatchEvaluator<NoInfer<T>, S>, options: EventuallyOptions = {}): MatchEvaluator<() => T, Promise<void>> {
   const resolvedOptions = { timeout: 500, waitFor: 30, ...options }
 
   return async (value, description) => {

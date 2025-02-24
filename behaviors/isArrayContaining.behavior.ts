@@ -13,7 +13,7 @@ export default behavior("isArrayContaining", [
   ]),
 
   exhibit("the array does not contain a matching item", () => {
-    return arrayContaining(stringContaining("hello"))(["goodbye", "bye", "later"])
+    return arrayContaining<string>(stringContaining("hello"))(["goodbye", "bye", "later"])
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array does not contain the expected element."),

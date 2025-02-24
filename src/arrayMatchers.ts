@@ -21,7 +21,7 @@ export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
   }
 }
 
-export function arrayWithItemAt<T>(index: number, matcher: Matcher<T>): Matcher<Array<T>> {
+export function arrayWithItemAt<T>(index: number, matcher: Matcher<NoInfer<T>>): Matcher<Array<T>> {
   return (actual) => {
     if (actual.length <= index) {
       return new Invalid(`The array has no item at index ${index}.`, {
@@ -53,7 +53,7 @@ export interface ArrayWhereOptions {
   withAnyOrder?: boolean
 }
 
-export function arrayWith<T>(matchers: Array<Matcher<T>>, options: ArrayWhereOptions = {}): Matcher<Array<T>> {
+export function arrayWith<T>(matchers: Array<Matcher<NoInfer<T>>>, options: ArrayWhereOptions = {}): Matcher<Array<T>> {
   const allowAnyOrder = options.withAnyOrder ?? false
 
   return (actual) => {
@@ -153,7 +153,7 @@ export interface ArrayContainingOptions {
   times?: number
 }
 
-export function arrayContaining<T>(matcher: Matcher<T>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
+export function arrayContaining<T>(matcher: Matcher<NoInfer<T>>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
   const expectedMatchCount = options.times
 
   return (actual) => {

@@ -6,7 +6,7 @@ import { satisfying } from "../src/index.js"
 export default behavior("satisfyingAll", [
 
   exhibit("all the matchers are satisfied", () => {
-    return satisfying([
+    return satisfying<string>([
       stringContaining("is"),
       stringContaining("not")
     ])("This is not a fish!")
@@ -17,7 +17,7 @@ export default behavior("satisfyingAll", [
   ]),
 
   exhibit("one of the matchers is not satisfied", () => {
-    return satisfying([
+    return satisfying<string>([
       stringContaining("is"),
       stringContaining("grapes"),
       stringContaining("apple")

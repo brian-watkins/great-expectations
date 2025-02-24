@@ -128,7 +128,7 @@ export default behavior("isMapWith", [
     const actualMap = new Map<string, string>()
     actualMap.set("blah", "blah")
 
-    return mapWith([
+    return mapWith<string, string>([
       { key: equalTo("blah") },
       { key: stringContaining("b") }
     ])(actualMap)
@@ -144,7 +144,7 @@ export default behavior("isMapWith", [
     actualMap.set("blah", "blah")
     actualMap.set("cat", "cat")
 
-    return mapWith([
+    return mapWith<string, string>([
       { key: equalTo("blah") },
       { key: stringContaining("b") }
     ])(actualMap)

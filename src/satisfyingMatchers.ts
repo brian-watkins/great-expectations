@@ -1,7 +1,7 @@
 import { Invalid, Matcher, MatchResult, Valid } from "./matcher.js";
 import { list, message, problem, value } from "./message.js";
 
-export function satisfying<T>(matchers: Array<Matcher<T>>): Matcher<T> {
+export function satisfying<T>(matchers: Array<Matcher<NoInfer<T>>>): Matcher<T> {
   return (actual) => {
     let failed = false
     let results: Array<MatchResult> = []
