@@ -3,22 +3,36 @@ import { Invalid, Matcher, Valid } from "./matcher.js"
 import { Message, message, problem, times, value } from "./message.js"
 import { isNumberGreaterThan } from "./numberMatchers.js"
 
+export interface StringMatchingOptions {
+  times?: number
+}
 
-export function stringMatching(regex: RegExp): Matcher<string> {
+export function stringMatching(regex: RegExp, options: StringMatchingOptions = {}): Matcher<string> {
   return (actual) => {
-    const expectedMessage = message`a string matching ${regex.toString()}`
+    const expectedMessage = options.times === undefined ?
+      message`a string matching ${regex.toString()}` :
+      message`a string matching ${regex.toString()} ${times(options.times)}`
 
-    if (regex.test(actual)) {
+    const matches = actual.match(regex) ?? []
+
+    if (options.times === undefined && matches.length >= 1) {
       return new Valid({
         actual: value(actual),
         expected: expectedMessage
       })
-    } else {
-      return new Invalid("The actual value does not match the regular expression.", {
-        actual: problem(actual),
-        expected: problem(expectedMessage)
+    }
+
+    if (options.times !== undefined && matches.length === options.times) {
+      return new Valid({
+        actual: value(actual),
+        expected: expectedMessage
       })
     }
+
+    return new Invalid("The actual value does not match the regular expression.", {
+      actual: problem(actual),
+      expected: problem(expectedMessage)
+    })
   }
 }
 
@@ -70,7 +84,7 @@ export function stringContaining(expected: string, options: StringContainingOpti
     }
 
     const countResult = countMatcher(count)
-    
+
     if (countResult.type === "valid") {
       return new Valid({
         actual: value(actual),
@@ -87,7 +101,7 @@ export function stringContaining(expected: string, options: StringContainingOpti
 
 function stringInvalidMessage(isCaseSensitive: boolean, expected: string, expectedCount?: number): Message {
   const operator = isCaseSensitive ? "contains" : "contains (case-insensitive)"
-  
+
   if (expectedCount !== undefined) {
     return message`a string that ${operator} ${value(expected)} ${times(expectedCount)}`
   } else {
