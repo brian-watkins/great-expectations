@@ -1,5 +1,14 @@
 # Changelog
 
+### 2/24/2025
+
+great-expectations 1.7.0
+
+### Added
+- Type inference driven by the actual for less errors
+- Assert that strings match a regex some number of times
+
+
 ### 1/29/2025
 
 great-expectations 1.6.0
