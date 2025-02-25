@@ -120,7 +120,7 @@ If the provided value is a matcher, it evaluates the provided matcher against
 the value received with that promise rejects. Othewise, it checks that the
 provided value deeply equals the rejected value. Fails if the promise resolves.
 
-#### `eventually(evaluator: MatchEvaluator, options): MatchEvaluator`
+#### `eventually(MatchEvaluator, { timeout?: number, waitFor? number }): MatchEvaluator`
 
 Evaluates a value of type `() => T` (where `T` can be a Promise) using the
 provided evaluator. If the evaluation fails, it will wait for some time and
@@ -187,16 +187,20 @@ Asserts that the actual value is a string with the given length.
 expect("", is(stringWithLength(0)))
 ```
 
-#### `stringContaining(expected, { caseSensitive: true, times: undefined })`
+#### `stringContaining(expected, { caseSensitive?: boolean, times?: number })`
 
 Asserts that the actual value is a string that contains the expected value at
-least one time. The optional options specify whether the match should be case
-sensitive and whether the string should be expected to occur some specific
+least one time. The options specify whether the match should be case
+sensitive and whether the string should be expected to occur exactly some
 number of times.
 
-#### `stringMatching(regex)`
+#### `stringMatching(regex, { times?: number })`
 
-Asserts that the actual value is a string that matches the provided regular expression.
+Asserts that the actual value is a string that matches the provided regular
+expression. The options specify whether the matcg should occur exactly
+some number of times. Note: If you specify a number of times to match, be
+sure to include the global flag `g` in your regex so that it will look for
+all occurrences.
 
 
 ### Array Matchers
@@ -205,10 +209,10 @@ Asserts that the actual value is a string that matches the provided regular expr
 
 Asserts that the actual value is an array with the given length
 
-#### `arrayContaining(matcher, { times: undefined })`
+#### `arrayContaining(matcher, { times?: number })`
 
 Asserts that the actual value is an array with at least one element that matches
-the provided matcher. The optional option specifies whether some specific
+the provided matcher. The optional option specifies whether some exact
 number of elements should match.
 
 #### `arrayWithItemAt(index, matcher)`
@@ -216,7 +220,7 @@ number of elements should match.
 Asserts that the actual value is an array with an element at the provided index
 that matches the provided matcher.
 
-#### `arrayWith(array of matchers, { withAnyOrder: false })`
+#### `arrayWith(array of matchers, { withAnyOrder?: boolean })`
 
 Asserts that the actual value is an array with exactly the elements that
 match the provided array of matchers in the given order. The optional option
