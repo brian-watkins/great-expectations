@@ -2,7 +2,7 @@
 
 ### 2/26/2025
 
-great-expectations 1.8.0
+great-expectations 1.9.0
 
 ### Added
 - valueWhere matcher for easier custom matchers
