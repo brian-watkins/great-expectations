@@ -283,11 +283,11 @@ matchers provide.
 #### `valueWhere(predicate, description)`
 
 Asserts that the actual value satisfies the provided predicate.
-The description is a `Message` (see below); it will
+The description is a string or a `Message` (see below); it will
 be used to describe the expected value.
 
 ```
-expect(40, is(valueWhere(x => x % 10 === 0, message`a number that is a multiple of 10`)))
+expect(40, is(valueWhere(x => x % 10 === 0, "a number that is a multiple of 10")))
 ```
 
 The `valueWhere` matcher is useful as a quick way to construct domain-specific matchers.
@@ -343,7 +343,7 @@ instance of `Valid` or `Invalid`. While it's easy enough to create an 'even'
 matcher like so:
 
 ```
-const even = valueWhere(x => x % 2 === 0, message`a number that is even`)
+const even = valueWhere(x => x % 2 === 0, "a number that is even")
 ```
 
 You could create it from scratch:

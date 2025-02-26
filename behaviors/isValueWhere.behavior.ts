@@ -5,7 +5,7 @@ import { message, value, valueWhere } from "../src";
 export default behavior("valueWhere", [
 
   exhibit("the actual satisfies the predicate", () => {
-    return valueWhere<number>(x => x % 2 === 0, message`a number that is even`)(22)
+    return valueWhere<number>(x => x % 2 === 0, "a number that is even")(22)
   }).check([
     isValidMatchResult(),
     hasActual(22),
