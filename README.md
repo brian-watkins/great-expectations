@@ -283,11 +283,11 @@ matchers provide.
 #### `valueWhere(predicate, description)`
 
 Asserts that the actual value satisfies the provided predicate.
-The description can be a string or a `Message` (see below); it will
-be used to construct a message describing the expected value. 
+The description is a `Message` (see below); it will
+be used to describe the expected value.
 
 ```
-expect(40, is(valueWhere(x => x % 10 === 0, "is a multiple of 10")))
+expect(40, is(valueWhere(x => x % 10 === 0, message`a number that is a multiple of 10`)))
 ```
 
 The `valueWhere` matcher is useful as a quick way to construct domain-specific matchers.
@@ -324,7 +324,10 @@ a `greaterThan` matcher:
 
 ```
 function greaterThan(lowerBound: number): Matcher<number> {
-  return valueWhere(x => x > lowerBound, `is greater than ${lowerBound}`)
+  return valueWhere(
+    x => x > lowerBound,
+    message`a number that is greater than ${lowerBound}`
+  )
 }
 ```
 
@@ -340,7 +343,7 @@ instance of `Valid` or `Invalid`. While it's easy enough to create an 'even'
 matcher like so:
 
 ```
-const even = valueWhere(x => x % 2 === 0, "is even")
+const even = valueWhere(x => x % 2 === 0, message`a number that is even`)
 ```
 
 You could create it from scratch:
