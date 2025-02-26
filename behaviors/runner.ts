@@ -23,6 +23,7 @@ import throwsBehavior from "./throws.behavior.js";
 import isObjectOfTypeBehavior from "./isObjectOfType.behavior.js";
 import eventuallyBehavior from "./eventually.behavior.js";
 import errorFormatBehavior from "./errorFormat.behavior.js";
+import isValueWhereBehavior from "./isValueWhere.behavior.js";
 
 validate([
   isIdenticalToBehavior,
@@ -35,6 +36,7 @@ validate([
   isArrayContainingBehavior,
   isMapWithBehavior,
   isMapContainingBehavior,
+  isValueWhereBehavior,
   isStringContainingBehavior,
   isStringWithLengthBehavior,
   isStringMatchingBehavior,

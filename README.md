@@ -5,24 +5,6 @@ of values. It can be used in most javascript testing frameworks, and it works in
 node or the browser. Use Great Expectations with Typescript to get faster feedback on
 the descriptions you write.
 
-There are two guiding principles behind the design of Great Expectations:
-
-1. Descriptions should be determinate.
-
-Consider a numeric value. One might be tempted to describe it by asserting that
-it is `not 7` or `less than 8`. While this narrows down the possibilities, it still
-leaves the value itself vague. Great Expectations was designed to be used in example-
-based tests where the test writer should have enough control over the test conditions
-to know exactly what value to expect. Therefore, Great Expectations does not come
-with matchers for `not` or `less than` etc.
-
-Note that there could be good reasons for using matchers that do not describe a
-value with determinacy -- property-based testing frameworks or fuzz testing might
-benefit from those, but, again, Great Expectations was written with example-based
-testing in mind.
-
-2. It should be easy to add new matchers.
-
 In Great Expectations, a `matcher` is just a function from a value to a `MatchResult`.
 The `MatchResult` contains information about how to describe what was expected
 in human-readable terms. So, while Great Expectations does come with a basic set of
@@ -293,6 +275,23 @@ expect({ name: "cool dude", age: 288 }, is(objectWith({
 ```
 
 
+### Value Matcher
+
+Use the `valueWhere` matcher when you need more flexibility than other, type-specific
+matchers provide.
+
+#### `valueWhere(predicate, description)`
+
+Asserts that the actual value satisfies the provided predicate. The description will
+be used to construct a message describing the expected value.
+
+```
+expect(17, is(valueWhere(x => x > 10, "greater than 10")))
+```
+
+The `valueWhere` matcher is useful as a quick way to construct domain-specific matchers.
+
+
 ### Creating Custom Matchers
 
 The easiest way to create a custom matcher is just to create a function
@@ -319,9 +318,31 @@ expect(someone, is(personNamed("Cool Dude")))
 
 Use this pattern to phrase your tests in terms of your domain language.
 
-You can also create matchers from scratch. A matcher is just a function
-from a value to a `MatchResult`, which is either an instance of `Valid`
-or `Invalid`. Here's an example of an `even` matcher:
+The `valueWhere` matcher can be particularly useful. Here's an example of
+a `greaterThan` matcher:
+
+```
+function greaterThan(lowerBound: number): Matcher<number> {
+  return valueWhere(x => x > lowerBound, `greater than ${lowerBound}`)
+}
+```
+
+which can then be used like so:
+
+```
+expect(29, is(greaterThan(18)))
+```
+
+For complicated cases, you can create matchers from scratch. A matcher is 
+just a function from a value to a `MatchResult`, which is either an
+instance of `Valid` or `Invalid`. While it's easy enough to create an 'even'
+matcher like so:
+
+```
+const even = valueWhere(x => x % 2 === 0, "even")
+```
+
+You could create it from scratch:
 
 ```
 const even: Matcher<number> = (actual) => {
@@ -339,7 +360,7 @@ const even: Matcher<number> = (actual) => {
 }
 ```
 
-Then you can just use it like any other matcher:
+In either case, you can just use it like any other matcher:
 
 ```
 expect(8, is(even))

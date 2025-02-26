@@ -6,6 +6,7 @@ export { arrayContaining, arrayWithItemAt, arrayWithLength, arrayWith } from "./
 export type { ArrayContainingOptions, ArrayWhereOptions } from "./arrayMatchers.js"
 export { mapContaining, mapWith } from "./mapMatchers.js"
 export type { MapEntryMatcher } from "./mapMatchers.js"
+export { valueWhere } from "./valueMatchers.js"
 export { stringMatching, stringWithLength, stringContaining } from "./stringMatchers.js"
 export type { StringContainingOptions } from "./stringMatchers.js"
 export { satisfying } from "./satisfyingMatchers.js"
