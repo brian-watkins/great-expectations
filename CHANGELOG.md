@@ -1,5 +1,13 @@
 # Changelog
 
+### 2/26/2025
+
+great-expectations 1.8.0
+
+### Added
+- valueWhere matcher for easier custom matchers
+
+
 ### 2/24/2025
 
 great-expectations 1.7.0
