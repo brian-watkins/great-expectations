@@ -1,5 +1,5 @@
-import { Invalid, Matcher, Valid } from "./matcher"
-import { Message, problem, value } from "./message"
+import { Invalid, Matcher, Valid } from "./matcher.js"
+import { message, Message, problem, value } from "./message.js"
 
 export function valueWhere<T>(predicate: (x: NoInfer<T>) => boolean, description: Message): Matcher<T> {
   return (actual) => {
