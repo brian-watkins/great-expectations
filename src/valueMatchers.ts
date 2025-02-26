@@ -1,9 +1,9 @@
 import { Invalid, Matcher, Valid } from "./matcher"
-import { message, problem, typeName, value } from "./message"
+import { Message, message, problem, typeName, value } from "./message"
 
-export function valueWhere<T>(predicate: (x: NoInfer<T>) => boolean, description: string): Matcher<T> {
+export function valueWhere<T>(predicate: (x: NoInfer<T>) => boolean, description: string | Message): Matcher<T> {
   return (actual) => {
-    const expected = message`${typeName(actual)} that is ${description}`
+    const expected = message`${typeName(actual)} that ${description}`
 
     if (predicate(actual)) {
       return new Valid({
