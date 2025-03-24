@@ -40,21 +40,36 @@ export function objectWithProperty<Obj extends { [key: PropertyKey]: any }, Key 
     switch (result.type) {
       case "valid":
         return new Valid({
-          actual: value(actual),
+          actual: value(objectWithValues(actual)),
           expected: expectedMessage
         })
       case "invalid":
         return new Invalid("The value at the specified property is unexpected.", {
-          actual: problem(actual),
+          actual: value(objectWithInvalidProperty(property, actual)),
           expected: problem(expectedMessage)
         })
     }
   }
 }
 
-export function objectWith<Obj extends { [key: PropertyKey]: any }>(matchObject: { [key in keyof Partial<Obj>]: Matcher<Obj[key]> }): Matcher<Obj> {
+function objectWithValues<Obj extends Record<PropertyKey, any>>(actual: Obj) {
+  const actualValues: any = {}
+  let keys: Array<PropertyKey> = Object.getOwnPropertySymbols(actual)
+  keys = keys.concat(Object.getOwnPropertyNames(actual))
+  for (const key of keys) {
+    actualValues[key] = value(actual[key])
+  }
+  return actualValues
+}
+
+function objectWithInvalidProperty<Obj extends Record<PropertyKey, any>, Key extends keyof Obj>(property: Key, actual: Obj) {
+  const actualValues = objectWithValues(actual)
+  return { ...actualValues, [property]: problem(actual[property]) }
+}
+
+export function objectWith<Obj extends { [key: PropertyKey]: any }, K extends Obj = Obj>(matchObject: { [key in keyof Partial<K>]: Matcher<K[key]> }): Matcher<Obj> {
   return (actual) => {
-    const objectMatchResult = new ObjectMatchResult(actual, matchObject)
+    const objectMatchResult = new ObjectMatchResult(actual as K, matchObject)
 
     if (objectMatchResult.hasMissingKeys()) {
       return missingKeyResult(objectMatchResult)
@@ -70,8 +85,8 @@ export function objectWith<Obj extends { [key: PropertyKey]: any }>(matchObject:
 
 function validResult<Obj extends { [key: PropertyKey]: any }>(objectMatchResult: ObjectMatchResult<Obj>): MatchResult {
   return new Valid({
-    actual: value(objectMatchResult.actuals),
-    expected: value(objectMatchResult.expecteds)
+    actual: value(objectMatchResult.actualValues),
+    expected: value(objectMatchResult.expectedValues)
   })
 }
 
@@ -80,8 +95,8 @@ function invalidPropertyResult<Obj extends { [key: PropertyKey]: any }>(objectMa
     ? "One of the object's properties was unexpected."
     : "Some of the object's properties were unexpected."
   return new Invalid(description, {
-    actual: value(objectMatchResult.actuals),
-    expected: value(objectMatchResult.expecteds)
+    actual: value(objectMatchResult.actualValues),
+    expected: value(objectMatchResult.expectedValues)
   })
 }
 
@@ -101,8 +116,8 @@ function missingKeyResult<Obj extends { [key: PropertyKey]: any }>(objectMatchRe
 }
 
 class ObjectMatchResult<Obj extends { [key: PropertyKey]: any }> {
-  expecteds: { [key: PropertyKey]: any } = {}
-  actuals: { [key: PropertyKey]: any } = {}
+  private expecteds: { [key: PropertyKey]: any } = {}
+  private actuals: { [key: PropertyKey]: any } = {}
   missingKeys: Array<PropertyKey> = []
   invalidMatches: number = 0
 
@@ -114,6 +129,17 @@ class ObjectMatchResult<Obj extends { [key: PropertyKey]: any }> {
       }
       const result = this.matchObject[matchKey]!(this.actual[matchKey])
       this.recordResult(matchKey, result)
+    }
+  }
+
+  get expectedValues() {
+    return this.expecteds
+  }
+
+  get actualValues() {
+    return {
+      ...objectWithValues(this.actual),
+      ...this.actuals
     }
   }
 

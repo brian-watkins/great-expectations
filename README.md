@@ -274,6 +274,29 @@ expect({ name: "cool dude", age: 288 }, is(objectWith({
 })))
 ```
 
+#### `objectWith(matcherObject)` and discriminated unions
+
+When writing an assertion about an object that can be any variant of a discriminated
+union (call it `UnionType`), provide the type of the discriminated union and the type of the
+expected variant to `objectWith`, and great-expectations will type the `objectWith`
+matcher as a `Matcher<UnionType>` but allow the matcherObject to have the properties
+of the expected variant.
+
+For example:
+
+```
+type FunType = { kind: "fun", sport: string }
+type AwesomeType = { kind: "awesome", food: string }
+type UnionType = FunType | AwesomeType
+
+const actual: UnionType = { kind: "fun", sport: "candlepin bowling" }
+
+expect(actual, is(objectWith<UnionType, FunType>({
+  type: equalTo("fun"),
+  sport: stringContaining("bowling")
+})))
+```
+
 
 ### Value Matcher
 

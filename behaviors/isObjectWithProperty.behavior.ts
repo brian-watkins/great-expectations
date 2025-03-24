@@ -1,5 +1,5 @@
 import { behavior } from "esbehavior"
-import { equalTo, objectWithProperty, stringContaining } from "../src/index.js"
+import { equalTo, objectWithProperty, problem, stringContaining, value } from "../src/index.js"
 import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 const symbol = Symbol("fun-stuff")
@@ -7,19 +7,19 @@ const symbol = Symbol("fun-stuff")
 export default behavior("isObjectWithProperty", [
 
   exhibit("the object has a property that matches", () => {
-    return objectWithProperty("name", stringContaining("cool"))({ name: "cool dude" })
+    return objectWithProperty("name", stringContaining("cool"))({ age: 27, name: "cool dude" })
   }).check([
     isValidMatchResult(),
-    hasActual({name: "cool dude"}),
+    hasActual({age: value(27), name: value("cool dude")}),
     hasExpectedMessageText("info(an object with a property \"name\" that is a string that contains \"cool\")")
   ]),
 
   exhibit("the object has a property that does not match", () => {
-    return objectWithProperty("name", stringContaining("cool"))({ name: "someone else" })
+    return objectWithProperty("name", stringContaining("cool"))({ age: 27, name: "someone else" })
   }).check([
     isInvalidMatchResult(),
     hasMessage("The value at the specified property is unexpected."),
-    hasInvalidActual({name: "someone else"}),
+    hasActual({age: value(27), name: problem("someone else")}),
     hasExpectedMessageText("error(info(an object with a property \"name\" that is a string that contains \"cool\"))")
   ]),
 
@@ -36,7 +36,7 @@ export default behavior("isObjectWithProperty", [
     return objectWithProperty(symbol, equalTo(27))({ [symbol]: 27 })
   }).check([
     isValidMatchResult(),
-    hasActual({ [symbol]: 27 }),
+    hasActual({ [symbol]: value(27) }),
     hasExpectedMessageText("info(an object with a property <SYMBOL(fun-stuff)> that is a number that equals 27)")
   ]),
 
@@ -44,7 +44,7 @@ export default behavior("isObjectWithProperty", [
     return objectWithProperty(14, equalTo(8))({ 14: 8 })
   }).check([
     isValidMatchResult(),
-    hasActual({ 14: 8 }),
+    hasActual({ 14: value(8) }),
     hasExpectedMessageText("info(an object with a property 14 that is a number that equals 8)")
   ])
 
