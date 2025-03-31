@@ -99,8 +99,22 @@ export default behavior("stringify", [
 
   exhibit("stringify an empty array", () => stringify([], testWriter))
     .check([
-      property("it prints the stringified elements", (result) => {
+      property("it prints the empty array", (result) => {
         assert.deepEqual(result, "[]")
+      })
+    ]),
+
+  exhibit("stringify a set", () => stringify(new Set([1, 2, 3]), testWriter))
+    .check([
+      property("it prints the stringified set", (result) => {
+        assert.deepEqual(result, "Set (\n  1,\n  2,\n  3\n)")
+      })
+    ]),
+
+  exhibit("stringify an empty set", () => stringify(new Set(), testWriter))
+    .check([
+      property("it prints the stringified set", (result) => {
+        assert.deepEqual(result, "Set ()")
       })
     ]),
 
@@ -118,8 +132,8 @@ export default behavior("stringify", [
 
   exhibit("stringify a complicated map", () => {
     const map = new Map()
-    map.set({ name: "cool person" }, [ "apple", "pear" ])
-    map.set({ name: "funny person" }, [ "banana", "grapes" ])
+    map.set({ name: "cool person" }, ["apple", "pear"])
+    map.set({ name: "funny person" }, ["banana", "grapes"])
     return stringify(map, testWriter)
   }).check([
     property("it prints the complicated map", (result) => {
@@ -201,12 +215,22 @@ export default behavior("stringify", [
   ]),
 
   exhibit("stringify array with circular reference", () => {
-    const myArray: Array<any> = [ { name: "fun person" }, { name: "cool dude" } ]
+    const myArray: Array<any> = [{ name: "fun person" }, { name: "cool dude" }]
     myArray[2] = myArray
     return stringify(myArray, testWriter)
   }).check([
     property("it prints the array with a circular indicator", (result) => {
       assert.deepEqual(result, "[\n  {\n    name: \"fun person\"\n  },\n  {\n    name: \"cool dude\"\n  },\n  <CIRCULAR>\n]")
+    })
+  ]),
+
+  exhibit("stringify set with circular reference", () => {
+    const mySet: Set<any> = new Set([{ name: "fun person" }, { name: "cool dude" }])
+    mySet.add(mySet)
+    return stringify(mySet, testWriter)
+  }).check([
+    property("it prints the set with a circular indicator", (result) => {
+      assert.deepEqual(result, "Set (\n  {\n    name: \"fun person\"\n  },\n  {\n    name: \"cool dude\"\n  },\n  <CIRCULAR>\n)")
     })
   ]),
 
@@ -245,7 +269,7 @@ export default behavior("stringify", [
   ]),
 
   exhibit("stringify the type names", () => {
-    return stringify(message`${typeName(true)}, ${typeName("hello")}, ${typeName(1)}, ${typeName({foo: "bar"})}, ${typeName(["hello"])}, ${typeName(() => {})}, ${typeName(Symbol("fun"))}, ${typeName(BigInt("234452"))}, ${typeName(undefined)}`, testWriter)
+    return stringify(message`${typeName(true)}, ${typeName("hello")}, ${typeName(1)}, ${typeName({ foo: "bar" })}, ${typeName(["hello"])}, ${typeName(() => { })}, ${typeName(Symbol("fun"))}, ${typeName(BigInt("234452"))}, ${typeName(undefined)}`, testWriter)
   }).check([
     property("it prints the type name", (result) => {
       assert.deepEqual(result, "info(a boolean, a string, a number, an object, an array, a function, a symbol, a bigint, undefined)")

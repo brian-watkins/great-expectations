@@ -22,11 +22,15 @@ export function stringify(val: any, writer: Writer, indentLevel: number = 0): st
         visited.pop()
         return arrayString
       } else if (val instanceof Map) {
-        // need to handle circular reference
         visited.push(val)
         const mapString = writeMap(val, writer, indentLevel)
         visited.pop()
         return mapString
+      } else if (val instanceof Set) {
+        visited.push(val)
+        const setString = writeSet(val, writer, indentLevel)
+        visited.pop()
+        return setString
       } else if (val instanceof Error) {
         return val.toString()
       } else if (isTypeName(val)) {
@@ -91,6 +95,15 @@ function writeArray(items: Array<any>, writer: Writer, indentLevel: number): str
   }
 
   return `[\n${padding(indentLevel)}${items.map((val) => stringify(val, writer, indentLevel + 1)).join(`,\n${padding(indentLevel)}`)}\n${padding(indentLevel - 1)}]`
+}
+
+function writeSet(set: Set<any>, writer: Writer, indentLevel: number): string {
+  if (set.size === 0) {
+    return "Set ()"
+  }
+
+  const items = Array.from(set)
+  return `Set (\n${padding(indentLevel)}${items.map((val) => stringify(val, writer, indentLevel + 1)).join(`,\n${padding(indentLevel)}`)}\n${padding(indentLevel - 1)})`
 }
 
 function writeMap(map: Map<any, any>, writer: Writer, indentLevel: number): string {
