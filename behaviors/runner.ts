@@ -24,6 +24,7 @@ import isObjectOfTypeBehavior from "./isObjectOfType.behavior.js";
 import eventuallyBehavior from "./eventually.behavior.js";
 import errorFormatBehavior from "./errorFormat.behavior.js";
 import isValueWhereBehavior from "./isValueWhere.behavior.js";
+import isSetWithBehavior from "./isSetWith.behavior.js";
 
 validate([
   isIdenticalToBehavior,
@@ -43,6 +44,7 @@ validate([
   isObjectOfTypeBehavior,
   isObjectWithPropertyBehavior,
   isObjectWhereBehavior,
+  isSetWithBehavior,
   stringifyBehavior,
   satisfyingAllBehavior,
   isBehavior,

@@ -1,4 +1,5 @@
 import { equalTo } from "./basicMatchers.js"
+import { matchWithoutOrder } from "./matchCollection.js"
 import { Invalid, Matcher, MatchValues, Valid } from "./matcher.js"
 import { Message, message, problem, times, value } from "./message.js"
 import { isNumberGreaterThan } from "./numberMatchers.js"
@@ -99,33 +100,9 @@ function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
   }
 }
 
-interface UnorderedAccumulator<T> {
-  items: Array<T>
-  expected: Array<any>
-  failed: boolean
-}
-
 function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
   return (actual) => {
-    const accumulatedResult = matchers.reduce((acc: UnorderedAccumulator<T>, matcher: Matcher<T>) => {
-      let invalid: Invalid
-      for (let x = 0; x < acc.items.length; x++) {
-        const result = matcher(acc.items[x])
-        if (result.type === "valid") {
-          return {
-            items: acc.items.filter((_: T, index: number) => index !== x),
-            expected: acc.expected.concat([result.values.expected]),
-            failed: acc.failed
-          }
-        }
-        invalid = result
-      }
-      return {
-        items: acc.items,
-        expected: acc.expected.concat([invalid!.values.expected]),
-        failed: true
-      }
-    }, { items: actual, expected: [], failed: false })
+    const accumulatedResult = matchWithoutOrder(actual, matchers)
 
     const actualValues = actual.map((item) => {
       if (accumulatedResult.items.includes(item)) {
