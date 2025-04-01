@@ -1,5 +1,13 @@
 # Changelog
 
+### 4/1/2025
+
+great-expectations 1.10.0
+
+### Added
+- set matchers
+
+
 ### 2/26/2025
 
 great-expectations 1.9.0
