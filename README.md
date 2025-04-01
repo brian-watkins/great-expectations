@@ -190,7 +190,7 @@ all occurrences.
 #### `arrayWith(array of matchers, { withAnyOrder?: boolean })`
 
 Asserts that the actual value is an array with elements such that
-there is exactly one element that matches each of the provided
+there is one element that matches each of the provided
 array of matchers in the given order, and no more elements. The
 `withAnyOrder` option specifies whether order matters.
 
@@ -233,7 +233,7 @@ Asserts that the actual value is an array with the given length
 #### `setWith(array of matchers)`
 
 Asserts that the actual value is a set with elements such that
-there is exactly one element that matches each of the provided
+there is one element that matches each of the provided
 array of matchers, and no more elements.
 
 ```
@@ -259,6 +259,10 @@ expect(new Set([ 1, 2, 3 ]), is(setContaining(equalTo(4), { times: 0 })))
 If you need to assert that a set contains some subset of elements and
 they can each be matched with distinct matchers, combine these matchers
 using `satisfying`.
+
+#### `setWithSize(number)`
+
+Asserts that the actual value is a set with the given size
 
 
 ### Map Matchers
@@ -526,10 +530,11 @@ Formats the type of the value for output.
 typeName("hello") ===> "a string"
 ```
 
-#### `times(count)`
+#### `times(count, name?)`
 
-Prints the number of times for output.
+Prints the number of times (or the provided name) for output. 
 
 ```
 times(7) ===> "exactly 7 times"
+times(7, "item") ===> "exactly 7 items
 ```
