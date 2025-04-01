@@ -187,26 +187,12 @@ all occurrences.
 
 ### Array Matchers
 
-#### `arrayWithLength(number)`
-
-Asserts that the actual value is an array with the given length
-
-#### `arrayContaining(matcher, { times?: number })`
-
-Asserts that the actual value is an array with at least one element that matches
-the provided matcher. The optional option specifies whether some exact
-number of elements should match.
-
-#### `arrayWithItemAt(index, matcher)`
-
-Asserts that the actual value is an array with an element at the provided index
-that matches the provided matcher.
-
 #### `arrayWith(array of matchers, { withAnyOrder?: boolean })`
 
-Asserts that the actual value is an array with exactly the elements that
-match the provided array of matchers in the given order. The optional option
-specifies whether order matters.
+Asserts that the actual value is an array with elements such that
+there is exactly one element that matches each of the provided
+array of matchers in the given order, and no more elements. The
+`withAnyOrder` option specifies whether order matters.
 
 ```
 expect([ 1, 2, 3 ], is(arrayWith([
@@ -215,6 +201,64 @@ expect([ 1, 2, 3 ], is(arrayWith([
   equalTo(3)
 ])))
 ```
+
+#### `arrayWithItemAt(index, matcher)`
+
+Asserts that the actual value is an array with an element at the provided index
+that matches the provided matcher.
+
+#### `arrayContaining(matcher, { times?: number })`
+
+Asserts that the actual value is an array with at least one element that matches
+the provided matcher.
+
+The `times` option specifies whether some exact number of elements
+should match. For example, to assert that some element is not in an array:
+
+```
+expect([ 1, 2, 3 ], is(arrayContaining(equalTo(4), { times: 0 })))
+```
+
+If you need to assert that an array contains some subset of elements and
+they can each be matched with distinct matchers, combine these matchers
+using `satisfying`.
+
+#### `arrayWithLength(number)`
+
+Asserts that the actual value is an array with the given length
+
+
+### Set Matchers
+
+#### `setWith(array of matchers)`
+
+Asserts that the actual value is a set with elements such that
+there is exactly one element that matches each of the provided
+array of matchers, and no more elements.
+
+```
+expect(new Set([ 1, 2, 3 ]), is(setWith([
+  equalTo(1),
+  equalTo(2),
+  equalTo(3)
+])))
+```
+
+#### `setContaining(matcher, { times?: number })`
+
+Asserts that the actual value is a set with at least one element that matches
+the provided matcher.
+
+The `times` option specifies whether some exact number of elements
+should match. For example, to assert that some element is not in a set:
+
+```
+expect(new Set([ 1, 2, 3 ]), is(setContaining(equalTo(4), { times: 0 })))
+```
+
+If you need to assert that a set contains some subset of elements and
+they can each be matched with distinct matchers, combine these matchers
+using `satisfying`.
 
 
 ### Map Matchers
