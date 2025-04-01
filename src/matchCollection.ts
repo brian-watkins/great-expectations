@@ -1,4 +1,4 @@
-import { Invalid, Matcher } from "./matcher.js"
+import { Invalid, Matcher, MatchValues } from "./matcher.js"
 
 interface MatchCollection<T> {
   items: Array<T>
@@ -26,4 +26,28 @@ export function matchWithoutOrder<T>(actual: Array<T>, matchers: Array<Matcher<T
       failed: true
     }
   }, { items: actual, expected: [], failed: false })
+}
+
+export interface MatchResults {
+  matchCount: number
+  lastValid: MatchValues | undefined
+  lastInvalid: MatchValues | undefined
+}
+
+export function countMatches<T>(actual: Array<T>, matcher: Matcher<T>): MatchResults {
+  const results: MatchResults = {
+    matchCount: 0,
+    lastValid: undefined,
+    lastInvalid: undefined
+  }
+  for (const item of actual) {
+    const matchResult = matcher(item)
+    if (matchResult.type === "valid") {
+      results.matchCount++
+      results.lastValid = matchResult.values
+    } else {
+      results.lastInvalid = matchResult.values
+    }
+  }
+  return results
 }

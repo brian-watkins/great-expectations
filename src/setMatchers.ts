@@ -1,6 +1,8 @@
-import { matchWithoutOrder } from "./matchCollection";
-import { Invalid, Matcher, Valid } from "./matcher";
-import { message, problem, value } from "./message";
+import { equalTo } from "./basicMatchers";
+import { countMatches, matchWithoutOrder } from "./matchCollection";
+import { Invalid, Matcher, MatchValues, Valid } from "./matcher";
+import { Message, message, problem, times, value } from "./message";
+import { isNumberGreaterThan } from "./numberMatchers";
 import { valueWhere } from "./valueMatchers";
 
 export function setWith<T>(matchers: Array<Matcher<T>>): Matcher<Set<T>> {
@@ -38,4 +40,50 @@ export function setWith<T>(matchers: Array<Matcher<T>>): Matcher<Set<T>> {
       })
     }
   }
+}
+
+export interface SetContainingOptions {
+  times?: number
+}
+
+export function setContaining<T>(matcher: Matcher<T>, options: SetContainingOptions = {}): Matcher<Set<T>> {
+  const expectedMatchCount = options.times
+
+  return (actual) => {
+    if (actual.size === 0) {
+      return new Invalid("The set does not contain the expected element.", {
+        actual: problem(actual),
+        expected: problem(message`a set that contains at least 1 element`)
+      })
+    }
+
+    const results = countMatches(Array.from(actual), matcher)
+
+    let countMatcher: Matcher<number>
+    if (expectedMatchCount === undefined) {
+      countMatcher = isNumberGreaterThan(0)
+    } else {
+      countMatcher = equalTo(expectedMatchCount)
+    }
+
+    const countResult = countMatcher(results.matchCount)
+
+    if (countResult.type === "invalid") {
+      return new Invalid("The set does not contain the expected element.", {
+        actual: problem(actual),
+        expected: problem(setContainsMessage(expectedMatchCount, results.lastInvalid))
+      })
+    } else {
+      return new Valid({
+        actual: value(actual),
+        expected: setContainsMessage(expectedMatchCount, results.lastValid)
+      })
+    }
+  }
+}
+
+function setContainsMessage(expectedMatchCount: number | undefined, matchValues: MatchValues | undefined): Message {
+  return (expectedMatchCount === undefined)
+    ? message`a set that contains ${matchValues?.expected}`
+    : message`a set that contains, ${times(expectedMatchCount)}, ${matchValues?.expected}`
 }

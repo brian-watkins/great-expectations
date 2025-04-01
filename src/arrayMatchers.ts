@@ -1,5 +1,5 @@
 import { equalTo } from "./basicMatchers.js"
-import { matchWithoutOrder } from "./matchCollection.js"
+import { countMatches, matchWithoutOrder } from "./matchCollection.js"
 import { Invalid, Matcher, MatchValues, Valid } from "./matcher.js"
 import { Message, message, problem, times, value } from "./message.js"
 import { isNumberGreaterThan } from "./numberMatchers.js"
@@ -141,17 +141,7 @@ export function arrayContaining<T>(matcher: Matcher<NoInfer<T>>, options: ArrayC
       })
     }
 
-    let validMatchValues, invalidMatchValues: MatchValues | undefined
-    let matchedCount = 0
-    for (const item of actual) {
-      const matchResult = matcher(item)
-      if (matchResult.type === "valid") {
-        matchedCount++
-        validMatchValues = matchResult.values
-      } else {
-        invalidMatchValues = matchResult.values
-      }
-    }
+    const results = countMatches(actual, matcher)
 
     let countMatcher: Matcher<number>
     if (expectedMatchCount === undefined) {
@@ -160,17 +150,17 @@ export function arrayContaining<T>(matcher: Matcher<NoInfer<T>>, options: ArrayC
       countMatcher = equalTo(expectedMatchCount)
     }
 
-    const countResult = countMatcher(matchedCount)
+    const countResult = countMatcher(results.matchCount)
 
     if (countResult.type === "valid") {
       return new Valid({
         actual: value(actual),
-        expected: arrayContainsMessage(expectedMatchCount, validMatchValues)
+        expected: arrayContainsMessage(expectedMatchCount, results.lastValid)
       })
     } else {
       return new Invalid("The array does not contain the expected element.", {
         actual: problem(actual),
-        expected: problem(arrayContainsMessage(expectedMatchCount, invalidMatchValues))
+        expected: problem(arrayContainsMessage(expectedMatchCount, results.lastInvalid))
       })
     }
   }
