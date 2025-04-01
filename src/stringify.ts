@@ -36,7 +36,7 @@ export function stringify(val: any, writer: Writer, indentLevel: number = 0): st
       } else if (isTypeName(val)) {
         return writeTypeName(val.value)
       } else if (isTimes(val)) {
-        return writeTimes(val.count)
+        return writeTimes(val.count, val.name)
       } else if (isSpecificValue(val)) {
         return stringify(val.value, writer, indentLevel)
       } else if (isAnyValue(val)) {
@@ -149,11 +149,11 @@ function writeTypeName(value: any): string {
   }
 }
 
-function writeTimes(count: number): string {
+function writeTimes(count: number, name: string): string {
   if (count === 1) {
-    return "exactly 1 time"
+    return `exactly 1 ${name}`
   } else {
-    return `exactly ${count} times`
+    return `exactly ${count} ${name}s`
   }
 }
 

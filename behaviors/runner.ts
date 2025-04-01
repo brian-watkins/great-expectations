@@ -26,6 +26,7 @@ import errorFormatBehavior from "./errorFormat.behavior.js";
 import isValueWhereBehavior from "./isValueWhere.behavior.js";
 import isSetWithBehavior from "./isSetWith.behavior.js";
 import isSetContainingBehavior from "./isSetContaining.behavior.js";
+import isSetWithSizeBehavior from "./isSetWithSize.behavior.js";
 
 validate([
   isIdenticalToBehavior,
@@ -47,6 +48,7 @@ validate([
   isObjectWhereBehavior,
   isSetWithBehavior,
   isSetContainingBehavior,
+  isSetWithSizeBehavior,
   stringifyBehavior,
   satisfyingAllBehavior,
   isBehavior,

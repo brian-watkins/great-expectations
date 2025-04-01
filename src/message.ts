@@ -12,13 +12,15 @@ export function typeName(value: any): TypeName {
 
 export interface Times {
   type: "times"
-  count: number
+  count: number,
+  name: string
 }
 
-export function times(count: number): Times {
+export function times(count: number, name: string = "time"): Times {
   return {
     type: "times",
-    count
+    count,
+    name
   }
 }
 

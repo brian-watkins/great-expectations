@@ -9,7 +9,7 @@ export default behavior("isArrayWithLength", [
   }).check([
     isValidMatchResult(),
     hasActual([1, 2, 3, 4]),
-    hasExpectedMessageText("info(an array with length 4)")
+    hasExpectedMessageText("info(an array with exactly 4 elements)")
   ]),
 
   exhibit("the array does not have the expected length", () => {
@@ -18,7 +18,7 @@ export default behavior("isArrayWithLength", [
     isInvalidMatchResult(),
     hasMessage("The array length (4) is unexpected."),
     hasInvalidActual([1, 2, 3, 4]),
-    hasExpectedMessageText("error(info(an array with length 3))")
+    hasExpectedMessageText("error(info(an array with exactly 3 elements))")
   ]),
 
 ])

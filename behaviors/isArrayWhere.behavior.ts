@@ -27,7 +27,7 @@ export default behavior("isArrayWhere", [
     isInvalidMatchResult(),
     hasMessage("The array length (2) is unexpected."),
     hasInvalidActual([1, 2]),
-    hasExpectedMessageText("error(info(an array with length 3))")
+    hasExpectedMessageText("error(info(an array with exactly 3 elements))")
   ]),
 
   exhibit("the array fails to match at an item", () => {
@@ -106,7 +106,7 @@ export default behavior("isArrayWhere", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array length (3) is unexpected."),
-    hasExpectedMessageText("error(info(an array with length 0))"),
+    hasExpectedMessageText("error(info(an array with exactly 0 elements))"),
     hasInvalidActual([ 3, 6, 2 ])
   ]),
 

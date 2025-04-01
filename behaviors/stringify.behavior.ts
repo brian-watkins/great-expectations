@@ -284,6 +284,14 @@ export default behavior("stringify", [
     })
   ]),
 
+  exhibit("stringify a times message with a provided name", () => {
+    return stringify(message`${times(0, "thing")}, ${times(1, "thing")}, ${times(5, "thing")}`, testWriter)
+  }).check([
+    property("it prints the times messages using the provided name", (result) => {
+      assert.deepEqual(result, "info(exactly 0 things, exactly 1 thing, exactly 5 things)")
+    })
+  ]),
+
   exhibit("stringify an array with nested lists", () => {
     return stringify([
       message`hello`,

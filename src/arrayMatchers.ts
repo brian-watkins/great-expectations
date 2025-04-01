@@ -6,7 +6,7 @@ import { isNumberGreaterThan } from "./numberMatchers.js"
 
 export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
   return (actual) => {
-    const expectedMessage = message`an array with length ${value(expectedLength)}`
+    const expectedMessage = message`an array with ${times(expectedLength, "element")}`
 
     if (expectedLength === actual.length) {
       return new Valid({

@@ -5,6 +5,22 @@ import { Message, message, problem, times, value } from "./message";
 import { isNumberGreaterThan } from "./numberMatchers";
 import { valueWhere } from "./valueMatchers";
 
+export function setWithSize<T>(expectedSize: number): Matcher<Set<T>> {
+  return (actual) => {
+    if (actual.size === expectedSize) {
+      return new Valid({
+        actual: value(actual),
+        expected: message`a set with ${times(expectedSize, "element")}`
+      })
+    } else {
+      return new Invalid(`The set size (${actual.size}) is unexpected.`, {
+        actual: problem(actual),
+        expected: problem(message`a set with ${times(expectedSize, "element")}`)
+      })
+    }
+  }
+}
+
 export function setWith<T>(matchers: Array<Matcher<T>>): Matcher<Set<T>> {
   return (actual) => {
     const sizeResult = valueWhere<Set<any>>((actual) => actual.size === matchers.length, `a set of size ${matchers.length}`)(actual)
