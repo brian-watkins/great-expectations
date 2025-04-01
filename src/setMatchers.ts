@@ -1,9 +1,9 @@
-import { equalTo } from "./basicMatchers";
-import { countMatches, matchWithoutOrder } from "./matchCollection";
-import { Invalid, Matcher, MatchValues, Valid } from "./matcher";
-import { Message, message, problem, times, value } from "./message";
-import { isNumberGreaterThan } from "./numberMatchers";
-import { valueWhere } from "./valueMatchers";
+import { equalTo } from "./basicMatchers.js";
+import { countMatches, matchWithoutOrder } from "./matchCollection.js";
+import { Invalid, Matcher, MatchValues, Valid } from "./matcher.js";
+import { Message, message, problem, times, value } from "./message.js";
+import { isNumberGreaterThan } from "./numberMatchers.js";
+import { valueWhere } from "./valueMatchers.js";
 
 export function setWithSize<T>(expectedSize: number): Matcher<Set<T>> {
   return (actual) => {
