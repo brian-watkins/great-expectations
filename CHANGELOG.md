@@ -1,5 +1,13 @@
 # Changelog
 
+### 5/21/2025
+
+great-expectations 1.10.2
+
+### Fixed
+- Improved type safety when using expect
+
+
 ### 4/1/2025
 
 great-expectations 1.10.0
