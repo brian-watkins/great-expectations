@@ -16,6 +16,6 @@ export type { Matcher, MatchResult, MatchValues } from "./matcher.js"
 export { setWith, setContaining, setWithSize } from "./setMatchers.js"
 export * from "./message.js"
 
-export function expect<T, S>(value: T, evaluator: MatchEvaluator<NoInfer<T>, S>, description?: string): S {
+export function expect<T, S extends void | Promise<void>>(value: T, evaluator: MatchEvaluator<T, S>, description?: string): S {
   return evaluator(value, description)
 }
