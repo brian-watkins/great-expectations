@@ -33,16 +33,16 @@
     "test": "tsx ./behaviors/runner.ts"
   },
   "devDependencies": {
-    "@types/deep-equal": "^1.0.1",
-    "@types/node": "^18.11.9",
-    "esbehavior": "^5.2.1",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
-  },
-  "dependencies": {
-    "deep-equal": "^2.1.0"
+    "@types/deep-equal": "^1.0.4",
+    "@types/node": "^24.12.2",
+    "esbehavior": "^8.0.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
   },
   "volta": {
-    "node": "22.8.0"
+    "node": "24.15.0"
+  },
+  "dependencies": {
+    "deep-equal": "^2.2.3"
   }
 }
