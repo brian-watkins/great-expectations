@@ -1,4 +1,4 @@
-import { Invalid, Matcher, MatchResult, Valid } from "./matcher.js";
+import { Invalid, matcher, Matcher, MatchResult, Valid } from "./matcher.js";
 import { anyValue, Message, message, Problem, problem, Value, value } from "./message.js";
 
 export interface MapEntryMatcher<K, V> {
@@ -6,12 +6,16 @@ export interface MapEntryMatcher<K, V> {
   value?: Matcher<V>
 }
 
-export function mapContaining<K, V>(matcher: MapEntryMatcher<NoInfer<K>, NoInfer<V>>): Matcher<Map<K, V>> {
-  return (actual) => {
+export function mapContaining<K, V>(entry: MapEntryMatcher<NoInfer<K>, NoInfer<V>>): Matcher<Map<K, V>> {
+  const expectedKey = entry.key.expects
+  const expectedValue = entry.value?.expects ?? anyValue()
+  const description = message`a map that contains the entry { ${expectedKey} => ${expectedValue} }`
+  
+  return matcher(description, (actual) => {
     if (actual.size === 0) {
       return new Invalid("The map does not contain the expected entry.", {
         actual: problem(actual),
-        expected: problem(message`a map with at least 1 entry`)
+        expected: problem(description)
       })
     }
 
@@ -19,11 +23,11 @@ export function mapContaining<K, V>(matcher: MapEntryMatcher<NoInfer<K>, NoInfer
     let expectedValue: Value | Problem | Message = anyValue()
     let isValid = false
     for (const key of actual.keys()) {
-      const keyResult = matcher.key(key)
+      const keyResult = entry.key(key)
       expectedKey = keyResult.values.expected
       if (keyResult.type === "valid") {
-        if (matcher.value) {
-          const valueResult = matcher.value(actual.get(key)!)
+        if (entry.value) {
+          const valueResult = entry.value(actual.get(key)!)
           expectedValue = valueResult.values.expected
           if (valueResult.type === "valid") {
             isValid = true
@@ -47,8 +51,7 @@ export function mapContaining<K, V>(matcher: MapEntryMatcher<NoInfer<K>, NoInfer
         expected: message`a map that contains the entry { ${expectedKey} => ${expectedValue} }`
       })
     }
-
-  }
+  })
 }
 
 interface ExpectedMapEntry {
@@ -57,7 +60,11 @@ interface ExpectedMapEntry {
 }
 
 export function mapWith<K, V>(matchers: Array<MapEntryMatcher<NoInfer<K>, NoInfer<V>>>): Matcher<Map<K, V>> {
-  return (actual) => {
+  const description = value(new Map(matchers.map(entry => {
+    return [ entry.key.expects, entry.value?.expects ?? anyValue() ]
+  })))
+  
+  return matcher(description, (actual) => {
     let expecteds: Array<ExpectedMapEntry> = []
     let invalidCount = 0
 
@@ -117,7 +124,7 @@ export function mapWith<K, V>(matchers: Array<MapEntryMatcher<NoInfer<K>, NoInfe
         expected
       })
     }
-  }
+  })
 }
 
 function formatEntryCount(count: number): string {

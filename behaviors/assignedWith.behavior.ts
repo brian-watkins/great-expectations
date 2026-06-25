@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior"
 import { assignedWith, equalTo,  } from "../src/index.js"
-import { exhibit, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { exhibit, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 export default behavior("assignedWith", [
+
+  exhibit("assignedWith", () => {
+    return assignedWith(equalTo(3))
+  }).check([
+    hasMatcherDescription("info(a variable that is assigned a number that equals 3)")
+  ]),
 
   exhibit("the variable is assigned a value that matches the provided matcher", () => {
     return assignedWith(equalTo(3))(3)
@@ -22,7 +28,7 @@ export default behavior("assignedWith", [
     isInvalidMatchResult(),
     hasMessage("The actual variable is not assigned a value."),
     hasInvalidActual(undefined),
-    hasExpectedMessageText("error(info(a variable that is assigned a value))")
+    hasExpectedMessageText("error(info(a variable that is assigned a number that equals 3))")
   ])
 
 ])

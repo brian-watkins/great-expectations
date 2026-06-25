@@ -1,8 +1,8 @@
-import { Message, Problem, Value } from "./message.js"
+import { Displayable } from "./message.js"
 
 export interface MatchValues {
-  actual: Problem | Value | Message
-  expected: Problem | Value | Message
+  actual: Displayable
+  expected: Displayable
 }
 
 export class Valid {
@@ -19,4 +19,11 @@ export class Invalid {
 
 export type MatchResult = Valid | Invalid
 
-export type Matcher<T> = (actual: T) => MatchResult
+export interface Matcher<T> {
+  (actual: T): MatchResult
+  readonly expects: Displayable
+}
+
+export function matcher<T>(expects: Displayable, evaluator: (actual: T) => MatchResult): Matcher<T> {
+  return Object.assign(evaluator, { expects })
+}

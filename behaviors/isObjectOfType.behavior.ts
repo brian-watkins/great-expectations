@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior";
-import { exhibit, hasActualMessageText, hasExpectedMessageText, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasActualMessageText, hasExpectedMessageText, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 import { objectOfType } from "../src";
 
 export default behavior("is objectOfType", [
+
+  exhibit("objectOfType", () => {
+    return objectOfType(FunnyClass)
+  }).check([
+    hasMatcherDescription("info(an object of type FunnyClass)")
+  ]),
 
   exhibit("the object instantiates the expected type", () => {
     return objectOfType(FunnyClass)(new FunnyClass())
@@ -16,6 +22,7 @@ export default behavior("is objectOfType", [
     return objectOfType(SadClass)(new FunnyClass())
   }).check([
     isInvalidMatchResult(),
+    hasMessage("The object does not instantiate the expected type."),
     hasActualMessageText("error(info(an object of type FunnyClass))"),
     hasExpectedMessageText("error(info(an object of type SadClass))")
   ]),
@@ -24,6 +31,7 @@ export default behavior("is objectOfType", [
     return objectOfType(SadClass)(13)
   }).check([
     isInvalidMatchResult(),
+    hasMessage("The actual value is not an object."),
     hasActualMessageText("error(info(an object of type Number))"),
     hasExpectedMessageText("error(info(an object of type SadClass))")
   ]),

@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 import { message, value, valueWhere } from "../src";
 
 export default behavior("valueWhere", [
+
+  exhibit("valueWhere", () => {
+    return valueWhere<number>(x => x % 2 === 0, "a number that is even")
+  }).check([
+    hasMatcherDescription("info(a number that is even)")
+  ]),
 
   exhibit("the actual satisfies the predicate", () => {
     return valueWhere<number>(x => x % 2 === 0, "a number that is even")(22)
@@ -22,7 +28,7 @@ export default behavior("valueWhere", [
   ]),
 
   exhibit("a different type of value", () => {
-    return valueWhere<string>(x => x.length > 3, message `a string that has more than 3 characters`)("hello")
+    return valueWhere<string>(x => x.length > 3, message`a string that has more than 3 characters`)("hello")
   }).check([
     isValidMatchResult(),
     hasActual("hello"),

@@ -1,5 +1,5 @@
 import { equalTo } from "./basicMatchers.js"
-import { Invalid, Matcher, Valid } from "./matcher.js"
+import { Invalid, matcher, Matcher, Valid } from "./matcher.js"
 import { Message, message, problem, times, value } from "./message.js"
 import { isNumberGreaterThan } from "./numberMatchers.js"
 
@@ -8,11 +8,11 @@ export interface StringMatchingOptions {
 }
 
 export function stringMatching(regex: RegExp, options: StringMatchingOptions = {}): Matcher<string> {
-  return (actual) => {
-    const expectedMessage = options.times === undefined ?
+  const expectedMessage = options.times === undefined ?
       message`a string matching ${regex.toString()}` :
       message`a string matching ${regex.toString()} ${times(options.times)}`
 
+  return matcher(expectedMessage, (actual) => {
     const matches = actual.match(regex) ?? []
 
     if (options.times === undefined && matches.length >= 1) {
@@ -33,13 +33,13 @@ export function stringMatching(regex: RegExp, options: StringMatchingOptions = {
       actual: problem(actual),
       expected: problem(expectedMessage)
     })
-  }
+  })
 }
 
 export function stringWithLength(expectedLength: number): Matcher<string> {
-  return (actual) => {
-    const expectedMessage = message`a string with length ${expectedLength}`
+  const expectedMessage = message`a string with length ${expectedLength}`
 
+  return matcher(expectedMessage, (actual) => {
     if (expectedLength === actual.length) {
       return new Valid({
         actual: value(actual),
@@ -51,7 +51,7 @@ export function stringWithLength(expectedLength: number): Matcher<string> {
         expected: problem(expectedMessage)
       })
     }
-  }
+  })
 }
 
 export interface StringContainingOptions {
@@ -62,8 +62,9 @@ export interface StringContainingOptions {
 export function stringContaining(expected: string, options: StringContainingOptions = {}): Matcher<string> {
   const isCaseSensitive = options.caseSensitive ?? true
   const expectedCount = options.times
+  const description = stringInvalidMessage(isCaseSensitive, expected, expectedCount)
 
-  return (actual) => {
+  return matcher(description, (actual) => {
     let actualString = actual
     let expectedString = expected
     if (!isCaseSensitive) {
@@ -74,13 +75,10 @@ export function stringContaining(expected: string, options: StringContainingOpti
     const count = getStringMatchCount(actualString, expectedString)
 
     let countMatcher: Matcher<number>
-    let message: Message
     if (expectedCount === undefined) {
       countMatcher = isNumberGreaterThan(0)
-      message = stringInvalidMessage(isCaseSensitive, expected)
     } else {
       countMatcher = equalTo(expectedCount)
-      message = stringInvalidMessage(isCaseSensitive, expected, expectedCount)
     }
 
     const countResult = countMatcher(count)
@@ -88,15 +86,15 @@ export function stringContaining(expected: string, options: StringContainingOpti
     if (countResult.type === "valid") {
       return new Valid({
         actual: value(actual),
-        expected: message
+        expected: description
       })
     } else {
       return new Invalid("The actual value does not contain the expected string.", {
         actual: problem(actual),
-        expected: problem(message)
+        expected: problem(description)
       })
     }
-  }
+  })
 }
 
 function stringInvalidMessage(isCaseSensitive: boolean, expected: string, expectedCount?: number): Message {

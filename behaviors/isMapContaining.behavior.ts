@@ -1,8 +1,25 @@
 import { behavior } from "esbehavior";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 import { equalTo, mapContaining, stringContaining } from "../src";
 
 export default behavior("isMapContaining", [
+
+  exhibit("mapContaining key", () => {
+    return mapContaining<string, string>({
+      key: stringContaining("fun")
+    })
+  }).check([
+    hasMatcherDescription("info(a map that contains the entry { a string that contains \"fun\" => <ANY> })")
+  ]),
+
+  exhibit("mapContaining key and value", () => {
+    return mapContaining<string, string>({
+      key: stringContaining("fun"),
+      value: equalTo("stuff")
+    })
+  }).check([
+    hasMatcherDescription("info(a map that contains the entry { a string that contains \"fun\" => a string that equals \"stuff\" })")
+  ]),
 
   exhibit("the map contains the expected key", () => {
     const actualMap = new Map<string, string>()
@@ -71,6 +88,6 @@ export default behavior("isMapContaining", [
     isInvalidMatchResult(),
     hasMessage("The map does not contain the expected entry."),
     hasInvalidActual(new Map()),
-    hasExpectedMessageText(`error(info(a map with at least 1 entry))`)
+    hasExpectedMessageText(`error(info(a map that contains the entry { a string that equals "super-key" => a string that contains "weird" }))`)
   ]),
 ])

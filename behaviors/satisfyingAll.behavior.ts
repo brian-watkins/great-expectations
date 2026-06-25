@@ -1,9 +1,18 @@
 import { behavior } from "esbehavior"
 import { stringContaining } from "../src/index.js"
-import { exhibit, formattedList, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { exhibit, formattedList, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 import { satisfying } from "../src/index.js"
 
 export default behavior("satisfyingAll", [
+
+  exhibit("satisfying", () => {
+    return satisfying<string>([
+      stringContaining("is"),
+      stringContaining("cool", { times: 2 })
+    ])
+  }).check([
+    hasMatcherDescription(`info(a value that satisfies all of: ${formattedList(["a string that contains \"is\"", "a string that contains \"cool\" exactly 2 times"])})`)
+  ]),
 
   exhibit("all the matchers are satisfied", () => {
     return satisfying<string>([

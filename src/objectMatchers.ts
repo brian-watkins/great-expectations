@@ -1,4 +1,4 @@
-import { Invalid, Matcher, MatchResult, Valid } from "./matcher.js";
+import { Invalid, matcher, Matcher, MatchResult, Valid } from "./matcher.js";
 import { list, message, problem, value } from "./message.js";
 
 export interface Constructor<T> extends Function {
@@ -6,9 +6,10 @@ export interface Constructor<T> extends Function {
 }
 
 export function objectOfType(constuctor: Constructor<any>): Matcher<any> {
-  return (actual) => {
+  const expectedMessage = message`an object of type ${constuctor.name}`
+
+  return matcher(expectedMessage, (actual) => {
     const actualMessage = message`an object of type ${actual.constructor.name}`
-    const expectedMessage = message`an object of type ${constuctor.name}`
 
     if (actual instanceof constuctor) {
       return new Valid({
@@ -16,16 +17,22 @@ export function objectOfType(constuctor: Constructor<any>): Matcher<any> {
         expected: expectedMessage
       })
     } else {
-      return new Invalid("", {
+      const errorMessage = typeof actual === "object" ?
+        "The object does not instantiate the expected type." :
+        "The actual value is not an object."
+
+      return new Invalid(errorMessage, {
         actual: problem(actualMessage),
         expected: problem(expectedMessage)
       })
     }
-  }
+  })
 }
 
-export function objectWithProperty<Obj extends { [key: PropertyKey]: any }, Key extends keyof Obj>(property: Key, matcher: Matcher<Obj[Key]>): Matcher<Obj> {
-  return (actual) => {
+export function objectWithProperty<Obj extends { [key: PropertyKey]: any }, Key extends keyof Obj>(property: Key, valueMatcher: Matcher<Obj[Key]>): Matcher<Obj> {
+  const description = message`an object with a property ${value(property)} that is ${valueMatcher.expects}`
+
+  return matcher(description, (actual) => {
     if (!Object.hasOwn(actual, property)) {
       return new Invalid("The object does not have the expected property.", {
         actual: problem(actual),
@@ -33,7 +40,7 @@ export function objectWithProperty<Obj extends { [key: PropertyKey]: any }, Key 
       })
     }
 
-    const result = matcher(actual[property])
+    const result = valueMatcher(actual[property])
 
     const expectedMessage = message`an object with a property ${value(property)} that is ${result.values.expected}`
 
@@ -49,7 +56,7 @@ export function objectWithProperty<Obj extends { [key: PropertyKey]: any }, Key 
           expected: problem(expectedMessage)
         })
     }
-  }
+  })
 }
 
 function objectWithValues<Obj extends Record<PropertyKey, any>>(actual: Obj) {
@@ -68,7 +75,12 @@ function objectWithInvalidProperty<Obj extends Record<PropertyKey, any>, Key ext
 }
 
 export function objectWith<Obj extends { [key: PropertyKey]: any }, K extends Obj = Obj>(matchObject: { [key in keyof Partial<K>]: Matcher<K[key]> }): Matcher<Obj> {
-  return (actual) => {
+  const descriptionObject: Record<PropertyKey, any> = {}
+  for (const matchKey in matchObject) {
+    descriptionObject[matchKey] = matchObject[matchKey]!.expects
+  }
+  
+  return matcher(value(descriptionObject), (actual) => {
     const objectMatchResult = new ObjectMatchResult(actual as K, matchObject)
 
     if (objectMatchResult.hasMissingKeys()) {
@@ -80,7 +92,7 @@ export function objectWith<Obj extends { [key: PropertyKey]: any }, K extends Ob
     } else {
       return invalidPropertyResult(objectMatchResult)
     }
-  }
+  })
 }
 
 function validResult<Obj extends { [key: PropertyKey]: any }>(objectMatchResult: ObjectMatchResult<Obj>): MatchResult {

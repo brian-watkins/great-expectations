@@ -1,34 +1,38 @@
 import { equalTo } from "./basicMatchers.js";
 import { countMatches, matchWithoutOrder } from "./matchCollection.js";
-import { Invalid, Matcher, MatchValues, Valid } from "./matcher.js";
-import { Message, message, problem, times, value } from "./message.js";
+import { Invalid, matcher, Matcher, Valid } from "./matcher.js";
+import { Message, message, Problem, problem, times, Value, value } from "./message.js";
 import { isNumberGreaterThan } from "./numberMatchers.js";
 import { valueWhere } from "./valueMatchers.js";
 
 export function setWithSize<T>(expectedSize: number): Matcher<Set<T>> {
-  return (actual) => {
+  const description = message`a set with ${times(expectedSize, "element")}`
+  
+  return matcher(description, (actual) => {
     if (actual.size === expectedSize) {
       return new Valid({
         actual: value(actual),
-        expected: message`a set with ${times(expectedSize, "element")}`
+        expected: description
       })
     } else {
       return new Invalid(`The set size (${actual.size}) is unexpected.`, {
         actual: problem(actual),
-        expected: problem(message`a set with ${times(expectedSize, "element")}`)
+        expected: problem(description)
       })
     }
-  }
+  })
 }
 
 export function setWith<T>(matchers: Array<Matcher<T>>): Matcher<Set<T>> {
-  return (actual) => {
+  const description = value(new Set(matchers.map(m => m.expects)))
+  
+  return matcher(description, (actual) => {
     const sizeResult = valueWhere<Set<any>>((actual) => actual.size === matchers.length, `a set of size ${matchers.length}`)(actual)
 
     if (sizeResult.type === "invalid") {
       return new Invalid(`The set size (${actual.size}) is unexpected.`, {
         actual: problem(new Set(Array.from(actual).map(value))),
-        expected: problem(message`a set with size ${matchers.length}`)
+        expected: problem(description)
       })
     }
 
@@ -55,25 +59,26 @@ export function setWith<T>(matchers: Array<Matcher<T>>): Matcher<Set<T>> {
         expected: value(new Set(results.expected))
       })
     }
-  }
+  })
 }
 
 export interface SetContainingOptions {
   times?: number
 }
 
-export function setContaining<T>(matcher: Matcher<T>, options: SetContainingOptions = {}): Matcher<Set<T>> {
+export function setContaining<T>(elementMatcher: Matcher<T>, options: SetContainingOptions = {}): Matcher<Set<T>> {
   const expectedMatchCount = options.times
+  const description = setContainsMessage(expectedMatchCount, elementMatcher.expects)
 
-  return (actual) => {
+  return matcher(description, (actual) => {
     if (actual.size === 0) {
       return new Invalid("The set does not contain the expected element.", {
         actual: problem(actual),
-        expected: problem(message`a set that contains at least 1 element`)
+        expected: problem(description)
       })
     }
 
-    const results = countMatches(Array.from(actual), matcher)
+    const results = countMatches(Array.from(actual), elementMatcher)
 
     let countMatcher: Matcher<number>
     if (expectedMatchCount === undefined) {
@@ -87,19 +92,19 @@ export function setContaining<T>(matcher: Matcher<T>, options: SetContainingOpti
     if (countResult.type === "invalid") {
       return new Invalid("The set does not contain the expected element.", {
         actual: problem(actual),
-        expected: problem(setContainsMessage(expectedMatchCount, results.lastInvalid))
+        expected: problem(setContainsMessage(expectedMatchCount, results.lastInvalid?.expected))
       })
     } else {
       return new Valid({
         actual: value(actual),
-        expected: setContainsMessage(expectedMatchCount, results.lastValid)
+        expected: setContainsMessage(expectedMatchCount, results.lastValid?.expected)
       })
     }
-  }
+  })
 }
 
-function setContainsMessage(expectedMatchCount: number | undefined, matchValues: MatchValues | undefined): Message {
+function setContainsMessage(expectedMatchCount: number | undefined, expected: Problem | Value | Message | undefined): Message {
   return (expectedMatchCount === undefined)
-    ? message`a set that contains ${matchValues?.expected}`
-    : message`a set that contains, ${times(expectedMatchCount)}, ${matchValues?.expected}`
+    ? message`a set that contains ${expected}`
+    : message`a set that contains, ${times(expectedMatchCount)}, ${expected}`
 }

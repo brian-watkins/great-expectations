@@ -1,9 +1,15 @@
 import { behavior } from "esbehavior"
 import { stringMatching } from "../src/index.js"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 export default behavior("isStringMatching", [
 
+  exhibit("stringMatching", () => {
+    return stringMatching(/fun/g, { times: 2 })
+  }).check([
+    hasMatcherDescription("info(a string matching /fun/g exactly 2 times)")
+  ]),
+  
   exhibit("the regex matches the given string", () => {
     return stringMatching(/fun/)("funny stuff!")
   }).check([

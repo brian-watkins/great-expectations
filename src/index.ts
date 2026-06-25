@@ -11,7 +11,7 @@ export { stringMatching, stringWithLength, stringContaining } from "./stringMatc
 export type { StringContainingOptions } from "./stringMatchers.js"
 export { satisfying } from "./satisfyingMatchers.js"
 export { objectOfType, objectWithProperty, objectWith } from "./objectMatchers.js"
-export { Valid, Invalid } from "./matcher.js"
+export { Valid, Invalid, matcher } from "./matcher.js"
 export type { Matcher, MatchResult, MatchValues } from "./matcher.js"
 export { setWith, setContaining, setWithSize } from "./setMatchers.js"
 export * from "./message.js"

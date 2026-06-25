@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior"
 import { defined } from "../src/index.js"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 export default behavior("isDefined", [
+
+  exhibit("defined", () => {
+    return defined()
+  }).check([
+    hasMatcherDescription("info(a value that is defined)")
+  ]),
 
   exhibit("the value is defined", () => {
     return defined()("")

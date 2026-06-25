@@ -144,22 +144,24 @@ function greaterThan(lowerBound: number): Matcher<number> {
 expect(29, is(greaterThan(18)))
 ```
 
-For full control of the failure output, implement the `Matcher<T>` function directly:
+For full control of the failure output, build a `Matcher<T>` using the `matcher`
+function directly:
 
 ```ts
-const even: Matcher<number> = (actual) => {
+const expectedMessage = message`a number that is even`
+const even: Matcher<number> = matcher(expectedMessage, (actual) => {
   if (actual % 2 === 0) {
     return new Valid({
       actual: value(actual),
-      expected: message`a number that is even`
+      expected: expectedMessage
     })
   } else {
     return new Invalid("The actual number was not even.", {
       actual: problem(actual),
-      expected: problem(message`a number that is even`)
+      expected: problem(expectedMessage)
     })
   }
-}
+})
 ```
 
 Both hand-rolled matchers and `valueWhere`-based matchers plug into `is`, `resolvesTo`, etc. just like the built-ins.

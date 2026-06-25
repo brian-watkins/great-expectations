@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 import { stringWithLength } from "../src/index.js"
 
 export default behavior("isStringWithLength", [
+
+  exhibit("stringWithLength", () => {
+    return stringWithLength(18)
+  }).check([
+    hasMatcherDescription("info(a string with length 18)")
+  ]),
 
   exhibit("matches a string with the expected length", () => {
     return stringWithLength(4)("blah")

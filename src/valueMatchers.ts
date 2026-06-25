@@ -1,10 +1,10 @@
-import { Invalid, Matcher, Valid } from "./matcher.js"
+import { Invalid, matcher, Matcher, Valid } from "./matcher.js"
 import { message, Message, problem, value } from "./message.js"
 
-export function valueWhere<T>(predicate: (x: NoInfer<T>) => boolean, description: string | Message): Matcher<T> {
-  const expectedDescription = message`${description}`
+export function valueWhere<T>(predicate: (x: NoInfer<T>) => boolean, expects: string | Message): Matcher<T> {
+  const expectedDescription = message`${expects}`
 
-  return (actual) => {
+  return matcher(expectedDescription, (actual) => {
     if (predicate(actual)) {
       return new Valid({
         actual: value(actual),
@@ -16,5 +16,5 @@ export function valueWhere<T>(predicate: (x: NoInfer<T>) => boolean, description
         expected: problem(expectedDescription)
       })
     }
-  }
+  })
 }

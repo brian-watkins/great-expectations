@@ -1,8 +1,10 @@
-import { Invalid, Matcher, MatchResult, Valid } from "./matcher.js";
+import { Invalid, matcher, Matcher, MatchResult, Valid } from "./matcher.js";
 import { list, message, problem, value } from "./message.js";
 
 export function satisfying<T>(matchers: Array<Matcher<NoInfer<T>>>): Matcher<T> {
-  return (actual) => {
+  const description = message`a value that satisfies all of: ${list(matchers.map(m => m.expects))}`
+  
+  return matcher(description, (actual) => {
     let failed = false
     let results: Array<MatchResult> = []
     for (const matcher of matchers) {
@@ -26,5 +28,5 @@ export function satisfying<T>(matchers: Array<Matcher<NoInfer<T>>>): Matcher<T> 
         expected: expectedMessage
       })
     }
-  }
+  })
 }

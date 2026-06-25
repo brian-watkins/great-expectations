@@ -1,10 +1,16 @@
 import { behavior } from "esbehavior"
 import { equalTo, objectWithProperty, problem, stringContaining, value } from "../src/index.js"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 const symbol = Symbol("fun-stuff")
 
 export default behavior("isObjectWithProperty", [
+
+  exhibit("objectWithProperty", () => {
+    return objectWithProperty("name", stringContaining("fun"))
+  }).check([
+    hasMatcherDescription(`info(an object with a property "name" that is a string that contains "fun")`)
+  ]),
 
   exhibit("the object has a property that matches", () => {
     return objectWithProperty("name", stringContaining("cool"))({ age: 27, name: "cool dude" })

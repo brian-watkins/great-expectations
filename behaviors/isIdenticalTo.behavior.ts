@@ -1,8 +1,15 @@
 import { behavior } from "esbehavior"
 import { identicalTo } from "../src/index.js"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 export default behavior("isIdenticalTo", [
+
+  exhibit("identicalTo", () => {
+    return identicalTo("something cool")
+  }).check([
+    hasMatcherDescription("info(a string that is identical to \"something cool\")")
+  ]),
+
 
   exhibit("the values are identical", () => identicalTo(7)(7))
     .check([

@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior";
 import { arrayWithLength } from "../src/index.js";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
 
 export default behavior("isArrayWithLength", [
+
+  exhibit("arrayWithLength", () => {
+    return arrayWithLength(38)
+  }).check([
+    hasMatcherDescription("info(an array with exactly 38 elements)")
+  ]),
 
   exhibit("the array has the expected length", () => {
     return arrayWithLength(4)([1, 2, 3, 4])

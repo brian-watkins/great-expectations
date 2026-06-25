@@ -1,8 +1,8 @@
 import { effect, example, ExampleScripts, Observation } from "esbehavior";
 import { strict as assert } from "node:assert"
 import { Writer } from "../src/writer.js";
-import { Invalid, MatchResult, Valid } from "../src/matcher.js";
-import { problem, Problem, value } from "../src/message.js";
+import { Invalid, Matcher, MatchResult, Valid } from "../src/matcher.js";
+import { Message, problem, Problem, value, Value } from "../src/message.js";
 import { stringify } from "../src/stringify.js";
 
 type Property<T> = Observation<T>
@@ -65,6 +65,15 @@ export function isValidMatchResult(): Property<MatchResult> {
 export function isInvalidMatchResult(): Property<MatchResult> {
   return property("the match result is invalid", (result) => {
     assertIsInvalidMatch(result)
+  })
+}
+
+export function hasMatcherDescription(description: string | Value | Message): Property<Matcher<any>> {
+  return property("the matcher has a description", (result) => {
+    const expected = typeof description === "string"
+      ? description
+      : stringify(description, testWriter)
+    assert.equal(stringify(result.expects, testWriter), expected)
   })
 }
 

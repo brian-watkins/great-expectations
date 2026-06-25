@@ -1,9 +1,40 @@
 import { behavior } from "esbehavior";
 import { equalTo, arrayWith } from "../src/index.js";
 import { message, problem, value } from "../src/message.js";
-import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
+import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
 
 export default behavior("isArrayWhere", [
+
+  exhibit("arrayWith with no matchers", () => {
+    return arrayWith([])
+  }).check([
+    hasMatcherDescription(value([]))
+  ]),
+
+  exhibit("arrayWith with order", () => {
+    return arrayWith([
+      equalTo(1),
+      equalTo(2)
+    ], { withAnyOrder: false })
+  }).check([
+    hasMatcherDescription(value([
+      message`a number that equals 1`,
+      message`a number that equals 2`
+    ]))
+  ]),
+
+  exhibit("arrayWith with any order", () => {
+    return arrayWith([
+      equalTo(3),
+      equalTo(4)
+    ], { withAnyOrder: true })
+  }).check([
+    hasMatcherDescription(value([
+      message`a number that equals 3`,
+      message`a number that equals 4`
+    ]))
+  ]),
+
 
   exhibit("the array matches", () => {
     return arrayWith([
@@ -72,10 +103,10 @@ export default behavior("isArrayWhere", [
       equalTo(1),
       equalTo(2),
       equalTo(3)
-    ], { withAnyOrder: true })([ 3, 6, 2 ])
+    ], { withAnyOrder: true })([3, 6, 2])
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The array failed to match."),
+    hasMessage("The array failed to match (with any order)."),
     hasExpected([
       problem(message`a number that equals 1`),
       message`a number that equals 2`,
@@ -89,10 +120,10 @@ export default behavior("isArrayWhere", [
       equalTo(2),
       equalTo(2),
       equalTo(3)
-    ], { withAnyOrder: true })([ 3, 6, 2 ])
+    ], { withAnyOrder: true })([3, 6, 2])
   }).check([
     isInvalidMatchResult(),
-    hasMessage("The array failed to match."),
+    hasMessage("The array failed to match (with any order)."),
     hasExpected([
       message`a number that equals 2`,
       problem(message`a number that equals 2`),
@@ -102,12 +133,12 @@ export default behavior("isArrayWhere", [
   ]),
 
   exhibit("the array is expected to be empty but it is not", () => {
-    return arrayWith([])([ 3, 6, 2 ])
+    return arrayWith([])([3, 6, 2])
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array length (3) is unexpected."),
     hasExpectedMessageText("error(info(an array with exactly 0 elements))"),
-    hasInvalidActual([ 3, 6, 2 ])
+    hasInvalidActual([3, 6, 2])
   ]),
 
   exhibit("an empty array is expected to be empty", () => {

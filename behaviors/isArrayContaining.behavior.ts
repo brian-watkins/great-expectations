@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior";
-import { equalTo, arrayContaining, stringContaining } from "../src/index.js";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
+import { equalTo, arrayContaining, stringContaining, stringWithLength } from "../src/index.js";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
 
 export default behavior("isArrayContaining", [
+
+  exhibit("arrayContaining", () => {
+    return arrayContaining<string>(stringWithLength(17))
+  }).check([
+    hasMatcherDescription("info(an array that contains a string with length 17)")
+  ]),
 
   exhibit("the array contains a matching item", () => {
     return arrayContaining(equalTo(7))([1, 7, 3, 3])
@@ -26,6 +32,20 @@ export default behavior("isArrayContaining", [
   }).check([
     isValidMatchResult(),
     hasExpectedMessageText("info(an array that contains, exactly 2 times, a string that equals \"hello\")")
+  ]),
+
+  exhibit("an array contains the expected item zero times", () => {
+    return arrayContaining(equalTo("Nothing"), { times: 0 })(["fun"])
+  }).check([
+    isValidMatchResult(),
+    hasExpectedMessageText("info(an array that contains, exactly 0 times, a string that equals \"Nothing\")")
+  ]),
+
+  exhibit("an empty array contains the expected item zero times", () => {
+    return arrayContaining(equalTo("Nothing"), { times: 0 })([])
+  }).check([
+    isValidMatchResult(),
+    hasExpectedMessageText("info(an array that contains, exactly 0 times, a string that equals \"Nothing\")")
   ]),
 
   exhibit("the message shows the array was expected to contain the item zero items", () => {
@@ -54,7 +74,7 @@ export default behavior("isArrayContaining", [
   }).check([
     isInvalidMatchResult(),
     hasMessage("The array does not contain the expected element."),
-    hasExpectedMessageText(`error(info(an array that contains at least 1 element))`)
+    hasExpectedMessageText(`error(info(an array that contains a string that equals \"fun\"))`)
   ])
 
 ])

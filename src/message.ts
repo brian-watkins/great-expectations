@@ -85,3 +85,5 @@ export function message(strings: TemplateStringsArray, ...values: Array<any>): M
     values
   }
 }
+
+export type Displayable = Problem | Value | Message

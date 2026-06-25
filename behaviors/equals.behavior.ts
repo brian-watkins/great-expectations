@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior";
 import { equalTo } from "../src/index.js";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
+import { exhibit, hasActual, hasMatcherDescription, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
 
 export default behavior("equals", [
+
+  exhibit("equalTo", () => {
+    return equalTo(17)
+  }).check([
+    hasMatcherDescription("info(a number that equals 17)")
+  ]),
 
   exhibit("the values are deeply equal", () => {
     return equalTo({ name: "cool dude" })({ name: "cool dude" })

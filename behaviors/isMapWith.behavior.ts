@@ -1,9 +1,21 @@
 import { behavior } from "esbehavior";
-import { equalTo, mapWith, stringContaining } from "../src";
-import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
-import { Message, Problem, Value, anyValue, message, problem } from "../src/message";
+import { equalTo, mapWith, stringContaining, stringWithLength } from "../src";
+import { exhibit, hasActual, hasExpected, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { Message, Problem, Value, anyValue, message, problem, value } from "../src/message";
 
 export default behavior("isMapWith", [
+
+  exhibit("mapWith", () => {
+    return mapWith<string, string>([
+      { key: stringContaining("fun") },
+      { key: equalTo("cool"), value: stringWithLength(4) }
+    ])
+  }).check([
+    hasMatcherDescription(value(new Map<any, any>([
+      [ message`a string that contains "fun"`, anyValue() ],
+      [ message`a string that equals "cool"`, message`a string with length 4` ],
+    ])))
+  ]),
 
   exhibit("the map contains the expected key", () => {
     const actualMap = new Map<string, string>()

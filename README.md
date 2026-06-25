@@ -351,10 +351,10 @@ expect(actual, is(objectWith<UnionType, FunType>({
 Use the `valueWhere` matcher when you need more flexibility than other, type-specific
 matchers provide.
 
-#### `valueWhere(predicate, description)`
+#### `valueWhere(predicate, expects)`
 
 Asserts that the actual value satisfies the provided predicate.
-The description is a string or a `Message` (see below); it will
+Provide a string or a `Message` (see below); it will
 be used to describe the expected value.
 
 ```
@@ -409,30 +409,32 @@ expect(29, is(greaterThan(18)))
 ```
 
 For complicated cases, you can create matchers from scratch. A matcher is 
-just a function from a value to a `MatchResult`, which is either an
-instance of `Valid` or `Invalid`. While it's easy enough to create an 'even'
-matcher like so:
+a function from a value to a `MatchResult`, which is either an
+instance of `Valid` or `Invalid`. This function also has a special
+`expects` property that contains a `Message` used in some cases to print details.
+While it's easy enough to create an 'even' matcher like so:
 
 ```
 const even = valueWhere(x => x % 2 === 0, "a number that is even")
 ```
 
-You could create it from scratch:
+You could create it from scratch, using the `matcher` builder function:
 
 ```
-const even: Matcher<number> = (actual) => {
+const expectedMessage = message`a number that is even`
+const even: Matcher<number> = matcher(expectedMessage, (actual) => {
   if (actual % 2 === 0) {
     return new Valid({
       actual: value(actual),
-      expected: message`a number that is even`
+      expected: expectedMessage
     })
   } else {
     return new Invalid("The actual number was not even.", {
       actual: problem(actual),
-      expected: problem(message`a number that is even`)
+      expected: problem(expectedMessage)
     })
   }
-}
+})
 ```
 
 In either case, you can just use it like any other matcher:

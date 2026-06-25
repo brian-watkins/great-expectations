@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior";
 import { stringContaining } from "../src/index.js";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js";
 
 export default behavior("isStringContaining", [
+
+  exhibit("stringContaining", () => {
+    return stringContaining("some Stuff", { times: 17, caseSensitive: false })
+  }).check([
+    hasMatcherDescription("info(a string that contains (case-insensitive) \"some Stuff\" exactly 17 times)")
+  ]),
 
   exhibit("when the value contains the string", () => {
     return stringContaining("oops")("They said oops!")

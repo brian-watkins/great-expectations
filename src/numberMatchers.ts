@@ -1,10 +1,10 @@
-import { Invalid, Matcher, Valid } from "./matcher.js";
+import { Invalid, matcher, Matcher, Valid } from "./matcher.js";
 import { message, problem, value } from "./message.js";
 
 export function isNumberGreaterThan(expected: number): Matcher<number> {
-  return (actual) => {
-    const expectedMessage = message`a number greater than ${value(expected)}`
-
+  const expectedMessage = message`a number greater than ${value(expected)}`
+  
+  return matcher(expectedMessage, (actual) => {
     if (actual > expected) {
       return new Valid({
         actual: value(actual),
@@ -16,5 +16,5 @@ export function isNumberGreaterThan(expected: number): Matcher<number> {
         expected: problem(expectedMessage)
       })
     }
-  }
+  })
 }

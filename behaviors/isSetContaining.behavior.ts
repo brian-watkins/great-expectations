@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 import { equalTo, setContaining, stringContaining } from "../src";
 
 export default behavior("isSetContaining", [
+
+  exhibit("setContaining", () => {
+    return setContaining(stringContaining("fun"))
+  }).check([
+    hasMatcherDescription(`info(a set that contains a string that contains "fun")`)
+  ]),
 
   exhibit("the set contains a matching item", () => {
     return setContaining(equalTo(1))(new Set([1, 3, 2]))
@@ -18,7 +24,7 @@ export default behavior("isSetContaining", [
     isInvalidMatchResult(),
     hasMessage("The set does not contain the expected element."),
     hasInvalidActual(new Set()),
-    hasExpectedMessageText("error(info(a set that contains at least 1 element))")
+    hasExpectedMessageText("error(info(a set that contains a number that equals 1))")
   ]),
 
   exhibit("the set does not contain any item that matches", () => {

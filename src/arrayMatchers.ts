@@ -1,13 +1,13 @@
 import { equalTo } from "./basicMatchers.js"
 import { countMatches, matchWithoutOrder } from "./matchCollection.js"
-import { Invalid, Matcher, MatchValues, Valid } from "./matcher.js"
-import { Message, message, problem, times, value } from "./message.js"
+import { Invalid, matcher, Matcher, Valid } from "./matcher.js"
+import { Displayable, Message, message, problem, times, value } from "./message.js"
 import { isNumberGreaterThan } from "./numberMatchers.js"
 
 export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
-  return (actual) => {
-    const expectedMessage = message`an array with ${times(expectedLength, "element")}`
+  const expectedMessage = message`an array with ${times(expectedLength, "element")}`
 
+  return matcher(expectedMessage, (actual) => {
     if (expectedLength === actual.length) {
       return new Valid({
         actual: value(actual),
@@ -19,21 +19,21 @@ export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
         expected: problem(expectedMessage)
       })
     }
-  }
+  })
 }
 
-export function arrayWithItemAt<T>(index: number, matcher: Matcher<NoInfer<T>>): Matcher<Array<T>> {
-  return (actual) => {
+export function arrayWithItemAt<T>(index: number, itemMatcher: Matcher<NoInfer<T>>): Matcher<Array<T>> {
+  const expectedMessage = message`an array where the item at index ${index} is ${itemMatcher.expects}`
+
+  return matcher(expectedMessage, (actual) => {
     if (actual.length <= index) {
       return new Invalid(`The array has no item at index ${index}.`, {
         actual: problem(actual),
-        expected: problem(message`an array with some item at index ${index}`)
+        expected: problem(expectedMessage)
       })
     }
 
-    const result = matcher(actual[index])
-
-    const expectedMessage = message`an array where the item at index ${index} is ${result.values.expected}`
+    const result = itemMatcher(actual[index])
 
     switch (result.type) {
       case "valid":
@@ -47,7 +47,7 @@ export function arrayWithItemAt<T>(index: number, matcher: Matcher<NoInfer<T>>):
           expected: problem(expectedMessage)
         })
     }
-  }
+  })
 }
 
 export interface ArrayWhereOptions {
@@ -57,7 +57,9 @@ export interface ArrayWhereOptions {
 export function arrayWith<T>(matchers: Array<Matcher<NoInfer<T>>>, options: ArrayWhereOptions = {}): Matcher<Array<T>> {
   const allowAnyOrder = options.withAnyOrder ?? false
 
-  return (actual) => {
+  const description = value(matchers.map(m => m.expects))
+
+  return matcher(description, (actual) => {
     const lengthResult = arrayWithLength<T>(matchers.length)(actual)
 
     if (lengthResult.type === "invalid") {
@@ -69,11 +71,11 @@ export function arrayWith<T>(matchers: Array<Matcher<NoInfer<T>>>, options: Arra
     } else {
       return isOrderedArrayWhere(matchers)(actual)
     }
-  }
+  })
 }
 
 function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
-  return (actual) => {
+  return matcher(message`Ordered Array`, (actual) => {
     let actualValues: Array<any> = []
     let expected: Array<any> = []
     let failures: number = 0
@@ -97,11 +99,11 @@ function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
         expected: value(expected)
       })
     }
-  }
+  })
 }
 
 function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
-  return (actual) => {
+  return matcher(message`Unordered array`, (actual) => {
     const accumulatedResult = matchWithoutOrder(actual, matchers)
 
     const actualValues = actual.map((item) => {
@@ -113,7 +115,7 @@ function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>
     })
 
     if (accumulatedResult.failed) {
-      return new Invalid("The array failed to match.", {
+      return new Invalid("The array failed to match (with any order).", {
         actual: value(actualValues),
         expected: value(accumulatedResult.expected)
       })
@@ -123,25 +125,19 @@ function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>
         expected: value(accumulatedResult.expected)
       })
     }
-  }
+  })
 }
 
 export interface ArrayContainingOptions {
   times?: number
 }
 
-export function arrayContaining<T>(matcher: Matcher<NoInfer<T>>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
+export function arrayContaining<T>(elementMatcher: Matcher<NoInfer<T>>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
   const expectedMatchCount = options.times
+  const description = arrayContainsMessage(expectedMatchCount, elementMatcher.expects)
 
-  return (actual) => {
-    if (actual.length === 0) {
-      return new Invalid("The array does not contain the expected element.", {
-        actual: problem(actual),
-        expected: problem(message`an array that contains at least 1 element`)
-      })
-    }
-
-    const results = countMatches(actual, matcher)
+  return matcher(description, (actual) => {
+    const results = countMatches(actual, elementMatcher)
 
     let countMatcher: Matcher<number>
     if (expectedMatchCount === undefined) {
@@ -155,19 +151,19 @@ export function arrayContaining<T>(matcher: Matcher<NoInfer<T>>, options: ArrayC
     if (countResult.type === "valid") {
       return new Valid({
         actual: value(actual),
-        expected: arrayContainsMessage(expectedMatchCount, results.lastValid)
+        expected: description
       })
     } else {
       return new Invalid("The array does not contain the expected element.", {
         actual: problem(actual),
-        expected: problem(arrayContainsMessage(expectedMatchCount, results.lastInvalid))
+        expected: problem(arrayContainsMessage(expectedMatchCount, results.lastInvalid?.expected ?? elementMatcher.expects))
       })
     }
-  }
+  })
 }
 
-function arrayContainsMessage(expectedMatchCount: number | undefined, matchValues: MatchValues | undefined): Message {
+function arrayContainsMessage(expectedMatchCount: number | undefined, expected: Displayable): Message {
   return (expectedMatchCount === undefined)
-    ? message`an array that contains ${matchValues?.expected}`
-    : message`an array that contains, ${times(expectedMatchCount)}, ${matchValues?.expected}`
+    ? message`an array that contains ${expected}`
+    : message`an array that contains, ${times(expectedMatchCount)}, ${expected}`
 }

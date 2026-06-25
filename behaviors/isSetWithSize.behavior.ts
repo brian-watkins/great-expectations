@@ -1,8 +1,14 @@
 import { behavior } from "esbehavior";
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 import { setWithSize } from "../src";
 
 export default behavior("setWithSize", [
+
+  exhibit("setWithSize", () => {
+    return setWithSize(19)
+  }).check([
+    hasMatcherDescription(`info(a set with exactly 19 elements)`)
+  ]),
 
   exhibit("the set has the expected size", () => {
     return setWithSize(4)(new Set([1, 2, 3, 4]))

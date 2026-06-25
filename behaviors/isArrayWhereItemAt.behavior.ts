@@ -1,9 +1,15 @@
 import { behavior } from "esbehavior"
 import { equalTo, arrayWithItemAt } from "../src/index.js"
 import { problem } from "../src/message.js"
-import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
+import { exhibit, hasActual, hasExpectedMessageText, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers.js"
 
 export default behavior("isArrayWhereItemAt", [
+
+  exhibit("arrayWithItemAt", () => {
+    return arrayWithItemAt(3, equalTo(19))
+  }).check([
+    hasMatcherDescription("info(an array where the item at index 3 is a number that equals 19)")
+  ]),
 
   exhibit("the item at the specified index matches", () => {
     return arrayWithItemAt(2, equalTo(3))([1, 2, 3])
@@ -28,7 +34,7 @@ export default behavior("isArrayWhereItemAt", [
     isInvalidMatchResult(),
     hasMessage("The array has no item at index 17."),
     hasInvalidActual([1, 2, 3, 4]),
-    hasExpectedMessageText("error(info(an array with some item at index 17))")
+    hasExpectedMessageText("error(info(an array where the item at index 17 is a number that equals 2))")
   ])
 
 ])

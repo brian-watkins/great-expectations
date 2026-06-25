@@ -1,8 +1,20 @@
 import { behavior } from "esbehavior";
-import { exhibit, hasActual, hasExpected, hasInvalidActual, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
+import { exhibit, hasActual, hasExpected, hasInvalidActual, hasMatcherDescription, hasMessage, isInvalidMatchResult, isValidMatchResult } from "./helpers";
 import { equalTo, message, problem, setWith, value } from "../src";
 
 export default behavior("setWith", [
+
+  exhibit("setWith", () => {
+    return setWith([
+      equalTo(1),
+      equalTo(2),
+    ])
+  }).check([
+    hasMatcherDescription(value(new Set([
+      message`a number that equals 1`,
+      message`a number that equals 2`,
+    ])))
+  ]),
 
   exhibit("the set matches", () => {
     return setWith([
@@ -46,7 +58,11 @@ export default behavior("setWith", [
   }).check([
     isInvalidMatchResult(),
     hasInvalidActual(new Set([value(1), value(3), value(21), value(4), value(5)])),
-    hasExpected(problem(message`a set with size 3`)),
+    hasExpected(problem(value(new Set([
+      message`a number that equals 1`,
+      message`a number that equals 21`,
+      message`a number that equals 3`,
+    ])))),
     hasMessage("The set size (5) is unexpected.")
   ])
 

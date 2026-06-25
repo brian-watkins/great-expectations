@@ -1,14 +1,14 @@
 import equal from "deep-equal"
-import { Invalid, Matcher, Valid } from "./matcher.js"
+import { Invalid, matcher, Matcher, Valid } from "./matcher.js"
 import { message, problem, typeName, value } from "./message.js"
 
 
 export function identicalTo<T>(expected: NoInfer<T>): Matcher<T> {
-  return (actual) => {
-    const expectedMessage = expected === undefined ?
-      message`a variable that is undefined` :
-      message`${typeName(expected)} that is identical to ${value(expected)}`
+  const expectedMessage = expected === undefined ?
+    message`a variable that is undefined` :
+    message`${typeName(expected)} that is identical to ${value(expected)}`
 
+  return matcher(expectedMessage, (actual) => {
     if (actual === expected) {
       return new Valid({
         actual: value(actual),
@@ -20,15 +20,15 @@ export function identicalTo<T>(expected: NoInfer<T>): Matcher<T> {
         expected: problem(expectedMessage)
       })
     }
-  }
+  })
 }
 
 export function equalTo<T>(expected: NoInfer<T>): Matcher<T> {
-  return (actual) => {
-    const expectedMessage = expected === undefined ?
-      message`a variable that is undefined` :
-      message`${typeName(expected)} that equals ${value(expected)}`
+  const expectedMessage = expected === undefined ?
+    message`a variable that is undefined` :
+    message`${typeName(expected)} that equals ${value(expected)}`
 
+  return matcher(expectedMessage, (actual) => {
     if (equal(actual, expected, { strict: true })) {
       return new Valid({
         actual: value(actual),
@@ -40,13 +40,13 @@ export function equalTo<T>(expected: NoInfer<T>): Matcher<T> {
         expected: problem(expectedMessage)
       })
     }
-  }
+  })
 }
 
 export function defined(): Matcher<any> {
-  return (actual) => {
-    const expectedMessage = message`a value that is defined`
+  const expectedMessage = message`a value that is defined`
 
+  return matcher(expectedMessage, (actual) => {
     if (actual === undefined) {
       return new Invalid("The actual value is not defined.", {
         actual: problem(actual),
@@ -58,18 +58,20 @@ export function defined(): Matcher<any> {
         expected: expectedMessage
       })
     }
-  }
+  })
 }
 
-export function assignedWith<T>(matcher: Matcher<NoInfer<T>>): Matcher<T | undefined> {
-  return (actual) => {
+export function assignedWith<T>(assignment: Matcher<NoInfer<T>>): Matcher<T | undefined> {
+  const description = message`a variable that is assigned ${assignment.expects}`
+  
+  return matcher(description, (actual) => {
     if (actual === undefined) {
       return new Invalid("The actual variable is not assigned a value.", {
         actual: problem(actual),
-        expected: problem(message`a variable that is assigned a value`)
+        expected: problem(description)
       })
     }
 
-    return matcher(actual)
-  }
+    return assignment(actual)
+  })
 }
