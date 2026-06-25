@@ -1,7 +1,7 @@
 import { equalTo } from "./basicMatchers.js";
 import { countMatches, matchWithoutOrder } from "./matchCollection.js";
 import { Invalid, matcher, Matcher, Valid } from "./matcher.js";
-import { Message, message, Problem, problem, times, Value, value } from "./message.js";
+import { MatchDescription, Message, message, problem, times, value } from "./message.js";
 import { isNumberGreaterThan } from "./numberMatchers.js";
 import { valueWhere } from "./valueMatchers.js";
 
@@ -92,18 +92,18 @@ export function setContaining<T>(elementMatcher: Matcher<T>, options: SetContain
     if (countResult.type === "invalid") {
       return new Invalid("The set does not contain the expected element.", {
         actual: problem(actual),
-        expected: problem(setContainsMessage(expectedMatchCount, results.lastInvalid?.expected))
+        expected: problem(setContainsMessage(expectedMatchCount, results.lastInvalid?.expected ?? elementMatcher.expects))
       })
     } else {
       return new Valid({
         actual: value(actual),
-        expected: setContainsMessage(expectedMatchCount, results.lastValid?.expected)
+        expected: setContainsMessage(expectedMatchCount, results.lastValid?.expected ?? elementMatcher.expects)
       })
     }
   })
 }
 
-function setContainsMessage(expectedMatchCount: number | undefined, expected: Problem | Value | Message | undefined): Message {
+function setContainsMessage(expectedMatchCount: number | undefined, expected: MatchDescription): Message {
   return (expectedMatchCount === undefined)
     ? message`a set that contains ${expected}`
     : message`a set that contains, ${times(expectedMatchCount)}, ${expected}`

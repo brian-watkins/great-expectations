@@ -86,4 +86,4 @@ export function message(strings: TemplateStringsArray, ...values: Array<any>): M
   }
 }
 
-export type Displayable = Problem | Value | Message
+export type MatchDescription = Problem | Value | Message

@@ -458,6 +458,13 @@ switch (matchResult.type) {
 }
 ```
 
+#### `type MatchDescription = Problem | Value | Message`
+
+A type that represents the value to be presented for the actual or expected
+in a `MatchResult`. You can use `message` to create human readable
+descriptions, `value` to indicate valid values, and `problem` to indicate
+unexpected values. (See below)
+
 #### `new Valid({ actual, expected }): MatchResult`
 
 Create a `Valid` when the actual value matches what's expected. The instance looks
@@ -467,8 +474,8 @@ like this:
 {
   type: "valid"
   values: {
-    actual: Value | Problem | Message,
-    expected: Value | Problem | Message
+    actual: MatchDescription,
+    expected: MatchDescription
   }
 }
 ```
@@ -487,8 +494,8 @@ looks like this:
   type: "invalid"
   description: string
   values: {
-    actual: Value | Problem | Message,
-    expected: Value | Problem | Message
+    actual: MatchDescription,
+    expected: MatchDescription
   }
 }
 ```

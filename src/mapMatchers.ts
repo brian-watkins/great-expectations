@@ -1,5 +1,5 @@
 import { Invalid, matcher, Matcher, MatchResult, Valid } from "./matcher.js";
-import { anyValue, Message, message, Problem, problem, Value, value } from "./message.js";
+import { anyValue, MatchDescription, message, problem, value } from "./message.js";
 
 export interface MapEntryMatcher<K, V> {
   key: Matcher<K>
@@ -20,7 +20,7 @@ export function mapContaining<K, V>(entry: MapEntryMatcher<NoInfer<K>, NoInfer<V
     }
 
     let expectedKey
-    let expectedValue: Value | Problem | Message = anyValue()
+    let expectedValue: MatchDescription = anyValue()
     let isValid = false
     for (const key of actual.keys()) {
       const keyResult = entry.key(key)
@@ -55,8 +55,8 @@ export function mapContaining<K, V>(entry: MapEntryMatcher<NoInfer<K>, NoInfer<V
 }
 
 interface ExpectedMapEntry {
-  key: Problem | Value | Message
-  value: Problem | Value | Message
+  key: MatchDescription
+  value: MatchDescription
 }
 
 export function mapWith<K, V>(matchers: Array<MapEntryMatcher<NoInfer<K>, NoInfer<V>>>): Matcher<Map<K, V>> {

@@ -1,7 +1,7 @@
 import { equalTo } from "./basicMatchers.js"
 import { countMatches, matchWithoutOrder } from "./matchCollection.js"
 import { Invalid, matcher, Matcher, Valid } from "./matcher.js"
-import { Displayable, Message, message, problem, times, value } from "./message.js"
+import { MatchDescription, Message, message, problem, times, value } from "./message.js"
 import { isNumberGreaterThan } from "./numberMatchers.js"
 
 export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
@@ -162,7 +162,7 @@ export function arrayContaining<T>(elementMatcher: Matcher<NoInfer<T>>, options:
   })
 }
 
-function arrayContainsMessage(expectedMatchCount: number | undefined, expected: Displayable): Message {
+function arrayContainsMessage(expectedMatchCount: number | undefined, expected: MatchDescription): Message {
   return (expectedMatchCount === undefined)
     ? message`an array that contains ${expected}`
     : message`an array that contains, ${times(expectedMatchCount)}, ${expected}`
