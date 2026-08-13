@@ -1,5 +1,13 @@
 # Changelog
 
+### 8/12/2026
+
+great-expectations 1.12.0
+
+### Added
+- array, set, and map matchers accept readonly collections
+
+
 ### 5/21/2025
 
 great-expectations 1.10.2
