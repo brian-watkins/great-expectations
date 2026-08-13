@@ -17,6 +17,6 @@
     "ts-jest": "^29.1.0"
   },
   "dependencies": {
-    "chai": "^4.3.7"
+    "chai": "^6.2.2"
   }
 }
