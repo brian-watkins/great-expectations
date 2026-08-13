@@ -50,6 +50,8 @@ the `NO_COLOR` environment variable to a non-empty value.
 
 ### Writing Expectations
 
+Use the great-expectations [skill](./skills/great-expectations/SKILL.md) with your favorite agent.
+
 #### `expect(actual, MatchEvaluator, description?)`
 
 The expect function evaluates an actual value against the provided matcher. It will
