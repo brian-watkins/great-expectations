@@ -187,6 +187,9 @@ all occurrences.
 
 ### Array Matchers
 
+These matchers accept readonly arrays as well as mutable ones, including
+`ReadonlyArray<T>`, tuples, and arrays declared `as const`.
+
 #### `arrayWith(array of matchers, { withAnyOrder?: boolean })`
 
 Asserts that the actual value is an array with elements such that
@@ -230,6 +233,8 @@ Asserts that the actual value is an array with the given length
 
 ### Set Matchers
 
+These matchers accept a `ReadonlySet` as well as a mutable `Set`.
+
 #### `setWith(array of matchers)`
 
 Asserts that the actual value is a set with elements such that
@@ -266,6 +271,8 @@ Asserts that the actual value is a set with the given size
 
 
 ### Map Matchers
+
+These matchers accept a `ReadonlyMap` as well as a mutable `Map`.
 
 #### `mapWith(array of MapEntryMatcher)`
 

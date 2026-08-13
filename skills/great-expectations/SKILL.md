@@ -35,6 +35,8 @@ await expect(() => poll(), eventually(resolvesTo(equalTo("done")), { timeout: 20
 
 Matchers **compose**. Container matchers (`arrayWith`, `objectWith`, `mapWith`, `setWith`, `satisfying`, `assignedWith`, `arrayWithItemAt`, `objectWithProperty`, `arrayContaining`, `setContaining`, `mapContaining`) take other matchers as arguments. Most real assertions are a few matchers nested together.
 
+The array, set, and map matchers accept readonly collections (`ReadonlyArray`, `as const` arrays, `ReadonlySet`, `ReadonlyMap`) as well as mutable ones — never copy or cast an actual value just to satisfy the types.
+
 ## The evaluators
 
 | Evaluator                         | When to use                                                                 |
