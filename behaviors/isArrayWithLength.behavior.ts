@@ -18,6 +18,13 @@ export default behavior("isArrayWithLength", [
     hasExpectedMessageText("info(an array with exactly 4 elements)")
   ]),
 
+  exhibit("a readonly array matches without an error", () => {
+    const actualArray: ReadonlyArray<number> = [1, 2, 3]
+    return arrayWithLength<number>(3)(actualArray)
+  }).check([
+    isValidMatchResult()
+  ]),
+
   exhibit("the array does not have the expected length", () => {
     return arrayWithLength(3)([1, 2, 3, 4])
   }).check([

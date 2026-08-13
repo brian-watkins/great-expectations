@@ -52,6 +52,17 @@ export default behavior("isArrayWhere", [
     ])
   ]),
 
+  exhibit("a readonly array matches without an error", () => {
+    const actualArray: ReadonlyArray<number> = [1, 2, 3]
+    return arrayWith<number>([
+      equalTo(1),
+      equalTo(2),
+      equalTo(3)
+    ])(actualArray)
+  }).check([
+    isValidMatchResult(),
+  ]),
+
   exhibit("the actual array does not have the expected number of items", () => {
     return arrayWith([equalTo(1), equalTo(2), equalTo(3)])([1, 2])
   }).check([

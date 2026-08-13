@@ -4,7 +4,7 @@ import { Invalid, matcher, Matcher, Valid } from "./matcher.js"
 import { MatchDescription, Message, message, problem, times, value } from "./message.js"
 import { isNumberGreaterThan } from "./numberMatchers.js"
 
-export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
+export function arrayWithLength<T>(expectedLength: number): Matcher<ReadonlyArray<T>> {
   const expectedMessage = message`an array with ${times(expectedLength, "element")}`
 
   return matcher(expectedMessage, (actual) => {
@@ -22,7 +22,7 @@ export function arrayWithLength<T>(expectedLength: number): Matcher<Array<T>> {
   })
 }
 
-export function arrayWithItemAt<T>(index: number, itemMatcher: Matcher<NoInfer<T>>): Matcher<Array<T>> {
+export function arrayWithItemAt<T>(index: number, itemMatcher: Matcher<NoInfer<T>>): Matcher<ReadonlyArray<T>> {
   const expectedMessage = message`an array where the item at index ${index} is ${itemMatcher.expects}`
 
   return matcher(expectedMessage, (actual) => {
@@ -54,7 +54,7 @@ export interface ArrayWhereOptions {
   withAnyOrder?: boolean
 }
 
-export function arrayWith<T>(matchers: Array<Matcher<NoInfer<T>>>, options: ArrayWhereOptions = {}): Matcher<Array<T>> {
+export function arrayWith<T>(matchers: Array<Matcher<NoInfer<T>>>, options: ArrayWhereOptions = {}): Matcher<ReadonlyArray<T>> {
   const allowAnyOrder = options.withAnyOrder ?? false
 
   const description = value(matchers.map(m => m.expects))
@@ -74,7 +74,7 @@ export function arrayWith<T>(matchers: Array<Matcher<NoInfer<T>>>, options: Arra
   })
 }
 
-function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
+function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<ReadonlyArray<T>> {
   return matcher(message`Ordered Array`, (actual) => {
     let actualValues: Array<any> = []
     let expected: Array<any> = []
@@ -102,7 +102,7 @@ function isOrderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> 
   })
 }
 
-function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<Array<T>> {
+function isUnorderedArrayWhere<T>(matchers: Array<Matcher<T>>): Matcher<ReadonlyArray<T>> {
   return matcher(message`Unordered array`, (actual) => {
     const accumulatedResult = matchWithoutOrder(actual, matchers)
 
@@ -132,7 +132,7 @@ export interface ArrayContainingOptions {
   times?: number
 }
 
-export function arrayContaining<T>(elementMatcher: Matcher<NoInfer<T>>, options: ArrayContainingOptions = {}): Matcher<Array<T>> {
+export function arrayContaining<T>(elementMatcher: Matcher<NoInfer<T>>, options: ArrayContainingOptions = {}): Matcher<ReadonlyArray<T>> {
   const expectedMatchCount = options.times
   const description = arrayContainsMessage(expectedMatchCount, elementMatcher.expects)
 

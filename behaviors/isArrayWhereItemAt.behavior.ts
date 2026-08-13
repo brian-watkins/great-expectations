@@ -19,6 +19,13 @@ export default behavior("isArrayWhereItemAt", [
     hasExpectedMessageText("info(an array where the item at index 2 is a number that equals 3)")
   ]),
 
+  exhibit("a readonly array matches without an error", () => {
+    const actualArray: ReadonlyArray<number> = [1, 2, 3]
+    return arrayWithItemAt<number>(2, equalTo(3))(actualArray)
+  }).check([
+    isValidMatchResult()
+  ]),
+
   exhibit("the item at the specified index does not match", () => {
     return arrayWithItemAt(3, equalTo(1))([1, 2, 3, 4, 5])
   }).check([

@@ -18,6 +18,13 @@ export default behavior("isArrayContaining", [
     hasExpectedMessageText("info(an array that contains a number that equals 7)")
   ]),
 
+  exhibit("a readonly array matches without an error", () => {
+    const actualArray: ReadonlyArray<number> = [1, 7, 3, 3]
+    return arrayContaining<number>(equalTo(7))(actualArray)
+  }).check([
+    isValidMatchResult()
+  ]),
+
   exhibit("the array does not contain a matching item", () => {
     return arrayContaining<string>(stringContaining("hello"))(["goodbye", "bye", "later"])
   }).check([

@@ -1,12 +1,12 @@
 import { Invalid, Matcher, MatchValues } from "./matcher.js"
 
 interface MatchCollection<T> {
-  items: Array<T>
+  items: ReadonlyArray<T>
   expected: Array<any>
   failed: boolean
 }
 
-export function matchWithoutOrder<T>(actual: Array<T>, matchers: Array<Matcher<T>>): MatchCollection<T> {
+export function matchWithoutOrder<T>(actual: ReadonlyArray<T>, matchers: Array<Matcher<T>>): MatchCollection<T> {
   return matchers.reduce((acc: MatchCollection<T>, matcher: Matcher<T>) => {
     let invalid: Invalid
     for (let x = 0; x < acc.items.length; x++) {
@@ -34,7 +34,7 @@ export interface MatchResults {
   lastInvalid: MatchValues | undefined
 }
 
-export function countMatches<T>(actual: Array<T>, matcher: Matcher<T>): MatchResults {
+export function countMatches<T>(actual: ReadonlyArray<T>, matcher: Matcher<T>): MatchResults {
   const results: MatchResults = {
     matchCount: 0,
     lastValid: undefined,
