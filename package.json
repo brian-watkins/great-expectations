@@ -24,7 +24,8 @@
     }
   },
   "files": [
-    "dist/"
+    "dist/",
+    "skills/"
   ],
   "scripts": {
     "fix:cjs": "cp ./cjs_package.json ./dist/cjs/package.json",
