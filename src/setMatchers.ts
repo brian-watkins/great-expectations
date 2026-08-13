@@ -5,7 +5,7 @@ import { MatchDescription, Message, message, problem, times, value } from "./mes
 import { isNumberGreaterThan } from "./numberMatchers.js";
 import { valueWhere } from "./valueMatchers.js";
 
-export function setWithSize<T>(expectedSize: number): Matcher<Set<T>> {
+export function setWithSize<T>(expectedSize: number): Matcher<ReadonlySet<T>> {
   const description = message`a set with ${times(expectedSize, "element")}`
   
   return matcher(description, (actual) => {
@@ -23,11 +23,11 @@ export function setWithSize<T>(expectedSize: number): Matcher<Set<T>> {
   })
 }
 
-export function setWith<T>(matchers: Array<Matcher<T>>): Matcher<Set<T>> {
+export function setWith<T>(matchers: Array<Matcher<T>>): Matcher<ReadonlySet<T>> {
   const description = value(new Set(matchers.map(m => m.expects)))
   
   return matcher(description, (actual) => {
-    const sizeResult = valueWhere<Set<any>>((actual) => actual.size === matchers.length, `a set of size ${matchers.length}`)(actual)
+    const sizeResult = valueWhere<ReadonlySet<any>>((actual) => actual.size === matchers.length, `a set of size ${matchers.length}`)(actual)
 
     if (sizeResult.type === "invalid") {
       return new Invalid(`The set size (${actual.size}) is unexpected.`, {
@@ -66,7 +66,7 @@ export interface SetContainingOptions {
   times?: number
 }
 
-export function setContaining<T>(elementMatcher: Matcher<T>, options: SetContainingOptions = {}): Matcher<Set<T>> {
+export function setContaining<T>(elementMatcher: Matcher<T>, options: SetContainingOptions = {}): Matcher<ReadonlySet<T>> {
   const expectedMatchCount = options.times
   const description = setContainsMessage(expectedMatchCount, elementMatcher.expects)
 

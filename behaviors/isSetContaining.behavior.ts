@@ -18,6 +18,13 @@ export default behavior("isSetContaining", [
     hasExpectedMessageText("info(a set that contains a number that equals 1)")
   ]),
 
+  exhibit("the readonly set contains a matching item", () => {
+    const actualSet: ReadonlySet<number> = new Set([1, 3, 2])
+    return setContaining(equalTo(1))(actualSet)
+  }).check([
+    isValidMatchResult()
+  ]),
+
   exhibit("the set is empty", () => {
     return setContaining(equalTo(1))(new Set())
   }).check([

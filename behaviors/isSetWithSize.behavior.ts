@@ -18,6 +18,13 @@ export default behavior("setWithSize", [
     hasExpectedMessageText(`info(a set with exactly 4 elements)`),
   ]),
 
+  exhibit("the readonly set has the expected size", () => {
+    const actualSet: ReadonlySet<number> = new Set([1, 2, 3, 4])
+    return setWithSize<number>(4)(actualSet)
+  }).check([
+    isValidMatchResult()
+  ]),
+
   exhibit("the set does not have the expected size", () => {
     return setWithSize(1)(new Set([1, 2, 3, 4]))
   }).check([

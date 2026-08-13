@@ -32,6 +32,17 @@ export default behavior("setWith", [
     ]))
   ]),
 
+  exhibit("the readonly set matches", () => {
+    const actualSet: ReadonlySet<number> = new Set([1, 3, 2])
+    return setWith([
+      equalTo(1),
+      equalTo(2),
+      equalTo(3)
+    ])(actualSet)
+  }).check([
+    isValidMatchResult()
+  ]),
+
   exhibit("the set does not match", () => {
     return setWith([
       equalTo(1),
