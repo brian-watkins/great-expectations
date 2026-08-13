@@ -34,6 +34,16 @@ export default behavior("isMapContaining", [
     hasExpectedMessageText(`info(a map that contains the entry { a string that equals "fun-key" => <ANY> })`)
   ]),
 
+  exhibit("a readonly map contains the expected key", () => {
+    const actualMap: ReadonlyMap<string, string> = new Map([["fun-key", "cool stuff"]])
+
+    return mapContaining({
+      key: equalTo("fun-key")
+    })(actualMap)
+  }).check([
+    isValidMatchResult()
+  ]),
+
   exhibit("the map contains the expected key and value", () => {
     const actualMap = new Map<string, string>()
     actualMap.set("happy-key", "cool stuff")

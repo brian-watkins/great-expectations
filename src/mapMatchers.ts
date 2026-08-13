@@ -6,7 +6,7 @@ export interface MapEntryMatcher<K, V> {
   value?: Matcher<V>
 }
 
-export function mapContaining<K, V>(entry: MapEntryMatcher<NoInfer<K>, NoInfer<V>>): Matcher<Map<K, V>> {
+export function mapContaining<K, V>(entry: MapEntryMatcher<NoInfer<K>, NoInfer<V>>): Matcher<ReadonlyMap<K, V>> {
   const expectedKey = entry.key.expects
   const expectedValue = entry.value?.expects ?? anyValue()
   const description = message`a map that contains the entry { ${expectedKey} => ${expectedValue} }`
@@ -59,7 +59,7 @@ interface ExpectedMapEntry {
   value: MatchDescription
 }
 
-export function mapWith<K, V>(matchers: Array<MapEntryMatcher<NoInfer<K>, NoInfer<V>>>): Matcher<Map<K, V>> {
+export function mapWith<K, V>(matchers: Array<MapEntryMatcher<NoInfer<K>, NoInfer<V>>>): Matcher<ReadonlyMap<K, V>> {
   const description = value(new Map(matchers.map(entry => {
     return [ entry.key.expects, entry.value?.expects ?? anyValue() ]
   })))

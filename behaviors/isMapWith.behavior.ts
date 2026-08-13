@@ -45,6 +45,16 @@ export default behavior("isMapWith", [
     ]))
   ]),
 
+  exhibit("a readonly map matches without an error", () => {
+    const actualMap: ReadonlyMap<string, string> = new Map([["fun-key", "cool stuff"]])
+
+    return mapWith([
+      { key: equalTo("fun-key") }
+    ])(actualMap)
+  }).check([
+    isValidMatchResult()
+  ]),
+
   exhibit("the map does not contain the expected key", () => {
     const actualMap = new Map<string, string>()
     actualMap.set("awesome-key", "cool stuff")
